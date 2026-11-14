@@ -104,7 +104,7 @@ CD fails if a single todo remains (`npm run security:todo`). That way no test ca
 | ST14 | Muter: an app-id containing `;`, `$()` or a space is rejected, and `execFile` is called without a shell | T34 |
 | ST15 | Permissions: `.env` and state files are created at `0600`/`0700` | T02, T12 |
 | ST16 | Least privilege: a service's DB user cannot read another service's schema | T10 |
-| ST17 | The agent never reads or sends `cmdline` or window titles | T23, T62 |
+| ST17 | The agent never reads or sends `cmdline` or window titles, and the ingest contract rejects a sample that carries either | T23, T62 |
 | ST18 | **No container egress:** every compose service except web and gateway is attached only to `internal: true` networks, and web and gateway have at most one non-internal network (needed for loopback publishing) | T10 |
 | ST19 | **Commands:** a command without a session or CSRF → 403; a system command type (`liveMode`, `mute`, `restore`) in a web request → 400; an unknown type, a replayed ID or one past its TTL is refused by the gateway and by the agent | T72 |
 | ST20 | **Cleanup:** a symlink out of the root, `..` in a path, or a path outside the allowlist is refused, and nothing outside the root is deleted (temp-dir fixture) | T78 |
