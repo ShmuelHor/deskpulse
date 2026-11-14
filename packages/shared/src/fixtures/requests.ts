@@ -47,8 +47,6 @@ export const requestFixtures: { readonly [K in RouteName]: RequestFixture } = {
   focusQueue: {},
   listKnownApps: {},
   reportKnownApps: { body: { items: [{ appId: 'slack', name: 'Slack', source: 'desktop' }] } },
-  getAlertPolicy: {},
-  updateAlertPolicy: { body: { items: [{ type: 'battery-low', level: 'critical' }] } },
   export: { query: { from: '2026-11-01', to: FIXTURE_DATE } },
   getSettings: {},
   updateSettings: { body: settingsFixture },

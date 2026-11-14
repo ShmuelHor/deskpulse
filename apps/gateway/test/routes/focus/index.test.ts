@@ -1,7 +1,7 @@
 import { FIXTURE_IDS, profileFixture } from '@deskpulse/shared/fixtures/data';
 import { requestFixtures } from '@deskpulse/shared/fixtures/requests';
 import { responseFixtures } from '@deskpulse/shared/fixtures/responses';
-import { AlertPolicy, FocusStart, KnownAppsReport } from '@deskpulse/shared/focus';
+import { FocusStart, KnownAppsReport } from '@deskpulse/shared/focus';
 import type { FastifyInstance } from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -17,7 +17,6 @@ const { id: _id, ...profileInput } = profileFixture;
 const PROFILE_PATH = `/profiles/${FIXTURE_IDS.profile}`;
 const START_BODY = FocusStart.parse(requestFixtures.focusStart.body);
 const KNOWN_APPS_BODY = KnownAppsReport.parse(requestFixtures.reportKnownApps.body);
-const POLICY = AlertPolicy.parse(responseFixtures.updateAlertPolicy);
 const JSON_HEADERS = { 'content-type': 'application/json' };
 const SUMMARY = {
   profileId: FIXTURE_IDS.profile,
@@ -108,7 +107,6 @@ describe('focus routes', () => {
     ['listProfiles', '/v1/focus/profiles', 'focus GET /profiles'],
     ['focusQueue', '/v1/focus/queue', 'focus GET /queue'],
     ['listKnownApps', '/v1/focus/known-apps', 'focus GET /known-apps'],
-    ['getAlertPolicy', '/v1/focus/alert-policy', 'focus GET /alert-policy'],
   ] as const)('reads %s from the focus service', async (name, url, key) => {
     const { headers } = await start({ [key]: responseFixtures[name] });
 
@@ -173,23 +171,6 @@ describe('focus routes', () => {
     expect(response.statusCode).toBe(STATUS.OK);
     expect(response.json()).toEqual(responseFixtures.reportKnownApps);
     expect(calls).toEqual([{ key: 'focus POST /known-apps', body: KNOWN_APPS_BODY }]);
-  });
-
-  it('replaces the alert policy', async () => {
-    const { headers, calls } = await start({
-      'focus PUT /alert-policy': responseFixtures.updateAlertPolicy,
-    });
-
-    const response = await app().inject({
-      method: 'PUT',
-      url: '/v1/focus/alert-policy',
-      headers: { ...headers, ...JSON_HEADERS },
-      payload: POLICY,
-    });
-
-    expect(response.statusCode).toBe(STATUS.OK);
-    expect(response.json()).toEqual(responseFixtures.updateAlertPolicy);
-    expect(calls).toEqual([{ key: 'focus PUT /alert-policy', body: POLICY }]);
   });
 
   it('answers 503 when the focus service is down', async () => {

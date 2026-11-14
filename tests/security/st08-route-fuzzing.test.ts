@@ -66,8 +66,6 @@ const T30_ROUTES: readonly HandledRouteName[] = [
   'focusQueue',
   'listKnownApps',
   'reportKnownApps',
-  'getAlertPolicy',
-  'updateAlertPolicy',
 ];
 
 const T31_ROUTES: readonly HandledRouteName[] = ['getSettings', 'updateSettings'];

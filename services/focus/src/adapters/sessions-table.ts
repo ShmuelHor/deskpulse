@@ -1,5 +1,4 @@
 import { parseRow } from '@deskpulse/service-kit/sql';
-import { FocusSource } from '@deskpulse/shared/focus';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 
@@ -15,20 +14,18 @@ const FOCUS_LOCK_KEY = 18;
 const SessionRow = z.object({
   id: z.string(),
   profile_id: z.string(),
-  source: FocusSource,
   started_at: z.date(),
   ends_at: z.date(),
   muted_apps: z.array(z.string()),
 });
 type SessionRow = z.infer<typeof SessionRow>;
 
-const COLUMNS = ['id', 'profile_id', 'source', 'started_at', 'ends_at', 'muted_apps'] as const;
+const COLUMNS = ['id', 'profile_id', 'started_at', 'ends_at', 'muted_apps'] as const;
 
 function toSession(row: SessionRow): FocusSession {
   return {
     id: row.id,
     profileId: row.profile_id,
-    source: row.source,
     startedAtMs: row.started_at.getTime(),
     endsAtMs: row.ends_at.getTime(),
     mutedApps: row.muted_apps,
@@ -59,7 +56,6 @@ export async function startSession(db: Db, session: NewFocusSession): Promise<Fo
       .insertInto('focus_sessions')
       .values({
         profile_id: session.profileId,
-        source: session.source,
         started_at: new Date(session.startedAtMs),
         ends_at: new Date(session.endsAtMs),
         muted_apps: [...session.mutedApps],

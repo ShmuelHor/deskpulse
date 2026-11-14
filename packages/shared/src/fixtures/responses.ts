@@ -101,13 +101,6 @@ export const responseFixtures: ResponseFixtures = {
     ],
   },
   reportKnownApps: { added: 1 },
-  getAlertPolicy: {
-    items: [
-      { type: 'battery-critical', level: 'critical' },
-      { type: 'battery-low', level: 'important' },
-    ],
-  },
-  updateAlertPolicy: { items: [{ type: 'battery-low', level: 'critical' }] },
   export: {
     exportedAt: FIXTURE_NOW,
     from: '2026-11-01',

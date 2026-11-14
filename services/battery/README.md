@@ -37,11 +37,13 @@ the `core` network.
 
 ## Alerts
 
-| Type                   | When                                         | Level       |
-| ---------------------- | -------------------------------------------- | ----------- |
-| `battery-low`          | Discharging below 15%                        | `important` |
-| `battery-critical`     | Discharging below 8%                         | `critical`  |
-| `battery-plugged-full` | On the charger at 100% for more than 4 hours | `normal`    |
+| Type                   | When                                         |
+| ---------------------- | -------------------------------------------- |
+| `battery-low`          | Discharging below 15%                        |
+| `battery-critical`     | Discharging below 8%                         |
+| `battery-plugged-full` | On the charger at 100% for more than 4 hours |
+
+Alerts carry no level: focus's fixed rule lets only `battery-critical` through during focus.
 
 Each alert fires once, when its condition starts: a drain alert again only after the level eased
 (usually on the charger), the plugged one after unplugging or dropping below 100%. A battery held

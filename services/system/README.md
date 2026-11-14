@@ -38,8 +38,8 @@ Turns the agent's pressure, process and thermal samples into incidents, culprits
   `thermal`, RSS for memory types, IO for `io`) over the incident, each at its worst.
 - **Alerts** go back in the `POST /samples` reply for the gateway to route through focus. Their
   key is `system:<type>`, or `system:memory-leak:<pid>`, so focus's rate limit also holds back an
-  incident that keeps reopening. SPEC sets the critical and important levels; it gives none for
-  pressure and leaks, so they are normal and important, and focus's `alert_policy` can override.
+  incident that keeps reopening. Alerts carry no level: focus's fixed rule holds all of them
+  during focus.
 
 ## Samples
 

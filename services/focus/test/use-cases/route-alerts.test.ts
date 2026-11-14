@@ -1,4 +1,4 @@
-import type { Alert } from '@deskpulse/shared/alerts';
+import type { Alert, AlertType } from '@deskpulse/shared/alerts';
 import type { Profile } from '@deskpulse/shared/focus';
 import { describe, expect, it } from 'vitest';
 
@@ -25,72 +25,59 @@ function later(minutes: number): Date {
   return new Date(NOW.getTime() + minutes * MINUTE_MS);
 }
 
-function alert(alertKey: string, level: Alert['level']): Alert {
-  return { alertKey, type: 'thermal', level, ts: NOW.toISOString(), params: { celsius: 95 } };
+function alert(alertKey: string, type: AlertType = 'thermal'): Alert {
+  return { alertKey, type, ts: NOW.toISOString(), params: { celsius: 95 } };
 }
 
-const critical = alert('thermal:critical', 'critical');
-const important = alert('thermal:important', 'important');
-const normal = alert('thermal:normal', 'normal');
+const empty = alert('battery-critical', 'battery-critical');
+const thermal = alert('thermal:0');
+const pressure = alert('system:cpu', 'pressure-incident');
 
 describe('routeIncoming', () => {
-  it('delivers every level outside focus', async () => {
+  it('delivers every alert outside focus', async () => {
     const store = createMemoryStore();
 
-    const result = await routeIncoming(store, { alerts: [critical, important, normal] }, NOW);
+    const result = await routeIncoming(store, { alerts: [empty, thermal, pressure] }, NOW);
 
     expect(RouteResult.parse(result)).toEqual({
-      deliver: [critical, important, normal],
+      deliver: [empty, thermal, pressure],
       queued: 0,
       rateLimited: 0,
       summary: null,
     });
   });
 
-  it('delivers critical and queues the rest during focus', async () => {
+  it('delivers an empty battery and queues the rest during focus', async () => {
     const store = createMemoryStore({ profiles: [profile] });
     await startFocus(store, { minutes: FOCUS_MINUTES }, NOW, 'UTC');
 
-    const result = await routeIncoming(store, { alerts: [critical, important, normal] }, later(1));
+    const result = await routeIncoming(store, { alerts: [empty, thermal, pressure] }, later(1));
 
-    expect(result).toEqual({ deliver: [critical], queued: 2, rateLimited: 0, summary: null });
+    expect(result).toEqual({ deliver: [empty], queued: 2, rateLimited: 0, summary: null });
     expect(await listQueue(store)).toEqual([
-      { alert: important, queuedAt: later(1).toISOString() },
-      { alert: normal, queuedAt: later(1).toISOString() },
+      { alert: thermal, queuedAt: later(1).toISOString() },
+      { alert: pressure, queuedAt: later(1).toISOString() },
     ]);
-  });
-
-  it('applies the alert policy before deciding', async () => {
-    const store = createMemoryStore({ profiles: [profile], policy: [['thermal', 'critical']] });
-    await startFocus(store, { minutes: FOCUS_MINUTES }, NOW, 'UTC');
-
-    const result = await routeIncoming(store, { alerts: [normal] }, later(1));
-
-    expect(result.deliver).toEqual([{ ...normal, level: 'critical' }]);
   });
 
   it('lets one alert per key through every 10 min, across calls', async () => {
     const store = createMemoryStore();
-    await routeIncoming(store, { alerts: [important] }, NOW);
+    await routeIncoming(store, { alerts: [thermal] }, NOW);
 
-    const again = await routeIncoming(
-      store,
-      { alerts: [important] },
-      later(RATE_LIMIT_MINUTES - 1),
-    );
+    const again = await routeIncoming(store, { alerts: [thermal] }, later(RATE_LIMIT_MINUTES - 1));
     const afterWindow = await routeIncoming(
       store,
-      { alerts: [important] },
+      { alerts: [thermal] },
       later(RATE_LIMIT_MINUTES),
     );
 
     expect(again).toMatchObject({ deliver: [], queued: 0, rateLimited: 1 });
-    expect(afterWindow).toMatchObject({ deliver: [important], rateLimited: 0 });
+    expect(afterWindow).toMatchObject({ deliver: [thermal], rateLimited: 0 });
   });
 
   it('forgets keys whose window is over', async () => {
     const store = createMemoryStore();
-    await routeIncoming(store, { alerts: [important] }, NOW);
+    await routeIncoming(store, { alerts: [thermal] }, NOW);
 
     await routeIncoming(store, { alerts: [] }, later(RATE_LIMIT_MINUTES + 1));
 
@@ -100,20 +87,20 @@ describe('routeIncoming', () => {
   it('closes a session that ran out and returns its summary with the held alerts', async () => {
     const store = createMemoryStore({ profiles: [profile] });
     await startFocus(store, { minutes: FOCUS_MINUTES }, NOW, 'UTC');
-    await routeIncoming(store, { alerts: [important] }, later(1));
+    await routeIncoming(store, { alerts: [thermal] }, later(1));
 
     const result = await routeIncoming(
       store,
-      { alerts: [normal] },
+      { alerts: [pressure] },
       later(FOCUS_MINUTES + OVERRUN_MINUTES),
     );
 
-    expect(result.deliver).toEqual([normal]);
+    expect(result.deliver).toEqual([pressure]);
     expect(result.summary).toEqual({
       profileId: profile.id,
       startedAt: NOW.toISOString(),
       endedAt: later(FOCUS_MINUTES).toISOString(),
-      alerts: [{ alert: important, queuedAt: later(1).toISOString() }],
+      alerts: [{ alert: thermal, queuedAt: later(1).toISOString() }],
     });
     expect(store.state().queue).toEqual([]);
   });
@@ -121,10 +108,10 @@ describe('routeIncoming', () => {
   it('keeps only the newest alerts once the queue is full', async () => {
     const store = createMemoryStore({ profiles: [profile] });
     await startFocus(store, { minutes: FOCUS_MINUTES }, NOW, 'UTC');
-    const alerts = Array.from({ length: QUEUE_CAPACITY }, (_, i) => alert(`k${i}`, 'normal'));
+    const alerts = Array.from({ length: QUEUE_CAPACITY }, (_, i) => alert(`k${i}`));
     await routeIncoming(store, { alerts }, later(1));
 
-    await routeIncoming(store, { alerts: [alert('newest', 'normal')] }, later(2));
+    await routeIncoming(store, { alerts: [alert('newest')] }, later(2));
 
     const queue = await listQueue(store);
     expect(queue).toHaveLength(QUEUE_CAPACITY);

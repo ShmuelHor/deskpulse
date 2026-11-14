@@ -1,19 +1,11 @@
-import type { Alert, AlertLevel, AlertType, QueuedAlert } from '@deskpulse/shared/alerts';
-import type {
-  AlertPolicyEntry,
-  FocusSource,
-  KnownApp,
-  Profile,
-  ProfileInput,
-} from '@deskpulse/shared/focus';
+import type { Alert, QueuedAlert } from '@deskpulse/shared/alerts';
+import type { KnownApp, Profile, ProfileInput } from '@deskpulse/shared/focus';
 
-import type { Schedule, ScheduleInput } from '../contracts.js';
 import type { FocusSession } from '../domain/focus-session.js';
 
 /** A session about to be stored. */
 export interface NewFocusSession {
   readonly profileId: string;
-  readonly source: FocusSource;
   readonly startedAtMs: number;
   readonly endsAtMs: number;
   readonly mutedApps: readonly string[];
@@ -48,9 +40,6 @@ export interface FocusTransaction {
   /** Adds new apps and refreshes known ones. Returns how many were new. */
   readonly saveKnownApps: (apps: readonly KnownApp[]) => Promise<number>;
 
-  readonly alertPolicy: () => Promise<Map<AlertType, AlertLevel>>;
-  readonly replaceAlertPolicy: (entries: readonly AlertPolicyEntry[]) => Promise<void>;
-
   /** When each of `keys` was last let through, for the keys still inside a window. */
   readonly lastAccepted: (keys: readonly string[]) => Promise<Map<string, number>>;
   readonly recordAccepted: (keys: readonly string[], atMs: number) => Promise<void>;
@@ -63,14 +52,6 @@ export interface FocusTransaction {
   readonly listQueue: (limit: number) => Promise<QueuedAlert[]>;
   /** Removes every queued alert and returns them, oldest first. */
   readonly drainQueue: () => Promise<QueuedAlert[]>;
-
-  readonly listSchedules: (limit: number) => Promise<Schedule[]>;
-  readonly countSchedules: () => Promise<number>;
-  readonly createSchedule: (input: ScheduleInput) => Promise<Schedule>;
-  /** `null` when there is no such schedule. */
-  readonly updateSchedule: (id: string, input: ScheduleInput) => Promise<Schedule | null>;
-  /** `false` when there is no such schedule. */
-  readonly deleteSchedule: (id: string) => Promise<boolean>;
 }
 
 export interface FocusStore {

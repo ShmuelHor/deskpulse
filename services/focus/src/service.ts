@@ -9,7 +9,6 @@ import { focusRoutes } from './routes/focus.js';
 import { knownAppRoutes } from './routes/known-apps.js';
 import { profileRoutes } from './routes/profiles.js';
 import type { RouteDeps } from './routes/route-deps.js';
-import { scheduleRoutes } from './routes/schedules.js';
 
 /** Next to `src/` and `dist/`, so the same path works from source and from the build. */
 export const MIGRATIONS_DIR = fileURLToPath(new URL('../migrations', import.meta.url));
@@ -20,7 +19,6 @@ export function buildRoutes(deps: RouteDeps): Route[] {
     ...alertRoutes(deps),
     ...profileRoutes(deps),
     ...knownAppRoutes(deps),
-    ...scheduleRoutes(deps),
   ];
 }
 

@@ -8,7 +8,6 @@ import { summarize } from '../../src/domain/summary.js';
 const session: FocusSession = {
   id: '00000000-0000-4000-8000-000000000001',
   profileId: '00000000-0000-4000-8000-0000000000aa',
-  source: 'manual',
   startedAtMs: Date.parse('2026-11-08T10:00:00.000Z'),
   endsAtMs: Date.parse('2026-11-08T11:00:00.000Z'),
   mutedApps: [],
@@ -16,7 +15,7 @@ const session: FocusSession = {
 
 function queued(alertKey: string, queuedAt: string): QueuedAlert {
   return {
-    alert: { alertKey, type: 'thermal', level: 'normal', ts: queuedAt, params: { celsius: 95 } },
+    alert: { alertKey, type: 'thermal', ts: queuedAt, params: { celsius: 95 } },
     queuedAt,
   };
 }

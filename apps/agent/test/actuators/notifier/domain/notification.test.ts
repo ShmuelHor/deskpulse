@@ -9,7 +9,6 @@ function alert(overrides: Partial<Alert> = {}): Alert {
   return {
     alertKey: 'battery:low',
     type: 'battery-low',
-    level: 'important',
     ts: '2026-11-10T08:00:00.000Z',
     params: { percent: 14 },
     ...overrides,
@@ -17,13 +16,19 @@ function alert(overrides: Partial<Alert> = {}): Alert {
 }
 
 describe('urgencyFor', () => {
-  it('maps critical to urgency 2, which gets through Do Not Disturb', () => {
-    expect(urgencyFor('critical')).toBe(2);
-  });
+  it.each(['battery-critical', 'memory-critical'] as const)(
+    'maps %s to urgency 2, which gets through Do Not Disturb',
+    (type) => {
+      expect(urgencyFor(type)).toBe(2);
+    },
+  );
 
-  it.each(['important', 'normal'] as const)('maps %s to urgency 1', (level) => {
-    expect(urgencyFor(level)).toBe(1);
-  });
+  it.each(['battery-low', 'battery-plugged-full', 'pressure-incident', 'thermal'] as const)(
+    'maps %s to urgency 1',
+    (type) => {
+      expect(urgencyFor(type)).toBe(1);
+    },
+  );
 });
 
 describe('renderNotification', () => {
@@ -53,7 +58,7 @@ describe('renderNotification', () => {
 
   it('gives a critical alert critical urgency', () => {
     const { notification } = renderNotification({
-      alert: alert({ type: 'battery-critical', level: 'critical', params: { percent: 7 } }),
+      alert: alert({ type: 'battery-critical', params: { percent: 7 } }),
       language: 'en',
     });
 

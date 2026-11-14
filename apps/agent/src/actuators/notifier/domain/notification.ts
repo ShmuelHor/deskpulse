@@ -1,4 +1,4 @@
-import type { AlertLevel, AlertParams } from '@deskpulse/shared/alerts';
+import type { AlertParams, AlertType } from '@deskpulse/shared/alerts';
 import { notificationMessages } from '@deskpulse/shared/notifications';
 import type { Language } from '@deskpulse/shared/settings';
 import { translate } from '../../../i18n/catalogs.js';
@@ -38,9 +38,11 @@ export interface RenderedNotification {
 
 export type Translate = (key: string, language: Language) => string;
 
-/** Critical is the only level that may interrupt; important and normal are both 1 (SPEC §4.2). */
-export function urgencyFor(level: AlertLevel): Urgency {
-  return level === 'critical' ? CRITICAL_URGENCY : NORMAL_URGENCY;
+/** Only an empty battery or near-OOM may interrupt; every other alert is urgency 1 (SPEC §4.2). */
+const CRITICAL_TYPES: ReadonlySet<AlertType> = new Set(['battery-critical', 'memory-critical']);
+
+export function urgencyFor(type: AlertType): Urgency {
+  return CRITICAL_TYPES.has(type) ? CRITICAL_URGENCY : NORMAL_URGENCY;
 }
 
 function formatParams(params: AlertParams, language: Language): Record<string, string> {
@@ -68,7 +70,7 @@ export function renderNotification(
       appName: translateKey(APP_NAME_KEY, language),
       summary: translateKey(messages.title, language),
       body: escapeMarkup(body.text),
-      urgency: urgencyFor(alert.level),
+      urgency: urgencyFor(alert.type),
       openDashboardLabel: translateKey(OPEN_DASHBOARD_KEY, language),
     },
     missingParams: body.missing,

@@ -24,38 +24,36 @@ function incident(overrides: Partial<IncidentState>): IncidentState {
 }
 
 describe('incidentAlert', () => {
-  it('raises a normal pressure alert, keyed by the resource, valid against the contract', () => {
+  it('raises a pressure alert, keyed by the resource, valid against the contract', () => {
     const alert = incidentAlert(incident({}), OPENED);
 
     expect(Alert.parse(alert)).toEqual({
       alertKey: 'system:cpu',
       type: 'pressure-incident',
-      level: 'normal',
       ts: '2026-11-08T09:00:20.000Z',
       params: { resource: 'cpu', peak: 55, comm: 'node', pid: 42 },
     });
   });
 
-  it('raises a critical alert near OOM', () => {
+  it('raises an alert near OOM', () => {
     const alert = incidentAlert(incident({ type: 'memory-critical', culprits: [] }), OPENED);
 
-    expect(alert).toMatchObject({ type: 'memory-critical', level: 'critical' });
+    expect(alert).toMatchObject({ type: 'memory-critical' });
     expect(alert.params).toEqual({ resource: 'memory-critical', peak: 55 });
   });
 
-  it('raises an important alert for overheating, with the temperature', () => {
+  it('raises an alert for overheating, with the temperature', () => {
     const alert = incidentAlert(incident({ type: 'thermal', peak: 97 }), OPENED);
 
-    expect(alert).toMatchObject({ type: 'thermal', level: 'important', params: { celsius: 97 } });
+    expect(alert).toMatchObject({ type: 'thermal', params: { celsius: 97 } });
   });
 
-  it('raises an important alert for a leak, keyed by its process', () => {
+  it('raises an alert for a leak, keyed by its process', () => {
     const alert = incidentAlert(incident({ type: 'memory-leak', pid: 42, peak: 2e9 }), OPENED);
 
     expect(Alert.parse(alert)).toMatchObject({
       alertKey: 'system:memory-leak:42',
       type: 'memory-leak',
-      level: 'important',
       params: { comm: 'node', pid: 42, bytesPerHour: 2e9 },
     });
   });

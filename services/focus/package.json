@@ -2,7 +2,7 @@
   "name": "@deskpulse/focus",
   "version": "0.0.0",
   "private": true,
-  "description": "Focus mode: profiles, mute commands, alert routing by level, rate limit and queue.",
+  "description": "Focus mode: profiles, mute commands, the fixed alert rule, duplicates and queue.",
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
