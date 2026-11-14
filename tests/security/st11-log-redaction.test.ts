@@ -67,7 +67,7 @@ describe('ST11 log redaction', () => {
     const logs = captureLogs();
     const service = buildService(logs.stream);
     try {
-      const headers = { authorization: `Bearer ${TOKEN}`, cookie: `yoman_session=${COOKIE}` };
+      const headers = { authorization: `Bearer ${TOKEN}`, cookie: `deskpulse_session=${COOKIE}` };
       await service.app.inject({
         method: 'POST',
         url: `/samples?token=${TOKEN}&title=${encodeURIComponent(TITLE)}`,

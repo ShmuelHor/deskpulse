@@ -56,7 +56,7 @@ describe('loadAgentConfig', () => {
   let root: string;
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'yoman-config-'));
+    root = await mkdtemp(join(tmpdir(), 'deskpulse-config-'));
   });
 
   afterEach(async () => {

@@ -1,5 +1,5 @@
-import { defineRoute, type Route } from '@yoman/service-kit/route';
-import { CulpritList, CulpritsQuery } from '@yoman/shared/system';
+import { defineRoute, type Route } from '@deskpulse/service-kit/route';
+import { CulpritList, CulpritsQuery } from '@deskpulse/shared/system';
 
 import { listCulprits } from '../use-cases/list-culprits.js';
 import type { RouteDeps } from './route-deps.js';

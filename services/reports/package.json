@@ -1,5 +1,5 @@
 {
-  "name": "@yoman/reports",
+  "name": "@deskpulse/reports",
   "version": "0.0.0",
   "private": true,
   "description": "Rolls closed sessions up into daily totals and focus streaks, and serves the day, week and weekly summary reports.",
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@date-fns/tz": "1.5.0",
-    "@yoman/service-kit": "0.0.0",
-    "@yoman/shared": "0.0.0",
+    "@deskpulse/service-kit": "0.0.0",
+    "@deskpulse/shared": "0.0.0",
     "date-fns": "4.4.0",
     "kysely": "0.29.8",
     "zod": "4.6.7"

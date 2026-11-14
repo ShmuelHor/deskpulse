@@ -1,4 +1,4 @@
-import type { IncidentType } from '@yoman/shared/system';
+import type { IncidentType } from '@deskpulse/shared/system';
 
 import type { IncidentChange, IncidentState } from './incident.js';
 

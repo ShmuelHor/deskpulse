@@ -3,7 +3,7 @@ import type {
   ProcessInfo,
   ProcessSample,
   ThermalSample,
-} from '@yoman/shared/ingest';
+} from '@deskpulse/shared/ingest';
 
 /** Fixture builders shared by the use case and route tests. Clocks are `HH:MM:SS` UTC. */
 

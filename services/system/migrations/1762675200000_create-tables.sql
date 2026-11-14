@@ -1,5 +1,5 @@
 -- Up Migration
--- Every column mirrors its bound in @yoman/shared, so bad data cannot be stored even by a bug.
+-- Every column mirrors its bound in @deskpulse/shared, so bad data cannot be stored even by a bug.
 
 -- `some` and `full` avg10 per resource, every 5 s. Kept for 7 days.
 CREATE TABLE pressure_samples (

@@ -1,4 +1,4 @@
-import { WeekReport } from '@yoman/shared/reports';
+import { WeekReport } from '@deskpulse/shared/reports';
 
 import { defineHandlers } from '../../core/route-handler.js';
 

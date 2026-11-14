@@ -1,5 +1,5 @@
-import { AppId } from '@yoman/shared/common';
-import { isBuiltInNeverMuted, isSameApp } from '@yoman/shared/never-muted';
+import { AppId } from '@deskpulse/shared/common';
+import { isBuiltInNeverMuted, isSameApp } from '@deskpulse/shared/never-muted';
 
 export type MutableCheck =
   | { readonly mutable: true }

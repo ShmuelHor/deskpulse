@@ -1,8 +1,8 @@
 import { fileURLToPath } from 'node:url';
 
-import type { DatabaseConfig } from '@yoman/service-kit/config';
-import { createPool } from '@yoman/service-kit/database';
-import { runMigrations } from '@yoman/service-kit/migrations';
+import type { DatabaseConfig } from '@deskpulse/service-kit/config';
+import { createPool } from '@deskpulse/service-kit/database';
+import { runMigrations } from '@deskpulse/service-kit/migrations';
 import type { Pool } from 'pg';
 import type { Logger } from 'pino';
 

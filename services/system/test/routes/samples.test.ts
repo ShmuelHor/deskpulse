@@ -1,4 +1,4 @@
-import { Alert } from '@yoman/shared/alerts';
+import { Alert } from '@deskpulse/shared/alerts';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { SampleResult } from '../../src/contracts.js';

@@ -1,5 +1,5 @@
-import { LIMITS } from '@yoman/shared/limits';
-import { isBuiltInNeverMuted } from '@yoman/shared/never-muted';
+import { LIMITS } from '@deskpulse/shared/limits';
+import { isBuiltInNeverMuted } from '@deskpulse/shared/never-muted';
 
 /** What a profile decides about muting. */
 export interface MuteProfile {

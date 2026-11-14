@@ -1,5 +1,5 @@
-import { parseRow } from '@yoman/service-kit/sql';
-import { FocusSource } from '@yoman/shared/focus';
+import { parseRow } from '@deskpulse/service-kit/sql';
+import { FocusSource } from '@deskpulse/shared/focus';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 

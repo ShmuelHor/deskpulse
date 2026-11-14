@@ -1,4 +1,4 @@
-import type { BatteryNow } from '@yoman/shared/battery';
+import type { BatteryNow } from '@deskpulse/shared/battery';
 
 import { AVERAGE_WINDOW_MS, minutesRemaining } from '../domain/time-remaining.js';
 import type { BatteryStore } from './store.js';

@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { Pid } from '@yoman/shared/common';
+import { Pid } from '@deskpulse/shared/common';
 import { readProcFile } from '../../pressure/adapters/procfs.js';
 import { parseContainerName } from '../domain/container-name.js';
 

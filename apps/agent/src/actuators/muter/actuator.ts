@@ -13,7 +13,7 @@ export const MUTE_STATE_FILE = 'mute-state.json';
 const MAX_TIMER_MS = 2_147_483_647;
 
 export interface MuterOptions {
-  /** `~/.local/state/yoman`; the state file lives directly in it. */
+  /** `~/.local/state/deskpulse`; the state file lives directly in it. */
   readonly stateDir: string;
   readonly run: RunFile;
   readonly now?: () => Date;

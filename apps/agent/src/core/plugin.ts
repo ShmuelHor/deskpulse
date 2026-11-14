@@ -1,5 +1,5 @@
-import type { KnownApp } from '@yoman/shared/focus';
-import type { Sample } from '@yoman/shared/ingest';
+import type { KnownApp } from '@deskpulse/shared/focus';
+import type { Sample } from '@deskpulse/shared/ingest';
 import { z } from 'zod';
 import type { AgentLogger } from './logger.js';
 import type { Presence, PresenceUpdate } from './presence.js';

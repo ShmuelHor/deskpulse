@@ -1,4 +1,4 @@
-import { ThermalSample } from '@yoman/shared/ingest';
+import { ThermalSample } from '@deskpulse/shared/ingest';
 import type { Collector, CollectorContext } from '../../core/plugin.js';
 import { discoverThermalSources, readAttributes, type ThermalSources } from './adapters/sysfs.js';
 import { cpuTemperature } from './domain/temperature.js';

@@ -1,4 +1,4 @@
-import type { BatteryDay } from '@yoman/shared/battery';
+import type { BatteryDay } from '@deskpulse/shared/battery';
 
 import { type AlertState, INITIAL_ALERT_STATE } from '../src/domain/battery-alerts.js';
 import type { BatteryStore, BatteryTransaction, StoredSample } from '../src/use-cases/store.js';

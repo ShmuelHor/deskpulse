@@ -1,4 +1,4 @@
-import type { Incident } from '@yoman/shared/system';
+import type { Incident } from '@deskpulse/shared/system';
 
 export interface Region {
   readonly id: string;

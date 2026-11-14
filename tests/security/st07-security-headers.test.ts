@@ -99,7 +99,7 @@ describe('ST07 security headers', () => {
     let baseUrl: string;
 
     beforeAll(async () => {
-      site = await mkdtemp(join(tmpdir(), 'yoman-st07-'));
+      site = await mkdtemp(join(tmpdir(), 'deskpulse-st07-'));
       await writeSite(site);
       // The same hardening as apps/web/compose.yml, so the config is proven to work under it.
       const { stdout } = await run('docker', [

@@ -1,4 +1,4 @@
-import { BatterySample } from '@yoman/shared/ingest';
+import { BatterySample } from '@deskpulse/shared/ingest';
 import { describe, expect, it } from 'vitest';
 import type { BatteryReading } from '../../../../src/collectors/battery/domain/battery-reading.js';
 import { combineReadings } from '../../../../src/collectors/battery/domain/combine-readings.js';

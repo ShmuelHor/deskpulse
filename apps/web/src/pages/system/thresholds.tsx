@@ -1,6 +1,6 @@
+import type { Settings } from '@deskpulse/shared/settings';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import type { Settings } from '@yoman/shared/settings';
 import { useTranslation } from 'react-i18next';
 
 interface ThresholdsProps {

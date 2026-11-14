@@ -1,5 +1,5 @@
-import type { BatteryDay } from '@yoman/shared/battery';
-import type { BatteryStatus } from '@yoman/shared/ingest';
+import type { BatteryDay } from '@deskpulse/shared/battery';
+import type { BatteryStatus } from '@deskpulse/shared/ingest';
 
 import type { AlertState } from '../domain/battery-alerts.js';
 import type { DaySample } from '../domain/daily.js';

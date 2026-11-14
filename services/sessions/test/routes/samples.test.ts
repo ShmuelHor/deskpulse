@@ -1,5 +1,5 @@
-import type { WindowSample } from '@yoman/shared/ingest';
-import { Session } from '@yoman/shared/sessions';
+import type { WindowSample } from '@deskpulse/shared/ingest';
+import { Session } from '@deskpulse/shared/sessions';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { SampleResult } from '../../src/contracts.js';

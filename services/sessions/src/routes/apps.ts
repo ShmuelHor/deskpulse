@@ -1,6 +1,6 @@
-import { defineRoute, type Route } from '@yoman/service-kit/route';
-import { AppIdParams } from '@yoman/shared/common';
-import { App, AppList, AppUpdate } from '@yoman/shared/sessions';
+import { defineRoute, type Route } from '@deskpulse/service-kit/route';
+import { AppIdParams } from '@deskpulse/shared/common';
+import { App, AppList, AppUpdate } from '@deskpulse/shared/sessions';
 
 import { listApps, updateApp } from '../use-cases/manage-apps.js';
 import type { RouteDeps } from './route-deps.js';

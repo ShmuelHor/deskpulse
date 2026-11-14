@@ -1,4 +1,4 @@
-import type { PressureSample, ProcessSample, ThermalSample } from '@yoman/shared/ingest';
+import type { PressureSample, ProcessSample, ThermalSample } from '@deskpulse/shared/ingest';
 import { describe, expect, it } from 'vitest';
 
 import { freshSamples } from '../../src/domain/fresh-samples.js';

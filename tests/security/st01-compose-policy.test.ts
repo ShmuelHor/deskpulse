@@ -13,7 +13,7 @@ import {
 
 const REPO_ROOT = fileURLToPath(new URL('../../', import.meta.url));
 /** In-memory models pretend the project lives here. */
-const PROJECT = '/srv/yoman';
+const PROJECT = '/srv/deskpulse';
 const fixture = (name: string): string =>
   fileURLToPath(new URL(`./fixtures/compose/${name}`, import.meta.url));
 
@@ -98,7 +98,7 @@ describe('ST01 compose policy', () => {
 
     it.each([
       ['an external network named host', { name: 'host' }],
-      ['a network with the host driver', { name: 'yoman_hostnet', driver: 'host' }],
+      ['a network with the host driver', { name: 'deskpulse_hostnet', driver: 'host' }],
     ])('rejects a service attached to %s', (_name, network) => {
       const model = {
         ...modelWith({ networks: { hn: null } }),
@@ -111,7 +111,7 @@ describe('ST01 compose policy', () => {
     it('accepts a service on an internal bridge network', () => {
       const model = {
         ...modelWith({ networks: { internal: null } }),
-        networks: { internal: { name: 'yoman_internal', driver: 'bridge' } },
+        networks: { internal: { name: 'deskpulse_internal', driver: 'bridge' } },
       };
 
       expect(rulesBroken(model)).toEqual([]);
@@ -285,7 +285,7 @@ describe('ST01 compose policy', () => {
     it('accepts ordinary bind mounts and named volumes', () => {
       const model = modelWith({
         volumes: [
-          { type: 'bind', source: '/home/user/yoman/backups', target: '/backups' },
+          { type: 'bind', source: '/home/user/deskpulse/backups', target: '/backups' },
           { type: 'volume', source: 'pgdata', target: '/var/lib/postgresql/data' },
         ],
       });
@@ -329,7 +329,7 @@ describe('ST01 compose policy', () => {
       ['a git context without a scheme', { context: 'github.com/x/y' }],
       ['an SSH git context', { context: 'git@github.com:x/y.git' }],
       ['a context outside the project', { context: '/srv/other' }],
-      ['a sibling directory with the same prefix', { context: '/srv/yoman-evil' }],
+      ['a sibling directory with the same prefix', { context: '/srv/deskpulse-evil' }],
       ['an inline Dockerfile', { context: PROJECT, dockerfile_inline: 'FROM ubuntu:latest' }],
       ['a Dockerfile outside the project', { context: PROJECT, dockerfile: '/tmp/Dockerfile' }],
       [

@@ -37,7 +37,7 @@ describe('readBatteryFiles', () => {
   let dir: string;
 
   beforeEach(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'yoman-battery-'));
+    dir = await mkdtemp(join(tmpdir(), 'deskpulse-battery-'));
     await mkdir(join(dir, 'BAT0'));
   });
 

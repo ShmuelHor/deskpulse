@@ -1,4 +1,4 @@
-import { LIMITS } from '@yoman/shared/limits';
+import { LIMITS } from '@deskpulse/shared/limits';
 import type { ProcessStat } from './process-files.js';
 
 /** One process at one moment: its stat counters plus its storage IO so far. */

@@ -1,4 +1,4 @@
-import { responseFixtures } from '@yoman/shared/fixtures/responses';
+import { responseFixtures } from '@deskpulse/shared/fixtures/responses';
 import type { FastifyInstance } from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 

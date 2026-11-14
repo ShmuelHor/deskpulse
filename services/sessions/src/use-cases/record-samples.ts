@@ -1,5 +1,5 @@
-import type { WindowSample } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
+import type { WindowSample } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 import type { ClosedSession, SampleResult } from '../contracts.js';
 import { resolveCategory } from '../domain/categorize.js';

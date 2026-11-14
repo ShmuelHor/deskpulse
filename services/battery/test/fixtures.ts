@@ -1,4 +1,4 @@
-import type { BatterySample } from '@yoman/shared/ingest';
+import type { BatterySample } from '@deskpulse/shared/ingest';
 
 /** A healthy, discharging laptop battery: 50 of 60 Wh design, at 10 W. */
 export function batterySample(

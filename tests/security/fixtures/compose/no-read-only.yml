@@ -1,5 +1,5 @@
 # valid.yml with read_only removed from the web service, which ST01 must reject.
-name: yoman-fixture
+name: deskpulse-fixture
 services:
   web:
     image: nginx@sha256:0000000000000000000000000000000000000000000000000000000000000000

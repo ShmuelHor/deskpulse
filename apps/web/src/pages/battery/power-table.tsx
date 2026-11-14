@@ -1,6 +1,6 @@
+import type { AppPower } from '@deskpulse/shared/battery';
+import type { App } from '@deskpulse/shared/sessions';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import type { AppPower } from '@yoman/shared/battery';
-import type { App } from '@yoman/shared/sessions';
 import { useTranslation } from 'react-i18next';
 
 import { splitMinutes } from './format.js';

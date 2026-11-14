@@ -1,4 +1,4 @@
-import { BatterySample } from '@yoman/shared/ingest';
+import { BatterySample } from '@deskpulse/shared/ingest';
 import type { Collector, CollectorContext } from '../../core/plugin.js';
 import { listBatteries, readBatteryFiles } from './adapters/sysfs.js';
 import { type BatteryReading, parseBatteryReading } from './domain/battery-reading.js';

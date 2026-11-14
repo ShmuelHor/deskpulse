@@ -1,4 +1,4 @@
-import type { Timestamp } from '@yoman/service-kit/sql';
+import type { Timestamp } from '@deskpulse/service-kit/sql';
 import type { ColumnType, Generated } from 'kysely';
 
 /** `bigint`: pg returns it as a string; the agent sends a safe integer. */

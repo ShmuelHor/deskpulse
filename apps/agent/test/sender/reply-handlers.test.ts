@@ -1,5 +1,5 @@
-import type { Alert } from '@yoman/shared/alerts';
-import type { IngestResult } from '@yoman/shared/ingest';
+import type { Alert } from '@deskpulse/shared/alerts';
+import type { IngestResult } from '@deskpulse/shared/ingest';
 import { describe, expect, it, vi } from 'vitest';
 import { type Notify, notifyEach } from '../../src/sender/reply-handlers.js';
 

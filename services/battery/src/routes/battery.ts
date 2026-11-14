@@ -1,6 +1,6 @@
-import { defineRoute, type Route } from '@yoman/service-kit/route';
-import { BatteryNow, HealthTrend, HealthTrendQuery, PowerByApp } from '@yoman/shared/battery';
-import { LIMITS } from '@yoman/shared/limits';
+import { defineRoute, type Route } from '@deskpulse/service-kit/route';
+import { BatteryNow, HealthTrend, HealthTrendQuery, PowerByApp } from '@deskpulse/shared/battery';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 import { PowerByAppRequest } from '../contracts.js';
 import { localDateOf } from '../domain/local-time.js';

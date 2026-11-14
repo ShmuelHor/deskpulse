@@ -1,5 +1,5 @@
-import { ClockTime, EntityId } from '@yoman/shared/common';
-import { FocusStart } from '@yoman/shared/focus';
+import { ClockTime, EntityId } from '@deskpulse/shared/common';
+import { FocusStart } from '@deskpulse/shared/focus';
 import { z } from 'zod';
 
 /**

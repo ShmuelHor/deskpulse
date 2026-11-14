@@ -1,4 +1,4 @@
-import { parseRow } from '@yoman/service-kit/sql';
+import { parseRow } from '@deskpulse/service-kit/sql';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 

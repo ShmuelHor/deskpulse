@@ -1,10 +1,10 @@
-import type { Alert } from '@yoman/shared/alerts';
-import type { AppId, ServiceName } from '@yoman/shared/common';
-import { FocusState, type MuteDirective, type Profile } from '@yoman/shared/focus';
-import { IngestResult } from '@yoman/shared/ingest';
-import { appsFirstSeenAfterFirstSync } from '@yoman/shared/known-apps';
-import { LIMITS } from '@yoman/shared/limits';
-import type { Settings } from '@yoman/shared/settings';
+import type { Alert } from '@deskpulse/shared/alerts';
+import type { AppId, ServiceName } from '@deskpulse/shared/common';
+import { FocusState, type MuteDirective, type Profile } from '@deskpulse/shared/focus';
+import { IngestResult } from '@deskpulse/shared/ingest';
+import { appsFirstSeenAfterFirstSync } from '@deskpulse/shared/known-apps';
+import { LIMITS } from '@deskpulse/shared/limits';
+import type { Settings } from '@deskpulse/shared/settings';
 import type { FastifyBaseLogger } from 'fastify';
 
 import type { RouteHandler } from '../../core/route-handler.js';

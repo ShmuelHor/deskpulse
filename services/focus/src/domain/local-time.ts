@@ -1,5 +1,5 @@
 /**
- * Wall-clock times in the user's time zone. `yoman focus until 14:30` names a
+ * Wall-clock times in the user's time zone. `deskpulse focus until 14:30` names a
  * local time, while the service stores UTC instants, so the conversion goes
  * through here. Pure: the zone data is Node's built-in ICU, read through
  * `@date-fns/tz`.

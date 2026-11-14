@@ -107,7 +107,7 @@ const WEB_PORT = 4710;
 const GATEWAY_PORT = 4711;
 const LOOPBACK = '127.0.0.1';
 
-/** The only host bindings Yoman may publish (SECURITY A2). */
+/** The only host bindings DeskPulse may publish (SECURITY A2). */
 export const ALLOWED_BINDINGS: ReadonlySet<string> = new Set([
   `${LOOPBACK}:${String(WEB_PORT)}`,
   `${LOOPBACK}:${String(GATEWAY_PORT)}`,

@@ -38,7 +38,7 @@ concurrency:
 
 env:
   # Name used in artifact file names.
-  PROJECT: yoman
+  PROJECT: deskpulse
 
 jobs:
   gate:
@@ -141,7 +141,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
       # PLACEHOLDER (T06): untested until the first Dockerfile exists. Each
-      # image is ghcr.io/<owner>/yoman-<dir>:<version>; the digest is read back
+      # image is ghcr.io/<owner>/deskpulse-<dir>:<version>; the digest is read back
       # from the registry and recorded in digests.txt (name, image@digest).
       - name: Build, push and record digests
         if: ${{ steps.find.outputs.found == 'true' }}
@@ -163,7 +163,7 @@ jobs:
             fi
           done < dockerfiles.txt
       # PLACEHOLDER (T06): skipped until docker-compose.yml exists. Rewrites
-      # every `image: ghcr.io/<owner>/yoman-<name>[:tag]` to the pushed digest.
+      # every `image: ghcr.io/<owner>/deskpulse-<name>[:tag]` to the pushed digest.
       - name: Pin the compose file to digests
         if: ${{ steps.find.outputs.found == 'true' && github.ref_type == 'tag' && hashFiles('docker-compose.yml') != '' }}
         env:

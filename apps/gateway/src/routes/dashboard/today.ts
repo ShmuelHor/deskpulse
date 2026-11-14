@@ -1,8 +1,8 @@
-import { BatteryNow } from '@yoman/shared/battery';
-import type { TimeRangeQuery } from '@yoman/shared/common';
-import { FocusState } from '@yoman/shared/focus';
-import { DayReport } from '@yoman/shared/reports';
-import { IncidentList } from '@yoman/shared/system';
+import { BatteryNow } from '@deskpulse/shared/battery';
+import type { TimeRangeQuery } from '@deskpulse/shared/common';
+import { FocusState } from '@deskpulse/shared/focus';
+import { DayReport } from '@deskpulse/shared/reports';
+import { IncidentList } from '@deskpulse/shared/system';
 
 import type { RouteHandler } from '../../core/route-handler.js';
 import { degradedServices, orDegraded } from '../../core/service-client.js';

@@ -1,4 +1,4 @@
-import type { Alert, AlertLevel, AlertType } from '@yoman/shared/alerts';
+import type { Alert, AlertLevel, AlertType } from '@deskpulse/shared/alerts';
 
 const MS_PER_MINUTE = 60_000;
 const RATE_LIMIT_MINUTES = 10;

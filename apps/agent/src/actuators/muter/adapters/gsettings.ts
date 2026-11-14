@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { AppId } from '@yoman/shared/common';
+import { AppId } from '@deskpulse/shared/common';
 import { BannerValue } from '../domain/mute-state.js';
 
 const GSETTINGS_TIMEOUT_MS = 2_000;

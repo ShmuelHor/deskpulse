@@ -1,4 +1,4 @@
-import { type RouteContract, type RouteName, routes } from '@yoman/shared/routes';
+import { type RouteContract, type RouteName, routes } from '@deskpulse/shared/routes';
 import type { FastifyBaseLogger } from 'fastify';
 import type { z } from 'zod';
 

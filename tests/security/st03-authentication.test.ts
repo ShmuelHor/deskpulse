@@ -57,7 +57,7 @@ describe('ST03 authentication', () => {
   });
 
   it.each(credentialed)('a forged session cookie returns 401: $name', async (route) => {
-    const forged = { ...(await webHeaders(app)), cookie: 'yoman_session=forged' };
+    const forged = { ...(await webHeaders(app)), cookie: 'deskpulse_session=forged' };
 
     const response = await app.inject(validRequest(route, forged));
 

@@ -1,4 +1,4 @@
-import type { BatteryStatus } from '@yoman/shared/ingest';
+import type { BatteryStatus } from '@deskpulse/shared/ingest';
 import { describe, expect, it } from 'vitest';
 
 import type { PowerReading } from '../../src/domain/reading.js';

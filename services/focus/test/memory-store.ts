@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import type { AlertLevel, AlertType, QueuedAlert } from '@yoman/shared/alerts';
-import type { KnownApp, Profile } from '@yoman/shared/focus';
+import type { AlertLevel, AlertType, QueuedAlert } from '@deskpulse/shared/alerts';
+import type { KnownApp, Profile } from '@deskpulse/shared/focus';
 
 import type { Schedule } from '../src/contracts.js';
 import type { FocusSession } from '../src/domain/focus-session.js';

@@ -1,4 +1,4 @@
-import type { Settings } from '@yoman/shared/settings';
+import type { Settings } from '@deskpulse/shared/settings';
 import { pino } from 'pino';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {

@@ -1,6 +1,6 @@
-import { parseRow, parseRows, pgArray, toPgText, unnest } from '@yoman/service-kit/sql';
-import type { TimeRangeQuery } from '@yoman/shared/common';
-import type { Session } from '@yoman/shared/sessions';
+import { parseRow, parseRows, pgArray, toPgText, unnest } from '@deskpulse/service-kit/sql';
+import type { TimeRangeQuery } from '@deskpulse/shared/common';
+import type { Session } from '@deskpulse/shared/sessions';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 

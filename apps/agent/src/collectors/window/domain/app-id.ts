@@ -1,5 +1,5 @@
-import { AppId } from '@yoman/shared/common';
-import { LIMITS } from '@yoman/shared/limits';
+import { AppId } from '@deskpulse/shared/common';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 /** Anything an app ID may not contain: spaces, slashes, quotes, non-ASCII. */
 const DISALLOWED_RUN = /[^a-zA-Z0-9._-]+/g;

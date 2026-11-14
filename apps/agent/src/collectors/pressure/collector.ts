@@ -1,5 +1,5 @@
-import type { Sample } from '@yoman/shared/ingest';
-import { PressureSample, type ProcessInfo, ProcessSample } from '@yoman/shared/ingest';
+import type { Sample } from '@deskpulse/shared/ingest';
+import { PressureSample, type ProcessInfo, ProcessSample } from '@deskpulse/shared/ingest';
 import type { z } from 'zod';
 import type { Collector, CollectorContext } from '../../core/plugin.js';
 import {

@@ -1,5 +1,5 @@
-import type { Alert } from '@yoman/shared/alerts';
-import type { IngestResult } from '@yoman/shared/ingest';
+import type { Alert } from '@deskpulse/shared/alerts';
+import type { IngestResult } from '@deskpulse/shared/ingest';
 
 /**
  * Something that acts on the gateway's answer to a batch (SPEC §3 ingest

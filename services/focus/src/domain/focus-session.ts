@@ -1,4 +1,4 @@
-import type { FocusSource, FocusStart, FocusState } from '@yoman/shared/focus';
+import type { FocusSource, FocusStart, FocusState } from '@deskpulse/shared/focus';
 
 import { nextOccurrence } from './local-time.js';
 

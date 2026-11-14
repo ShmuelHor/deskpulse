@@ -1,11 +1,11 @@
-import type { Alert, AlertLevel, AlertType, QueuedAlert } from '@yoman/shared/alerts';
+import type { Alert, AlertLevel, AlertType, QueuedAlert } from '@deskpulse/shared/alerts';
 import type {
   AlertPolicyEntry,
   FocusSource,
   KnownApp,
   Profile,
   ProfileInput,
-} from '@yoman/shared/focus';
+} from '@deskpulse/shared/focus';
 
 import type { Schedule, ScheduleInput } from '../contracts.js';
 import type { FocusSession } from '../domain/focus-session.js';

@@ -1,5 +1,5 @@
 -- Up Migration
--- Every column mirrors its bound in @yoman/shared, so bad data cannot be stored even by a bug.
+-- Every column mirrors its bound in @deskpulse/shared, so bad data cannot be stored even by a bug.
 -- An app id list is checked through its joined form: ids never contain a space.
 
 CREATE TABLE profiles (

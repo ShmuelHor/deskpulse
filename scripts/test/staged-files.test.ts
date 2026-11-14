@@ -31,7 +31,7 @@ async function git(...args: string[]): Promise<void> {
 }
 
 beforeEach(async () => {
-  repo = await mkdtemp(join(tmpdir(), 'yoman-staged-'));
+  repo = await mkdtemp(join(tmpdir(), 'deskpulse-staged-'));
   await git('init', '-q');
 });
 

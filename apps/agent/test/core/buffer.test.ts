@@ -1,7 +1,7 @@
 import { appendFile, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { Sample } from '@yoman/shared/ingest';
+import type { Sample } from '@deskpulse/shared/ingest';
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { createBuffer, type SampleBuffer } from '../../src/core/buffer.js';
 import type { AgentLogger } from '../../src/core/logger.js';
@@ -54,8 +54,8 @@ describe('createBuffer', () => {
   }
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'yoman-buffer-'));
-    stateDir = join(root, 'state', 'yoman');
+    root = await mkdtemp(join(tmpdir(), 'deskpulse-buffer-'));
+    stateDir = join(root, 'state', 'deskpulse');
     bufferDir = join(stateDir, 'buffer');
     clock = HOUR_ONE;
     warn = vi.fn<AgentLogger['warn']>();

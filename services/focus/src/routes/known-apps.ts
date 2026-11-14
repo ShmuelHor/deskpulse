@@ -1,5 +1,5 @@
-import { defineRoute, type Route } from '@yoman/service-kit/route';
-import { KnownAppList, KnownAppsReport, KnownAppsResult } from '@yoman/shared/focus';
+import { defineRoute, type Route } from '@deskpulse/service-kit/route';
+import { KnownAppList, KnownAppsReport, KnownAppsResult } from '@deskpulse/shared/focus';
 
 import { listKnownApps, reportKnownApps } from '../use-cases/known-apps.js';
 import type { RouteDeps } from './route-deps.js';

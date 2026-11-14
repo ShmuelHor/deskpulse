@@ -1,9 +1,9 @@
 // @vitest-environment happy-dom
 
+import { responseFixtures } from '@deskpulse/shared/fixtures/responses';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { responseFixtures } from '@yoman/shared/fixtures/responses';
 import { I18nextProvider } from 'react-i18next';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -120,7 +120,7 @@ describe('System page', { timeout: RENDER_TIMEOUT_MS }, () => {
 
     const grid = await screen.findByRole('grid', { name: 'Recurring culprits' });
 
-    expect(within(grid).getByText('yoman-web-1')).toBeTruthy();
+    expect(within(grid).getByText('deskpulse-web-1')).toBeTruthy();
     expect(within(grid).getByText('3')).toBeTruthy();
   });
 

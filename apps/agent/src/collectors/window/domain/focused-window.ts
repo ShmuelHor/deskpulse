@@ -1,4 +1,4 @@
-import { Pid } from '@yoman/shared/common';
+import { Pid } from '@deskpulse/shared/common';
 import { z } from 'zod';
 import { toAppId } from './app-id.js';
 

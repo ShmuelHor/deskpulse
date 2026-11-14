@@ -1,7 +1,7 @@
+import type { DayReport } from '@deskpulse/shared/reports';
 import Box from '@mui/material/Box';
 import type { CSSObject } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import type { DayReport } from '@yoman/shared/reports';
 import { useTranslation } from 'react-i18next';
 import { categoryColor } from './category-color.js';
 import { splitDuration } from './format.js';

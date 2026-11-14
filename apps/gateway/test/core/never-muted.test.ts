@@ -9,12 +9,12 @@ describe('isNeverMuted', () => {
     'org.gnome.Shell',
     'org.gnome.Settings',
     'update-manager',
-    'yoman',
+    'deskpulse',
   ])('never mutes the built-in system app %s', (app) => {
     expect(isNeverMuted(app, [])).toBe(true);
   });
 
-  it.each(['GNOME-Shell', 'ORG.GNOME.Shell', 'Update-Manager', 'YOMAN'])(
+  it.each(['GNOME-Shell', 'ORG.GNOME.Shell', 'Update-Manager', 'DESKPULSE'])(
     'ignores case: %s',
     (app) => {
       expect(isNeverMuted(app, [])).toBe(true);
@@ -44,7 +44,7 @@ describe('isNeverMuted', () => {
     expect(isNeverMuted('slack', ['telegram'])).toBe(false);
     expect(isNeverMuted('gnomeish', [])).toBe(false);
     expect(isNeverMuted('org.gnomeish.App', [])).toBe(false);
-    expect(isNeverMuted('yoman-notes', [])).toBe(false);
+    expect(isNeverMuted('deskpulse-notes', [])).toBe(false);
   });
 });
 

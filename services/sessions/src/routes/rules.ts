@@ -1,6 +1,6 @@
-import { defineRoute, HTTP_NO_CONTENT, type Route } from '@yoman/service-kit/route';
-import { IdParams } from '@yoman/shared/common';
-import { Rule, RuleInput, RuleList } from '@yoman/shared/sessions';
+import { defineRoute, HTTP_NO_CONTENT, type Route } from '@deskpulse/service-kit/route';
+import { IdParams } from '@deskpulse/shared/common';
+import { Rule, RuleInput, RuleList } from '@deskpulse/shared/sessions';
 import { z } from 'zod';
 
 import { createRule, deleteRule, listRules, updateRule } from '../use-cases/manage-rules.js';

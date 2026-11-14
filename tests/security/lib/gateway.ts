@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
 
-import { requestFixtures } from '@yoman/shared/fixtures/requests';
-import { type RouteContract, type RouteName, routes } from '@yoman/shared/routes';
+import { requestFixtures } from '@deskpulse/shared/fixtures/requests';
+import { type RouteContract, type RouteName, routes } from '@deskpulse/shared/routes';
 import type { FastifyInstance, InjectOptions, LightMyRequestResponse } from 'fastify';
 import { pino } from 'pino';
 
@@ -86,7 +86,7 @@ export function validRequest(
 export const agentHeaders = { host: GATEWAY_HOST, authorization: `Bearer ${AGENT_TOKEN}` };
 
 function sessionCookie(response: LightMyRequestResponse): string {
-  const cookie = response.cookies.find((candidate) => candidate.name === 'yoman_session');
+  const cookie = response.cookies.find((candidate) => candidate.name === 'deskpulse_session');
   if (cookie === undefined) {
     throw new Error('GET /v1/session set no session cookie');
   }
@@ -104,7 +104,7 @@ export async function webHeaders(app: FastifyInstance): Promise<Record<string, s
   return {
     host: GATEWAY_HOST,
     origin: WEB_ORIGIN,
-    cookie: `yoman_session=${sessionCookie(response)}`,
+    cookie: `deskpulse_session=${sessionCookie(response)}`,
     'x-csrf-token': csrfToken,
   };
 }

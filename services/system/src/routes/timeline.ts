@@ -1,5 +1,5 @@
-import { defineRoute, type Route } from '@yoman/service-kit/route';
-import { SystemTimeline } from '@yoman/shared/system';
+import { defineRoute, type Route } from '@deskpulse/service-kit/route';
+import { SystemTimeline } from '@deskpulse/shared/system';
 
 import { TimelineQuery } from '../contracts.js';
 import { systemTimeline } from '../use-cases/system-timeline.js';

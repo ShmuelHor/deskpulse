@@ -1,4 +1,4 @@
-import type { QueuedAlert } from '@yoman/shared/alerts';
+import type { QueuedAlert } from '@deskpulse/shared/alerts';
 import { describe, expect, it } from 'vitest';
 
 import { FocusSummary } from '../../src/contracts.js';

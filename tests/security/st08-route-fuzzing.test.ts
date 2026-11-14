@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 
-import { requestFixtures } from '@yoman/shared/fixtures/requests';
-import { routes } from '@yoman/shared/routes';
+import { requestFixtures } from '@deskpulse/shared/fixtures/requests';
+import { routes } from '@deskpulse/shared/routes';
 import fc from 'fast-check';
 import type { FastifyInstance, InjectOptions } from 'fastify';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';

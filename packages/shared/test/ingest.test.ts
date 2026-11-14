@@ -6,7 +6,7 @@ const ts = '2026-11-08T10:00:00Z';
 const window = { kind: 'window', ts, wmClass: 'firefox', pid: 4242, idleMs: 0, locked: false };
 const samples = [
   window,
-  { ...window, title: 'Yoman – Mozilla Firefox' },
+  { ...window, title: 'DeskPulse – Mozilla Firefox' },
   {
     kind: 'battery',
     ts,

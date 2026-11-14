@@ -11,7 +11,7 @@ Internal only: the gateway is its one caller, on the `core` network.
 | `src/use-cases/`   | One function per operation. Runs domain logic inside one transaction of the `SessionsStore` port |
 | `src/adapters/`    | The Postgres `SessionsStore`. Parameterized SQL only, every row parsed with Zod                  |
 | `src/routes/`      | Thin: the schema for each part, a use case call, nothing else                                    |
-| `src/contracts.ts` | Gateway-to-service contracts with no public counterpart, built from `@yoman/shared` schemas      |
+| `src/contracts.ts` | Gateway-to-service contracts with no public counterpart, built from `@deskpulse/shared` schemas  |
 | `migrations/`      | SQL migrations, applied by service-kit on start                                                  |
 
 ## Merge rules

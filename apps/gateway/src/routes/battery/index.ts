@@ -1,4 +1,4 @@
-import { BatteryNow, HealthTrend, PowerByApp } from '@yoman/shared/battery';
+import { BatteryNow, HealthTrend, PowerByApp } from '@deskpulse/shared/battery';
 
 import { defineHandlers } from '../../core/route-handler.js';
 import { SessionRange, toPowerByAppRequest } from './timeline.js';

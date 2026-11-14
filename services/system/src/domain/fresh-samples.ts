@@ -3,7 +3,7 @@ import type {
   ProcessInfo,
   ProcessSample,
   ThermalSample,
-} from '@yoman/shared/ingest';
+} from '@deskpulse/shared/ingest';
 
 import { withoutNul } from './text.js';
 

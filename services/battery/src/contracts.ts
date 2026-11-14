@@ -1,11 +1,11 @@
-import { Alert } from '@yoman/shared/alerts';
-import { AppId, TimeRangeQuery, Timestamp } from '@yoman/shared/common';
-import { BatterySample } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
+import { Alert } from '@deskpulse/shared/alerts';
+import { AppId, TimeRangeQuery, Timestamp } from '@deskpulse/shared/common';
+import { BatterySample } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
 import { z } from 'zod';
 
 /**
- * The gateway-to-battery contracts that `@yoman/shared` has no public
+ * The gateway-to-battery contracts that `@deskpulse/shared` has no public
  * counterpart for. They are built only from shared schemas, so every item
  * still validates against the shared contract.
  */

@@ -1,4 +1,4 @@
-import { Profile, type ProfileInput, ProfileList } from '@yoman/shared/focus';
+import { Profile, type ProfileInput, ProfileList } from '@deskpulse/shared/focus';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { createTestService, type TestService } from '../test-service.js';

@@ -13,7 +13,7 @@ const ISO_DATE = 'yyyy-MM-dd';
 /** Calendar dates carry no zone; reading them as UTC keeps their arithmetic clear of DST. */
 const calendar = tz('UTC');
 
-/** Matches `LocalDate` from `@yoman/shared/common`: `YYYY-MM-DD`. */
+/** Matches `LocalDate` from `@deskpulse/shared/common`: `YYYY-MM-DD`. */
 export type LocalDateString = string;
 
 /** True when `zone` is an IANA time zone this runtime knows, such as `Asia/Jerusalem`. */

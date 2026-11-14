@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * The parts of a route contract the client needs. `@yoman/shared`'s
+ * The parts of a route contract the client needs. `@deskpulse/shared`'s
  * `RouteContract` (T08) satisfies it, so its route map plugs in unchanged.
  */
 export interface ApiRoute {

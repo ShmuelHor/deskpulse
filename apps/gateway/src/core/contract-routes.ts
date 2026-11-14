@@ -1,5 +1,5 @@
+import { type RouteContract, type RouteName, routes } from '@deskpulse/shared/routes';
 import type { RateLimitOptions } from '@fastify/rate-limit';
-import { type RouteContract, type RouteName, routes } from '@yoman/shared/routes';
 import type { FastifyInstance, FastifyReply, FastifyRequest, FastifySchema } from 'fastify';
 import { z } from 'zod';
 

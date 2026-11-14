@@ -1,4 +1,4 @@
-import type { Profile } from '@yoman/shared/focus';
+import type { Profile } from '@deskpulse/shared/focus';
 import { describe, expect, it } from 'vitest';
 
 import { readAlertPolicy, replaceAlertPolicy } from '../../src/use-cases/alert-policy.js';

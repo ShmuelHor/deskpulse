@@ -1,5 +1,5 @@
-import type { KnownApp, KnownAppsReport } from '@yoman/shared/focus';
-import { LIMITS } from '@yoman/shared/limits';
+import type { KnownApp, KnownAppsReport } from '@deskpulse/shared/focus';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 import type { FocusStore } from './store.js';
 

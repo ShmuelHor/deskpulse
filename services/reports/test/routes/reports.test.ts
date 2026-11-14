@@ -1,4 +1,4 @@
-import { AppTotal, DayReport, WeeklySummary, WeekReport } from '@yoman/shared/reports';
+import { AppTotal, DayReport, WeeklySummary, WeekReport } from '@deskpulse/shared/reports';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { TopAppList } from '../../src/contracts.js';

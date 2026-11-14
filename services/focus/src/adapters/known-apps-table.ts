@@ -1,5 +1,5 @@
-import { parseRows, pgArray, toPgText, unnest } from '@yoman/service-kit/sql';
-import { KnownApp } from '@yoman/shared/focus';
+import { parseRows, pgArray, toPgText, unnest } from '@deskpulse/service-kit/sql';
+import { KnownApp } from '@deskpulse/shared/focus';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 

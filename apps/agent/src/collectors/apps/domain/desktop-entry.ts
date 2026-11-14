@@ -1,4 +1,4 @@
-import { LIMITS } from '@yoman/shared/limits';
+import { LIMITS } from '@deskpulse/shared/limits';
 import { z } from 'zod';
 
 /** Real `.desktop` files are a few kB, translations included; a larger one is not trusted. */

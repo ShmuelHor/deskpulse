@@ -1,4 +1,4 @@
-import { settingsFixture } from '@yoman/shared/fixtures/data';
+import { settingsFixture } from '@deskpulse/shared/fixtures/data';
 import { describe, expect, it } from 'vitest';
 
 import {

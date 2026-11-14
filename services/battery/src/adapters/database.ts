@@ -1,4 +1,4 @@
-import type { LocalDate, Timestamp } from '@yoman/service-kit/sql';
+import type { LocalDate, Timestamp } from '@deskpulse/service-kit/sql';
 import type { Generated } from 'kysely';
 
 export interface BatterySamplesTable {

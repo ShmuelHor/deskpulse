@@ -1,4 +1,4 @@
-import type { Settings } from '@yoman/shared/settings';
+import type { Settings } from '@deskpulse/shared/settings';
 
 import { DEFAULT_SETTINGS, type SettingsStore } from '../src/core/settings-store.js';
 

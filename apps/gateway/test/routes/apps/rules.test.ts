@@ -1,5 +1,5 @@
-import { FIXTURE_IDS, ruleFixture } from '@yoman/shared/fixtures/data';
-import { responseFixtures } from '@yoman/shared/fixtures/responses';
+import { FIXTURE_IDS, ruleFixture } from '@deskpulse/shared/fixtures/data';
+import { responseFixtures } from '@deskpulse/shared/fixtures/responses';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { NotFoundError } from '../../../src/core/errors.js';

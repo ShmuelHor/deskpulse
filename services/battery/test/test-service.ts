@@ -1,5 +1,5 @@
 import { Writable } from 'node:stream';
-import { createService, type Service } from '@yoman/service-kit';
+import { createService, type Service } from '@deskpulse/service-kit';
 
 import { buildRoutes } from '../src/service.js';
 import { createMemoryStore, type MemoryStore } from './memory-store.js';

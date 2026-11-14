@@ -1,4 +1,4 @@
-import { routes } from '@yoman/shared/routes';
+import { routes } from '@deskpulse/shared/routes';
 
 import { type ApiClient, createApiClient } from './client.js';
 import { gatewayUrl } from './gateway-url.js';

@@ -1,5 +1,5 @@
-import { defineRoute, type Route } from '@yoman/service-kit/route';
-import { FocusStart, FocusState } from '@yoman/shared/focus';
+import { defineRoute, type Route } from '@deskpulse/service-kit/route';
+import { FocusStart, FocusState } from '@deskpulse/shared/focus';
 
 import { FocusTransition } from '../contracts.js';
 import { readFocusState, startFocus, stopFocus } from '../use-cases/focus-sessions.js';

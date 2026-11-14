@@ -34,7 +34,7 @@ let dir: string;
 let envPath: string;
 
 beforeEach(async () => {
-  dir = await mkdtemp(join(tmpdir(), 'yoman-setup-'));
+  dir = await mkdtemp(join(tmpdir(), 'deskpulse-setup-'));
   envPath = join(dir, '.env');
 });
 

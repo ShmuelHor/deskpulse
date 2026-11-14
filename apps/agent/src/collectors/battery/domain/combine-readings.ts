@@ -1,4 +1,4 @@
-import type { BatterySample, BatteryStatus } from '@yoman/shared/ingest';
+import type { BatterySample, BatteryStatus } from '@deskpulse/shared/ingest';
 import type { BatteryReading } from './battery-reading.js';
 
 /** Three decimals: mWh and mW, finer than any driver reports. */

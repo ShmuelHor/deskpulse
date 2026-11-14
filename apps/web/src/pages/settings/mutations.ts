@@ -1,5 +1,5 @@
+import type { Settings } from '@deskpulse/shared/settings';
 import { type UseMutationResult, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Settings } from '@yoman/shared/settings';
 
 import type { GatewayClient } from '../../api/gateway.js';
 

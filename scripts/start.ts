@@ -43,7 +43,7 @@ async function main(): Promise<number> {
     }
   }
   process.stdout.write(
-    `Yoman is up: ${WEB_URL}\nRunning the agent. Ctrl+C stops it; \`npm stop\` stops the stack.\n`,
+    `DeskPulse is up: ${WEB_URL}\nRunning the agent. Ctrl+C stops it; \`npm stop\` stops the stack.\n`,
   );
   // Ctrl+C reaches the agent through the terminal's process group; this
   // process stays up until the agent has restored what it changed.

@@ -22,7 +22,7 @@ describe('readContainerName', () => {
   }
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'yoman-cgroup-'));
+    root = await mkdtemp(join(tmpdir(), 'deskpulse-cgroup-'));
   });
 
   afterEach(async () => {

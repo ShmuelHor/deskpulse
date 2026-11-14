@@ -1,4 +1,4 @@
-import type { KnownApp } from '@yoman/shared/focus';
+import type { KnownApp } from '@deskpulse/shared/focus';
 import type { Collector, CollectorContext } from '../../core/plugin.js';
 import { SessionBusError, type Unsubscribe } from '../../core/session-bus.js';
 import {

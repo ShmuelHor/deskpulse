@@ -1,4 +1,4 @@
-import { SYSTEM_APP_IDS, USER_APP_IDS } from '@yoman/shared/fixtures/known-apps-catalog';
+import { SYSTEM_APP_IDS, USER_APP_IDS } from '@deskpulse/shared/fixtures/known-apps-catalog';
 import { describe, expect, it } from 'vitest';
 import { checkMutable } from '../../../../src/actuators/muter/domain/mutable-app.js';
 
@@ -9,7 +9,7 @@ describe('checkMutable', () => {
     expect(checkMutable('org.slack.Slack', [])).toEqual({ mutable: true });
   });
 
-  it.each(['update-manager', 'gnome-terminal', 'org.gnome.Nautilus', 'yoman', 'Yoman'])(
+  it.each(['update-manager', 'gnome-terminal', 'org.gnome.Nautilus', 'deskpulse', 'DeskPulse'])(
     'never mutes the built-in system app %s',
     (appId) => {
       expect(checkMutable(appId, [])).toEqual({ mutable: false, reason: 'system-app' });

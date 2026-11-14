@@ -1,4 +1,4 @@
-import { CulpritList, IncidentList, SystemTimeline } from '@yoman/shared/system';
+import { CulpritList, IncidentList, SystemTimeline } from '@deskpulse/shared/system';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import type { StoredIncident } from '../../src/use-cases/store.js';
@@ -17,7 +17,7 @@ const finished: StoredIncident = {
   endMs: Date.parse(at('08:14:30')),
   peak: 27.5,
   culprits: [
-    { pid: 3141, comm: 'node', container: 'yoman-web-1', cpuPct: 96, rssBytes: 2_147_483_648 },
+    { pid: 3141, comm: 'node', container: 'deskpulse-web-1', cpuPct: 96, rssBytes: 2_147_483_648 },
   ],
   pid: null,
 };
@@ -75,7 +75,7 @@ describe('system queries', () => {
 
     expect(response.statusCode).toBe(HTTP_OK);
     expect(CulpritList.parse(response.json())).toEqual({
-      items: [{ comm: 'node', container: 'yoman-web-1', incidents: 2 }],
+      items: [{ comm: 'node', container: 'deskpulse-web-1', incidents: 2 }],
     });
   });
 

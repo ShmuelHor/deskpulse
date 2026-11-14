@@ -1,6 +1,12 @@
-import { parseRows, pgArray, toPgText, unnest } from '@yoman/service-kit/sql';
-import { type Alert, AlertLevel, AlertParams, AlertType, QueuedAlert } from '@yoman/shared/alerts';
-import type { AlertPolicyEntry } from '@yoman/shared/focus';
+import { parseRows, pgArray, toPgText, unnest } from '@deskpulse/service-kit/sql';
+import {
+  type Alert,
+  AlertLevel,
+  AlertParams,
+  AlertType,
+  QueuedAlert,
+} from '@deskpulse/shared/alerts';
+import type { AlertPolicyEntry } from '@deskpulse/shared/focus';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 

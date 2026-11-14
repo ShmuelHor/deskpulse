@@ -5,15 +5,15 @@ Turns the agent's pressure, process and thermal samples into incidents, culprits
 
 ## Layout
 
-| Path               | Role                                                                                           |
-| ------------------ | ---------------------------------------------------------------------------------------------- |
-| `src/domain/`      | Pure logic: the sustain rule, culprits, leaks, alerts, local days. No IO and no clock          |
-| `src/use-cases/`   | One function per operation. Runs domain logic inside one transaction of the `SystemStore` port |
-| `src/adapters/`    | The Postgres `SystemStore`. Parameterized SQL only, every row parsed with Zod                  |
-| `src/routes/`      | Thin: the schema for each part, a use case call, nothing else                                  |
-| `src/contracts.ts` | Gateway-to-service contracts with no public counterpart, built from `@yoman/shared` schemas    |
-| `src/config.ts`    | The service's own environment: `TZ`                                                            |
-| `migrations/`      | SQL migrations, applied by service-kit on start                                                |
+| Path               | Role                                                                                            |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| `src/domain/`      | Pure logic: the sustain rule, culprits, leaks, alerts, local days. No IO and no clock           |
+| `src/use-cases/`   | One function per operation. Runs domain logic inside one transaction of the `SystemStore` port  |
+| `src/adapters/`    | The Postgres `SystemStore`. Parameterized SQL only, every row parsed with Zod                   |
+| `src/routes/`      | Thin: the schema for each part, a use case call, nothing else                                   |
+| `src/contracts.ts` | Gateway-to-service contracts with no public counterpart, built from `@deskpulse/shared` schemas |
+| `src/config.ts`    | The service's own environment: `TZ`                                                             |
+| `migrations/`      | SQL migrations, applied by service-kit on start                                                 |
 
 ## Incidents
 

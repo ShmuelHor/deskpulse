@@ -1,4 +1,4 @@
-import { FocusChange, FocusState, type Profile } from '@yoman/shared/focus';
+import { FocusChange, FocusState, type Profile } from '@deskpulse/shared/focus';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { FocusTransition, RouteResult } from '../../src/contracts.js';

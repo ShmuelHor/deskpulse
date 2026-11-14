@@ -1,6 +1,6 @@
-import type { AppId } from '@yoman/shared/common';
-import type { FocusChange } from '@yoman/shared/focus';
-import { isBuiltInNeverMuted, isSameApp } from '@yoman/shared/never-muted';
+import type { AppId } from '@deskpulse/shared/common';
+import type { FocusChange } from '@deskpulse/shared/focus';
+import { isBuiltInNeverMuted, isSameApp } from '@deskpulse/shared/never-muted';
 
 /**
  * True for an app that must never be muted: the built-in system apps (SPEC

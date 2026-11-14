@@ -1,4 +1,4 @@
-import { CulpritList, IncidentList, SystemTimeline } from '@yoman/shared/system';
+import { CulpritList, IncidentList, SystemTimeline } from '@deskpulse/shared/system';
 
 import { defineHandlers } from '../../core/route-handler.js';
 

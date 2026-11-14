@@ -9,16 +9,16 @@ WORKDIR /repo
 COPY package.json package-lock.json .npmrc ./
 COPY apps/web/package.json apps/web/
 COPY packages/shared/package.json packages/shared/
-# @yoman/shared is selected too, so its build toolchain (devDependencies) is installed.
-RUN npm ci --workspace @yoman/web --workspace @yoman/shared --include-workspace-root=false
+# @deskpulse/shared is selected too, so its build toolchain (devDependencies) is installed.
+RUN npm ci --workspace @deskpulse/web --workspace @deskpulse/shared --include-workspace-root=false
 COPY tsconfig.base.json ./
 COPY packages/shared/tsconfig.build.json packages/shared/
 COPY packages/shared/src/ packages/shared/src/
-# The web resolves @yoman/shared from its dist/, like every other consumer.
-RUN npm run build --workspace @yoman/shared
+# The web resolves @deskpulse/shared from its dist/, like every other consumer.
+RUN npm run build --workspace @deskpulse/shared
 COPY apps/web/index.html apps/web/vite.config.ts apps/web/tsconfig.json apps/web/
 COPY apps/web/src/ apps/web/src/
-RUN npm run build --workspace @yoman/web
+RUN npm run build --workspace @deskpulse/web
 
 # nginxinc/nginx-unprivileged:1.30.6 stable-alpine
 FROM nginxinc/nginx-unprivileged:stable-alpine@sha256:f5116ed4606f3eb015dd4a8e28cb9b351476dc0ad4bc6e9f93b19cec130cdf03

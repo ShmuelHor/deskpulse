@@ -1,11 +1,11 @@
-import { Category } from '@yoman/shared/common';
-import { WindowSample } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
-import { Session } from '@yoman/shared/sessions';
+import { Category } from '@deskpulse/shared/common';
+import { WindowSample } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
+import { Session } from '@deskpulse/shared/sessions';
 import { z } from 'zod';
 
 /**
- * The gateway-to-sessions contracts that `@yoman/shared` has no public
+ * The gateway-to-sessions contracts that `@deskpulse/shared` has no public
  * counterpart for. They are built only from shared schemas, so every item
  * still validates against the shared contract.
  */

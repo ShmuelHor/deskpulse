@@ -1,8 +1,8 @@
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { Sample } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
+import type { Sample } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   BATTERY_INTERVAL_MS,
@@ -156,7 +156,7 @@ describe('battery collector', () => {
     }
 
     beforeEach(async () => {
-      root = await mkdtemp(join(tmpdir(), 'yoman-battery-'));
+      root = await mkdtemp(join(tmpdir(), 'deskpulse-battery-'));
     });
 
     afterEach(async () => {

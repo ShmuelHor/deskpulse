@@ -1,5 +1,5 @@
-import { appFixture } from '@yoman/shared/fixtures/data';
-import { responseFixtures } from '@yoman/shared/fixtures/responses';
+import { appFixture } from '@deskpulse/shared/fixtures/data';
+import { responseFixtures } from '@deskpulse/shared/fixtures/responses';
 import { afterEach, describe, expect, it } from 'vitest';
 import { NotFoundError, ServiceUnavailableError } from '../../../src/core/errors.js';
 import { appHandlers } from '../../../src/routes/apps/apps.js';

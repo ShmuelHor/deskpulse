@@ -1,5 +1,5 @@
-import { AlertType } from '@yoman/shared/alerts';
-import type { AlertPolicy } from '@yoman/shared/focus';
+import { AlertType } from '@deskpulse/shared/alerts';
+import type { AlertPolicy } from '@deskpulse/shared/focus';
 
 import type { FocusStore } from './store.js';
 

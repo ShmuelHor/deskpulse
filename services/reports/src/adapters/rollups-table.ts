@@ -1,4 +1,4 @@
-import { asText, parseRows, pgArray, unnest } from '@yoman/service-kit/sql';
+import { asText, parseRows, pgArray, unnest } from '@deskpulse/service-kit/sql';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 

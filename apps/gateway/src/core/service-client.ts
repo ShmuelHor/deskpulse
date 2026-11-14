@@ -1,4 +1,4 @@
-import type { ServiceName } from '@yoman/shared/common';
+import type { ServiceName } from '@deskpulse/shared/common';
 import type { FastifyBaseLogger } from 'fastify';
 import type { ZodType } from 'zod';
 

@@ -1,5 +1,5 @@
 -- Up Migration
--- Every column mirrors its bound in @yoman/shared, so bad data cannot be stored even by a bug.
+-- Every column mirrors its bound in @deskpulse/shared, so bad data cannot be stored even by a bug.
 
 CREATE TABLE battery_samples (
   -- One sample per instant: a retried batch is dropped on this key.

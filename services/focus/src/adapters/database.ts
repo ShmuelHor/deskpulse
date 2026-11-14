@@ -1,4 +1,4 @@
-import type { Timestamp } from '@yoman/service-kit/sql';
+import type { Timestamp } from '@deskpulse/service-kit/sql';
 import type { ColumnType, Generated } from 'kysely';
 
 /** `jsonb` written as serialized JSON text; read back as the parsed value. */

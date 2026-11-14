@@ -1,6 +1,6 @@
 # A minimal project that follows the container policy. The other fixtures
 # each break exactly one rule of this file.
-name: yoman-fixture
+name: deskpulse-fixture
 services:
   web:
     image: nginx@sha256:0000000000000000000000000000000000000000000000000000000000000000

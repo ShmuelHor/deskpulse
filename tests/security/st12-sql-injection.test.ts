@@ -1,7 +1,7 @@
 import { createServer } from 'node:net';
 import { Writable } from 'node:stream';
 
-import { BatteryNow, HealthTrend, PowerByApp } from '@yoman/shared/battery';
+import { BatteryNow, HealthTrend, PowerByApp } from '@deskpulse/shared/battery';
 import {
   AlertPolicy,
   AlertQueue,
@@ -10,10 +10,10 @@ import {
   KnownAppsResult,
   Profile,
   ProfileList,
-} from '@yoman/shared/focus';
-import { DayReport, WeeklySummary, WeekReport } from '@yoman/shared/reports';
-import { App, AppList, Rule, RuleList } from '@yoman/shared/sessions';
-import { CulpritList, IncidentList, SystemTimeline } from '@yoman/shared/system';
+} from '@deskpulse/shared/focus';
+import { DayReport, WeeklySummary, WeekReport } from '@deskpulse/shared/reports';
+import { App, AppList, Rule, RuleList } from '@deskpulse/shared/sessions';
+import { CulpritList, IncidentList, SystemTimeline } from '@deskpulse/shared/system';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { SampleResult as BatterySampleResult } from '../../services/battery/src/contracts.js';

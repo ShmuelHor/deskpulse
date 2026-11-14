@@ -1,5 +1,5 @@
-import type { IngestBatch } from '@yoman/shared/ingest';
-import { routes } from '@yoman/shared/routes';
+import type { IngestBatch } from '@deskpulse/shared/ingest';
+import { routes } from '@deskpulse/shared/routes';
 import { z } from 'zod';
 
 /** The gateway answers within its 3 s per-service timeouts; this leaves room for a slow fan-out. */

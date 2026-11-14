@@ -1,8 +1,8 @@
 {
-  "name": "@yoman/gateway",
+  "name": "@deskpulse/gateway",
   "version": "0.0.0",
   "private": true,
-  "description": "The Yoman gateway: the only API on 127.0.0.1:4711, for the web and the agent.",
+  "description": "The DeskPulse gateway: the only API on 127.0.0.1:4711, for the web and the agent.",
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
@@ -16,8 +16,8 @@
     "@fastify/cors": "11.3.1",
     "@fastify/helmet": "13.2.0",
     "@fastify/rate-limit": "11.2.1",
-    "@yoman/service-kit": "0.0.0",
-    "@yoman/shared": "0.0.0",
+    "@deskpulse/service-kit": "0.0.0",
+    "@deskpulse/shared": "0.0.0",
     "fastify": "5.12.8",
     "fastify-type-provider-zod": "7.0.0",
     "kysely": "0.29.8",

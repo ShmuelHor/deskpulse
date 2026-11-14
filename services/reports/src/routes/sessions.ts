@@ -1,4 +1,4 @@
-import { defineRoute, type Route } from '@yoman/service-kit/route';
+import { defineRoute, type Route } from '@deskpulse/service-kit/route';
 
 import { SessionBatch, SessionBatchResult } from '../contracts.js';
 import { countSessions } from '../use-cases/count-sessions.js';

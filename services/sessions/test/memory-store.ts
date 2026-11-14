@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import type { App, Rule, Session } from '@yoman/shared/sessions';
+import type { App, Rule, Session } from '@deskpulse/shared/sessions';
 
 import type { Span } from '../src/domain/merge-samples.js';
 import type {

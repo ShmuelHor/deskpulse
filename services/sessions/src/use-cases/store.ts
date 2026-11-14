@@ -1,5 +1,5 @@
-import type { TimeRangeQuery } from '@yoman/shared/common';
-import type { App, AppUpdate, Rule, RuleInput, Session } from '@yoman/shared/sessions';
+import type { TimeRangeQuery } from '@deskpulse/shared/common';
+import type { App, AppUpdate, Rule, RuleInput, Session } from '@deskpulse/shared/sessions';
 
 import type { CategorizedSubject, CategoryChange } from '../domain/categorize.js';
 import type { Span } from '../domain/merge-samples.js';

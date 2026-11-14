@@ -1,6 +1,6 @@
-import { parseRows, pgArray, unnest } from '@yoman/service-kit/sql';
-import type { PressureSample, ProcessSample } from '@yoman/shared/ingest';
-import type { PressurePoint } from '@yoman/shared/system';
+import { parseRows, pgArray, unnest } from '@deskpulse/service-kit/sql';
+import type { PressureSample, ProcessSample } from '@deskpulse/shared/ingest';
+import type { PressurePoint } from '@deskpulse/shared/system';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 

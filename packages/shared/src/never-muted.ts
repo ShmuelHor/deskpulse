@@ -16,7 +16,7 @@ const NEVER_MUTED_PREFIXES = ['gnome-', 'org-gnome-', 'org-freedesktop-', 'io-sn
 const NEVER_MUTED_NAMES: ReadonlySet<string> = new Set(
   [
     'update-manager',
-    'yoman',
+    'deskpulse',
     'desktop-security-center',
     'firmware-updater',
     'snapd-desktop-integration',

@@ -1,4 +1,4 @@
-import type { Culprit, IncidentType } from '@yoman/shared/system';
+import type { Culprit, IncidentType } from '@deskpulse/shared/system';
 
 /**
  * An incident as the service tracks it. `id` is `null` until it is stored; an

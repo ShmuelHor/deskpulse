@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 
 /** Namespaces the hash so the key can't collide with another use of the schema name. */
-const LOCK_KEY_PREFIX = 'yoman:migrations:';
+const LOCK_KEY_PREFIX = 'deskpulse:migrations:';
 /** `pg_advisory_lock(bigint)` takes a signed 64-bit key: the first 8 bytes of the digest. */
 const LOCK_KEY_OFFSET = 0;
 
@@ -12,7 +12,7 @@ export interface LockClient {
 
 /**
  * The advisory lock key for one schema's migrations: the first 8 bytes of
- * `sha256("yoman:migrations:<schema>")` read as a signed big-endian 64-bit
+ * `sha256("deskpulse:migrations:<schema>")` read as a signed big-endian 64-bit
  * integer. Stable across releases and processes, and distinct per schema, so
  * services sharing one database never wait on each other.
  */

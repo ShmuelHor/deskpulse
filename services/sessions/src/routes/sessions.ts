@@ -1,5 +1,5 @@
-import { defineRoute, type Route } from '@yoman/service-kit/route';
-import { TimeRangeQuery } from '@yoman/shared/common';
+import { defineRoute, type Route } from '@deskpulse/service-kit/route';
+import { TimeRangeQuery } from '@deskpulse/shared/common';
 
 import { SessionList } from '../contracts.js';
 import { listSessions } from '../use-cases/list-sessions.js';

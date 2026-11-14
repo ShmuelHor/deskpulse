@@ -1,5 +1,5 @@
-import type { AppPower } from '@yoman/shared/battery';
-import { LIMITS } from '@yoman/shared/limits';
+import type { AppPower } from '@deskpulse/shared/battery';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 import { isDraining, type PowerReading } from './reading.js';
 

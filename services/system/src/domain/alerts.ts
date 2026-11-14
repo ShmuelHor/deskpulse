@@ -1,5 +1,5 @@
-import type { Alert, AlertLevel, AlertParams, AlertType } from '@yoman/shared/alerts';
-import type { IncidentType } from '@yoman/shared/system';
+import type { Alert, AlertLevel, AlertParams, AlertType } from '@deskpulse/shared/alerts';
+import type { IncidentType } from '@deskpulse/shared/system';
 
 import type { IncidentState } from './incident.js';
 

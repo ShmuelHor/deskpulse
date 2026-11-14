@@ -1,8 +1,8 @@
 // @vitest-environment happy-dom
 
+import { responseFixtures } from '@deskpulse/shared/fixtures/responses';
 import { cleanup, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { responseFixtures } from '@yoman/shared/fixtures/responses';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { GatewayClient } from '../../../src/api/gateway.js';

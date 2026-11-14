@@ -13,7 +13,7 @@ describe('loadRouteHandlers', () => {
   let dir: string;
 
   beforeEach(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'yoman-routes-'));
+    dir = await mkdtemp(join(tmpdir(), 'deskpulse-routes-'));
   });
 
   afterEach(async () => {

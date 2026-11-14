@@ -1,5 +1,5 @@
 {
-  "name": "@yoman/sessions",
+  "name": "@deskpulse/sessions",
   "version": "0.0.0",
   "private": true,
   "description": "Merges window samples into sessions and categorizes them by app and rule.",
@@ -11,8 +11,8 @@
     "test": "vitest run --root ../.. services/sessions"
   },
   "dependencies": {
-    "@yoman/service-kit": "0.0.0",
-    "@yoman/shared": "0.0.0",
+    "@deskpulse/service-kit": "0.0.0",
+    "@deskpulse/shared": "0.0.0",
     "kysely": "0.29.8",
     "zod": "4.6.7"
   }

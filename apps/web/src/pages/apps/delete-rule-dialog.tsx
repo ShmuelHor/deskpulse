@@ -1,9 +1,9 @@
+import type { Rule } from '@deskpulse/shared/sessions';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import type { Rule } from '@yoman/shared/sessions';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../../components/button.js';

@@ -19,7 +19,7 @@ describe('private-fs', () => {
   let root: string;
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'yoman-private-fs-'));
+    root = await mkdtemp(join(tmpdir(), 'deskpulse-private-fs-'));
   });
 
   afterEach(async () => {

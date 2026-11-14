@@ -1,4 +1,4 @@
-import { createHandlers } from '@yoman/shared/msw';
+import { createHandlers } from '@deskpulse/shared/msw';
 import type { RequestHandler } from 'msw';
 
 /**

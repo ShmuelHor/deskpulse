@@ -1,8 +1,8 @@
 {
-  "name": "@yoman/agent",
+  "name": "@deskpulse/agent",
   "version": "0.0.0",
   "private": true,
-  "description": "The Yoman host agent: collectors, actuators and the local sample buffer.",
+  "description": "The DeskPulse host agent: collectors, actuators and the local sample buffer.",
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
@@ -11,7 +11,7 @@
     "test": "vitest run --root ../.. apps/agent"
   },
   "dependencies": {
-    "@yoman/shared": "0.0.0",
+    "@deskpulse/shared": "0.0.0",
     "dbus-next": "0.10.2",
     "p-retry": "9.0.0",
     "pino": "10.4.0",

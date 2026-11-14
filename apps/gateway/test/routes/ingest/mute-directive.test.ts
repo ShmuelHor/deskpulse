@@ -1,6 +1,6 @@
-import { focusActiveFixture, profileFixture } from '@yoman/shared/fixtures/data';
-import { SYSTEM_APP_IDS, USER_APP_IDS } from '@yoman/shared/fixtures/known-apps-catalog';
-import { LIMITS } from '@yoman/shared/limits';
+import { focusActiveFixture, profileFixture } from '@deskpulse/shared/fixtures/data';
+import { SYSTEM_APP_IDS, USER_APP_IDS } from '@deskpulse/shared/fixtures/known-apps-catalog';
+import { LIMITS } from '@deskpulse/shared/limits';
 import { describe, expect, it } from 'vitest';
 
 import { buildMuteDirective } from '../../../src/routes/ingest/mute-directive.js';
@@ -65,7 +65,7 @@ describe('buildMuteDirective', () => {
         'org.gnome.Shell',
         'GNOME-Terminal',
         'Update-Manager',
-        'YOMAN',
+        'DESKPULSE',
         'Signal',
       ],
       muteNewApps: false,

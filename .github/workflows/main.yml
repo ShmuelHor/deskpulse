@@ -72,7 +72,7 @@ jobs:
           token="$(sed -n 's/^AGENT_TOKEN=//p' .env)"
           echo "::add-mask::${token}"
           npm run build:packages
-          YOMAN_GATEWAY_URL=http://127.0.0.1:4711 YOMAN_AGENT_TOKEN="${token}" \
+          DESKPULSE_GATEWAY_URL=http://127.0.0.1:4711 DESKPULSE_AGENT_TOKEN="${token}" \
             npx vitest run apps/gateway/test/routes/ingest/ingest.compose.test.ts
       # Service logs carry no secrets (pino redaction); once the runner is gone
       # they are the only clue to why a container failed.

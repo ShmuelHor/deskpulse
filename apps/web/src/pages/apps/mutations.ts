@@ -1,5 +1,5 @@
+import type { App, AppUpdate, Rule, RuleInput } from '@deskpulse/shared/sessions';
 import { type UseMutationResult, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { App, AppUpdate, Rule, RuleInput } from '@yoman/shared/sessions';
 
 import type { GatewayClient } from '../../api/gateway.js';
 

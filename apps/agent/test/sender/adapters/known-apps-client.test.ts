@@ -1,4 +1,4 @@
-import type { KnownAppsReport } from '@yoman/shared/focus';
+import type { KnownAppsReport } from '@deskpulse/shared/focus';
 import { describe, expect, it, vi } from 'vitest';
 import { type FetchFn, IngestRequestError } from '../../../src/sender/adapters/ingest-client.js';
 import { createKnownAppsClient } from '../../../src/sender/adapters/known-apps-client.js';

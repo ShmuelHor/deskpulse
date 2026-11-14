@@ -1,5 +1,5 @@
-import type { AppId } from '@yoman/shared/common';
-import { App, AppList } from '@yoman/shared/sessions';
+import type { AppId } from '@deskpulse/shared/common';
+import { App, AppList } from '@deskpulse/shared/sessions';
 
 import { NotFoundError } from '../../core/errors.js';
 import { defineHandlers } from '../../core/route-handler.js';

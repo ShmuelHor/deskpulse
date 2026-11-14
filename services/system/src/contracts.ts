@@ -1,12 +1,12 @@
-import { Alert } from '@yoman/shared/alerts';
-import { LocalDate } from '@yoman/shared/common';
-import { PressureSample, ProcessSample, ThermalSample } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
-import { Settings } from '@yoman/shared/settings';
+import { Alert } from '@deskpulse/shared/alerts';
+import { LocalDate } from '@deskpulse/shared/common';
+import { PressureSample, ProcessSample, ThermalSample } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
+import { Settings } from '@deskpulse/shared/settings';
 import { z } from 'zod';
 
 /**
- * The gateway-to-system contracts that `@yoman/shared` has no public
+ * The gateway-to-system contracts that `@deskpulse/shared` has no public
  * counterpart for. They are built only from shared schemas, so every item
  * still validates against the shared contract.
  */

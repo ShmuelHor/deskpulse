@@ -1,5 +1,5 @@
-import { defineRoute, type Route } from '@yoman/service-kit/route';
-import { AlertPolicy, AlertQueue } from '@yoman/shared/focus';
+import { defineRoute, type Route } from '@deskpulse/service-kit/route';
+import { AlertPolicy, AlertQueue } from '@deskpulse/shared/focus';
 
 import { RouteRequest, RouteResult } from '../contracts.js';
 import { readAlertPolicy, replaceAlertPolicy } from '../use-cases/alert-policy.js';

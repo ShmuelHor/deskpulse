@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { ProcessSample } from '@yoman/shared/ingest';
+import { ProcessSample } from '@deskpulse/shared/ingest';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { createPressureCollector } from '../../apps/agent/src/collectors/pressure/collector.js';
@@ -47,7 +47,7 @@ async function procTree(root: string): Promise<void> {
     await writeFile(join(dir, 'io'), 'read_bytes: 4096\nwrite_bytes: 4096\n');
     await writeFile(join(dir, 'status'), `Name:\t${COMM}\nVmRSS:\t256 kB\n`);
     await writeFile(join(dir, 'cmdline'), `/usr/bin/${COMM}\0--flag=${CMDLINE_MARKER}\0`);
-    await writeFile(join(dir, 'environ'), `YOMAN_ST17=${ENVIRON_MARKER}\0`);
+    await writeFile(join(dir, 'environ'), `DESKPULSE_ST17=${ENVIRON_MARKER}\0`);
   }
 }
 
@@ -79,7 +79,7 @@ describe('ST17 agent payload privacy', () => {
   let root: string;
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'yoman-st17-'));
+    root = await mkdtemp(join(tmpdir(), 'deskpulse-st17-'));
     await procTree(root);
   });
 

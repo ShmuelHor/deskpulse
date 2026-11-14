@@ -1,5 +1,5 @@
-import { AppId, Timestamp } from '@yoman/shared/common';
-import { LIMITS } from '@yoman/shared/limits';
+import { AppId, Timestamp } from '@deskpulse/shared/common';
+import { LIMITS } from '@deskpulse/shared/limits';
 import { z } from 'zod';
 
 /** The `show-banners` value an app had before the agent changed it. */

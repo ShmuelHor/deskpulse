@@ -1,7 +1,7 @@
+import type { KnownApp } from '@deskpulse/shared/focus';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
-import type { KnownApp } from '@yoman/shared/focus';
 import { useTranslation } from 'react-i18next';
 
 import { Tag } from '../../components/tag.js';

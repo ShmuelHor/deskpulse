@@ -18,7 +18,7 @@ export type LogLevel = z.infer<typeof LogLevel>;
 export const LogFormat = z.enum(['pretty', 'json']);
 export type LogFormat = z.infer<typeof LogFormat>;
 
-/** `~/.config/yoman/agent.json`. Every key is optional; unknown keys are rejected. */
+/** `~/.config/deskpulse/agent.json`. Every key is optional; unknown keys are rejected. */
 export const AgentConfig = z.strictObject({
   gatewayUrl: GatewayUrl.default(DEFAULT_GATEWAY_URL),
   logLevel: LogLevel.default('info'),

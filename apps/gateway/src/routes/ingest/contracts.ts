@@ -1,8 +1,8 @@
-import { Alert } from '@yoman/shared/alerts';
-import { Category } from '@yoman/shared/common';
-import { KnownApp, Profile } from '@yoman/shared/focus';
-import { LIMITS } from '@yoman/shared/limits';
-import { Session } from '@yoman/shared/sessions';
+import { Alert } from '@deskpulse/shared/alerts';
+import { Category } from '@deskpulse/shared/common';
+import { KnownApp, Profile } from '@deskpulse/shared/focus';
+import { LIMITS } from '@deskpulse/shared/limits';
+import { Session } from '@deskpulse/shared/sessions';
 import { z } from 'zod';
 
 /**

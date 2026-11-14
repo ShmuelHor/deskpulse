@@ -1,7 +1,7 @@
 import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { KnownApp } from '@yoman/shared/focus';
+import { KnownApp } from '@deskpulse/shared/focus';
 import { describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 import { createAgent } from '../../src/core/agent.js';
@@ -17,7 +17,7 @@ async function build(): Promise<{
   collect: ReturnType<typeof vi.fn>;
   close: ReturnType<typeof vi.fn>;
 }> {
-  const stateDir = await mkdtemp(join(tmpdir(), 'yoman-agent-'));
+  const stateDir = await mkdtemp(join(tmpdir(), 'deskpulse-agent-'));
   const calls: string[] = [];
   const collect = vi.fn().mockResolvedValue([]);
   const collector: Collector = {
@@ -66,7 +66,7 @@ async function build(): Promise<{
 
 describe('createAgent known apps', () => {
   it('sends the catalog a collector reports to the gateway with the agent token', async () => {
-    const stateDir = await mkdtemp(join(tmpdir(), 'yoman-agent-'));
+    const stateDir = await mkdtemp(join(tmpdir(), 'deskpulse-agent-'));
     const telegram = { appId: 'telegram-desktop', name: 'Telegram Desktop', source: 'desktop' };
     const collector: Collector = {
       kind: 'collector',

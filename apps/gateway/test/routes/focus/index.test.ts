@@ -1,7 +1,7 @@
-import { FIXTURE_IDS, profileFixture } from '@yoman/shared/fixtures/data';
-import { requestFixtures } from '@yoman/shared/fixtures/requests';
-import { responseFixtures } from '@yoman/shared/fixtures/responses';
-import { AlertPolicy, FocusStart, KnownAppsReport } from '@yoman/shared/focus';
+import { FIXTURE_IDS, profileFixture } from '@deskpulse/shared/fixtures/data';
+import { requestFixtures } from '@deskpulse/shared/fixtures/requests';
+import { responseFixtures } from '@deskpulse/shared/fixtures/responses';
+import { AlertPolicy, FocusStart, KnownAppsReport } from '@deskpulse/shared/focus';
 import type { FastifyInstance } from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 

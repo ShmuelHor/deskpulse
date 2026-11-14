@@ -1,4 +1,4 @@
-import { createQueryBuilder } from '@yoman/service-kit/sql';
+import { createQueryBuilder } from '@deskpulse/service-kit/sql';
 import type {
   Kysely,
   PostgresCursor,

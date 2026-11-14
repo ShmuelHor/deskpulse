@@ -30,7 +30,7 @@ describe('ST14 muter command injection', () => {
         cb(null, 'true\n');
       },
     );
-    stateDir = await mkdtemp(join(tmpdir(), 'yoman-st14-'));
+    stateDir = await mkdtemp(join(tmpdir(), 'deskpulse-st14-'));
   });
 
   afterEach(async () => {

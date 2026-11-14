@@ -1,11 +1,11 @@
-import { type UseMutationResult, useMutation, useQueryClient } from '@tanstack/react-query';
 import type {
   AlertPolicy,
   FocusChange,
   FocusStart,
   Profile,
   ProfileInput,
-} from '@yoman/shared/focus';
+} from '@deskpulse/shared/focus';
+import { type UseMutationResult, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { GatewayClient } from '../../api/gateway.js';
 

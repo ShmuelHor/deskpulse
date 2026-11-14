@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { Sample } from '@yoman/shared/ingest';
+import type { Sample } from '@deskpulse/shared/ingest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 import { createLogger } from '../../src/core/logger.js';
@@ -61,7 +61,7 @@ describe('loadRegistry', () => {
   }
 
   beforeEach(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'yoman-registry-'));
+    dir = await mkdtemp(join(tmpdir(), 'deskpulse-registry-'));
   });
 
   afterEach(async () => {

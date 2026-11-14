@@ -1,4 +1,4 @@
-import { createQueryBuilder, inTransaction } from '@yoman/service-kit/sql';
+import { createQueryBuilder, inTransaction } from '@deskpulse/service-kit/sql';
 import type { Kysely, PostgresPool } from 'kysely';
 
 import type { BatteryStore, BatteryTransaction } from '../use-cases/store.js';

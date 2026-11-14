@@ -1,6 +1,6 @@
-import type { TimeRangeQuery } from '@yoman/shared/common';
-import { LIMITS } from '@yoman/shared/limits';
-import type { Session } from '@yoman/shared/sessions';
+import type { TimeRangeQuery } from '@deskpulse/shared/common';
+import { LIMITS } from '@deskpulse/shared/limits';
+import type { Session } from '@deskpulse/shared/sessions';
 
 import type { SessionsStore } from './store.js';
 

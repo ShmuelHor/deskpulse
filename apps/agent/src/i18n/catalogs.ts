@@ -1,4 +1,4 @@
-import type { Language } from '@yoman/shared/settings';
+import type { Language } from '@deskpulse/shared/settings';
 import enNotifications from './en/notifications.json' with { type: 'json' };
 import heNotifications from './he/notifications.json' with { type: 'json' };
 import { lookupMessage, TranslationTree } from './translation-tree.js';

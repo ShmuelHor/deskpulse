@@ -15,7 +15,7 @@ const WORKER_PATH = '/mockServiceWorker.js';
 function mswWorker(): Plugin {
   const workerFile = createRequire(import.meta.url).resolve('msw/mockServiceWorker.js');
   return {
-    name: 'yoman-msw-worker',
+    name: 'deskpulse-msw-worker',
     apply: 'serve',
     configureServer(server): void {
       server.middlewares.use(WORKER_PATH, (_request, response, next) => {

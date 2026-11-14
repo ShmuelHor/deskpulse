@@ -89,7 +89,7 @@ export const incidentFixture: Incident = {
   end: '2026-11-08T08:14:30.000Z',
   peak: 27.5,
   culprits: [
-    { pid: 3_141, comm: 'node', container: 'yoman-web-1', cpuPct: 96, rssBytes: 2_147_483_648 },
+    { pid: 3_141, comm: 'node', container: 'deskpulse-web-1', cpuPct: 96, rssBytes: 2_147_483_648 },
   ],
 };
 

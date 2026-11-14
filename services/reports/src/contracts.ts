@@ -1,11 +1,11 @@
-import { Category, LocalDate } from '@yoman/shared/common';
-import { LIMITS } from '@yoman/shared/limits';
-import { AppTotal } from '@yoman/shared/reports';
-import { Session } from '@yoman/shared/sessions';
+import { Category, LocalDate } from '@deskpulse/shared/common';
+import { LIMITS } from '@deskpulse/shared/limits';
+import { AppTotal } from '@deskpulse/shared/reports';
+import { Session } from '@deskpulse/shared/sessions';
 import { z } from 'zod';
 
 /**
- * The gateway-to-reports contracts that `@yoman/shared` has no public
+ * The gateway-to-reports contracts that `@deskpulse/shared` has no public
  * counterpart for. They are built only from shared schemas, so every item
  * still validates against the shared contract.
  */
