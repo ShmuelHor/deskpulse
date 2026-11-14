@@ -7,6 +7,7 @@ import { createAgent } from './core/agent.js';
 import { loadAgentToken } from './core/agent-token.js';
 import { loadAgentConfig } from './core/config.js';
 import { installCrashHandlers } from './core/crash-handlers.js';
+import { migrateLegacyDir } from './core/legacy-state.js';
 import { createLogger } from './core/logger.js';
 import { resolveAgentPaths } from './core/paths.js';
 import { loadRegistry } from './core/registry.js';
@@ -22,6 +23,9 @@ const PackageJson = z.object({ version: z.string() });
 
 async function main(): Promise<void> {
   const paths = resolveAgentPaths(process.env);
+  // Before anything reads the new locations: carry over what the pre-DeskPulse agent kept.
+  await migrateLegacyDir(dirname(paths.configFile));
+  await migrateLegacyDir(paths.stateDir);
   const config = await loadAgentConfig(paths.configFile);
   const logger = createLogger({ level: config.logLevel, pretty: config.logFormat === 'pretty' });
   installCrashHandlers({ logger, exit: (code) => process.exit(code), process });
