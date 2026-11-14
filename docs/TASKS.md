@@ -1,4 +1,4 @@
-# Yoman: tasks for parallel work
+# DeskPulse: tasks for parallel work
 
 This file is the agents' work queue. Before any task, read: [CLAUDE.md](../CLAUDE.md), [SPEC.md](SPEC.md), [SECURITY.md](SECURITY.md), [DESIGN.md](DESIGN.md).
 
@@ -12,7 +12,7 @@ This file is the agents' work queue. Before any task, read: [CLAUDE.md](../CLAUD
 | **Reviewer** | A separate agent | Reviews every PR before merge: correctness, the SECURITY.md §6 checklist, and a check that every "Done when" item is actually met |
 
 ### Waves
-- Tasks in the same wave **do not depend on each other** and can run in parallel. Up to 5 workers at a time is recommended.
+- Tasks in the same wave **do not depend on each other** and can run in parallel. At most 3 agents run at a time.
 - A new wave starts only after the previous **wave gate**: everything is merged to `main`, CI is green, and the gate's checks pass.
 - Wave 0 is **CI/CD and security tests**, and it comes before any feature code.
 
@@ -67,7 +67,10 @@ branch t13-…  →  commits  →  push  →  PR (draft)  →  CI green  →  Re
 | 1 · Contracts and infrastructure | [x] T08 [x] T09 [x] T10 [x] T11 [x] T12 | G1 |
 | 2 · Independent units | [x] T13 [x] T14 [x] T15 [x] T16 [x] T17 [x] T18 [x] T19 [x] T20 [x] T21 [x] T22 [x] T23 [x] T24 [x] T25 [x] T26 | G2 |
 | 3 · Integration | [x] T27 [x] T28 [x] T29 [x] T30 [x] T31 [x] T32 [x] T33 [x] T34 [x] T35 [x] T36 [x] T37 [x] T38 [x] T39 [x] T40 [x] T41 | G3 |
-| 4 · Completion | [ ] T42 [ ] T43 [ ] T44 [ ] T45 [ ] T46 [ ] T47 [ ] T48 [ ] T49 [ ] T50 [ ] T51 [ ] T56 [ ] T57 [ ] T58 [ ] T59 | G4 |
+| 4A · Fix and trim | [ ] #202 [ ] #200 [ ] T60 [ ] T61 [ ] T62 [ ] T63 [ ] T64 [ ] T65 | G4A |
+| 4B · Design system, shell, pages | [ ] T66 [ ] T68 [ ] T67 [ ] T57 [ ] T43 [ ] T58 [ ] T69 [ ] T47 | G4B |
+| 4C · Control center | [ ] T72 [ ] T73 [ ] T74 [ ] T75 [ ] T76 [ ] T77 [ ] T78 [ ] T79 [ ] T56 [ ] T80 [ ] T81 [ ] T83 | G4C |
+| 4D · Desktop app | [ ] T82 [ ] T42 [ ] T51 [ ] T84 | G4D |
 | 5 · Release | [ ] T52 [ ] T53 [ ] T54 [ ] T55 | G5 = v1.0.0 |
 
 ---
@@ -344,45 +347,82 @@ Each service owns `services/<x>/` (including its `compose.yml`). Each collector 
 
 ---
 
-## Wave 4 · Completion (up to 5 in parallel out of 14)
+## Wave 4 · DeskPulse (replaces the old wave 4)
 
-- **T42 · systemd user service:** install and uninstall, and a check that the Window Calls extension is installed
-  - **Done when:** [ ] The agent starts after login and comes back after `kill -9`
-- **T57 · Five-page shell (first; T43, T56, T58 and T59 depend on it):** the web moves from seven pages to five (SPEC §6): Overview, Computer, Processes, Focus mode, Settings. A styled navigation per DESIGN.md nav tabs, the new routes with tab state in the URL, redirects from the old paths, and header language and theme pickers that save to the settings. Moves every existing page into its new folder without rewriting it (`today` → `pages/overview/`, `battery` and `system` → `pages/computer/`, `focus/alert-policy.tsx` → `pages/settings/`; the `apps` page is deleted, see T59), merges their i18n namespaces into the new pages' namespaces, and deletes the old folders and route files. Owns: `apps/web/src/app/`, `apps/web/src/router/`, `apps/web/src/pages/*/route.tsx`, the moves above and their i18n files
-- **T43 · Overview page:** the Today page gains a day/week switch. Week: columns by day and category, comparison with the previous week, and the weekly summary. Clicking an app in the top apps changes its category (a small menu, `PUT /v1/apps`). Owns: `apps/web/src/pages/overview/`
-- **T58 · Computer page:** Battery (from T38) and System (from T39) become tabs under one summary line written in plain language. The Load tab is redesigned so a non-technical user understands it at a glance: slowdown count and stuck time, an incident timeline in plain words ("memory full", "processor busy") with the active app, recurring culprits by app name, and the pressure chart as a secondary "Details" view. Design brief: issue #189. Owns: `apps/web/src/pages/computer/`
-- **T44 · GNOME "Do Not Disturb":** optional per profile, with the same save-and-restore mechanism. Owns: `apps/agent/src/actuators/dnd/`
-- **T45 · Automatic focus triggers:** a schedule, and an app in focus for more than N min. Owns: `services/focus/src/triggers/`
-- **T46 · Pomodoro:** Owns: `services/focus/src/pomodoro/` and a component in `apps/web/src/pages/focus/pomodoro/`
-- **T47 · Pause and privacy:** pause, "don't store titles", and excluded apps that are never sent at all. Enables: **ST17** (titles)
-- **T48 · Export and backup:** CSV/JSON with a session, and `npm run backup` at `0600`. Enables: **ST15** (backups)
-- **T49 · Cleaning up old data:** a `src/jobs/retention.ts` file in every service, including a log of what was deleted
-- **T50 · Tray icon:** StatusNotifierItem. Owns: `apps/agent/src/tray/`
-- **T51 · CLI:** Owns: `apps/agent/src/cli/`
-- **T56 · Processes page (Task Manager):** the Processes page (`/processes`, its own page, not a Computer tab) with live CPU, RAM and IO (on-demand 2 s sampling), grouping by app, live charts, All/Apps/Docker views, sortable columns, and End task with confirmation; Docker stop/restart/rm/rmi only when the user already has Docker access, with Yoman's own containers and images protected. Updates SPEC §4.1 and §4.2, SECURITY A15 plus a new threat row, the CLAUDE.md agent rule and an ST test. Design: issue #136. Owns: `apps/web/src/pages/processes/`. Blocked by T57
-- **T59 · Settings absorbs alert levels; the Apps page goes:** the alert level policy (from T40) moves into a Settings section. The Apps page (from T36) is removed from the UI with its i18n and tests; categories come from the built-in rules, and the only manual change is the click in Overview (T43). Owns: `apps/web/src/pages/settings/`
+The product became DeskPulse (SPEC.md, DESIGN.md). Wave 4 runs as four sub-waves, each with its own gate and its own coordinator session. Workers run on Sonnet, reviews on Opus; at most 3 agents at a time. Tasks marked **[security]** get a security review too.
 
-**Gate G4:**
-- [ ] Every feature in the coverage matrix is checked off
-- [ ] `npm run security:todo` shows nothing
+Dropped from the old plan (their issues are closed): T44 GNOME "Do Not Disturb", T45 automatic focus, T46 Pomodoro, T48 export and backup, T49 visible retention (replaced by T65), T50 tray icon, T59 Settings absorbs alert levels (there are no alert levels now).
+
+### 4A · Fix and trim
+Open items first: merge #202 (never mute system apps, with a security review) and fix #200 (one agent instance). **T60 runs alone and first**, because it touches every package; the rest run in parallel after it. T61–T63 change `packages/shared`, so each ships its contract change as a small PR first.
+
+- **T60 · Rename to DeskPulse in code:** packages `@yoman/*` → `@deskpulse/*`, the compose project, containers and images, env vars, the session cookie, DB names and roles, the CLI, systemd units, state and config paths, i18n strings, README and scripts. Existing local state (`~/.config/yoman`, `~/.local/state/yoman`, the Postgres volume) is migrated once on first start and never lost. Owns: everything it renames; nothing else runs during it
+  - **Done when:** [ ] `grep -ri yoman` finds only the migration code and the changelog [ ] an existing install keeps its data after the upgrade
+- **T61 · Remove categories and rules:** the `category_rules` table, category fields, the rules API, category charts and the category click in the web. A migration drops the data. Owns: `services/sessions/src/` (rules), `services/reports/src/` (categories), the gateway's rules routes, the web's category UI
+- **T62 · Remove window titles:** the agent stops reading titles; sessions, the gateway, settings and the web drop them; a migration deletes every stored title. Enables: **ST17** (titles part), updates **ST13** to app and process names. Owns: the window collector, the title fields in sessions and settings
+- **T63 · One alert rule, lock only:** remove idle detection (keep lock), the alert-level policy and its UI, the rate-limit settings, focus schedules and Pomodoro leftovers (#182), and the Apps page. Focus routing becomes the fixed rule in SPEC §5 (focus). Owns: `services/focus/src/` (policy, schedules), the idle collector, the web's alert-policy and apps pages
+- **T64 · Security test stubs:** ST19–ST24 as `it.todo` with their owners, and ST15 without the backups case. Owns: `tests/security/`
+- **T65 · Silent retention:** a nightly job per service deletes raw samples older than 90 days and keeps rollups and summaries; a log line says how much was deleted. Owns: `services/*/src/jobs/retention.ts`
+
+**Gate G4A:** [ ] #202 and #200 merged [ ] no categories, titles, idle, alert levels or Apps page left in code or UI [ ] `npm run security:todo` lists only ST19–ST24 owners
+
+### 4B · Design system, shell and existing pages
+T66 and T68 first (in parallel), then T67 and T57, then the pages.
+
+- **T66 · Theme:** DESIGN.md as code: the ten palettes and derived tokens in `color-tokens.ts`, Heebo + Inter, radii, elevation, motion, `prefers-reduced-motion`, the static background and glass surfaces, and a test that every palette's text pairs pass 4.5:1. Owns: `apps/web/src/theme/`
+- **T68 · Layouts and appearance settings API:** `GET/PUT/DELETE /v1/layouts/<page>` with the Zod schema from SPEC §5 (unknown widget IDs dropped on read), and palette and theme in the settings. Owns: `packages/shared/src/layouts/`, `apps/gateway/src/routes/layouts/`
+- **T67 · Widget grid engine:** react-grid-layout with 4 and 2 column breakpoints; the widget registry (catalog, default layout per page, views, options); edit mode (drag, resize, ⋯ menu, add drawer, undo toast, reset, cancel, keyboard); content-aware sizing; per-widget loading, error and unavailable states; saving through T68. Owns: `apps/web/src/widgets/` (engine and registry, not the widget bodies)
+- **T57 · Shell (redone):** the sidebar with the brand row and collapse button, the icon rail with tooltips, Settings at the bottom, routes for the six pages and Settings, redirects from old paths, skeleton loading, the state banners, and the small-window behaviour. Owns: `apps/web/src/app/`, `apps/web/src/router/`, `apps/web/src/pages/*/route.tsx`
+- **T43 · Time page (redone):** the Time widgets (week by day with last week, by app, focus this week) on the reports API. Owns: `apps/web/src/pages/time/`, its widget bodies
+- **T58 · Performance page (redone):** slowdowns in plain words with the culprit (#189), heat and memory, battery detail, and the power widget (read-only until T77). Owns: `apps/web/src/pages/performance/`, its widget bodies
+- **T69 · Focus page:** start focus, last focus, profiles as readable lists (#196), alerts that waited, the focus banner and the focus-end summary dialog. Owns: `apps/web/src/pages/focus/`
+- **T47 · Pause (reduced) and Settings page:** pause and resume tracking end to end (agent, gateway, web), and the Settings page: language, theme, palette picker, pause, start at login (wired in T42), never-mute apps. Owns: `apps/web/src/pages/settings/`, the agent's pause state
+
+**Gate G4B:** [ ] every page except Control, Processes and Maintenance matches the design canvas in he/en, light/dark, wide and small [ ] layouts survive a reload [ ] palette contrast test green
+
+### 4C · Control center
+T72, T73 and T74 first (the channels), then the collectors, then the pages.
+
+- **T72 · Command channel [security]:** the gateway's command queue (`POST /v1/commands`, single-use IDs, 30 s TTL), the agent's long poll and result reporting, the closed Zod union from SPEC §4.3, the result on the web's stream, and the end-app actuator with PID + start-time checks. Enables: **ST19**, **ST21**
+- **T73 · Live mode:** `GET /v1/live` (SSE), `liveMode` for the agent while a visible client is connected, 2 s live samples (CPU, memory, network, processes, Docker) relayed and not stored, stop 10 s after the last client leaves. Updates SPEC §4.6 numbers if measured otherwise
+- **T74 · Capabilities:** the agent detects and reports them; the gateway stores them; the web hides unsupported widgets
+- **T75 · Machine collectors:** disk (statfs), network and internet (NetworkManager, byte counters), uptime → `system` `machine_state` and `connectivity_events`; disk alerts at 85% and 95%; the needs-attention list (`GET /attention`)
+- **T76 · Updates and startup apps [security]:** the apt and snap reader (execFile, read-only), "open Software Updates", the autostart reader, and the startup-app actuator (user overrides only). Enables: **ST22** (startup part)
+- **T77 · Power profile and charge limit [security]:** power-profiles-daemon read and switch; the charge-limit rule installed once with consent and the actuator. Enables: **ST22** (charge part)
+- **T78 · Cleanup [security]:** measure categories and per-app caches, folder sizes on demand, and the delete actuator with the allowlist, realpath and no-symlink rules. Enables: **ST20**
+- **T79 · Docker [security]:** status from the socket only with existing access, and the stop, start, remove and prune actions with DeskPulse's own objects protected. Enables: **ST23**
+- **T56 · Processes page:** the task manager on live data with All/Apps/Docker, search, sorting, End with confirmation and the containers. Design: #136. Owns: `apps/web/src/pages/processes/`
+- **T80 · Control page:** the Control widgets and the needs-attention list linking to the page that fixes each item. Owns: `apps/web/src/pages/control/`
+- **T81 · Maintenance page:** disk space, cleanup with the confirmation dialog (per-app cache choice, trash files, "can't be undone"), updates and startup apps. Owns: `apps/web/src/pages/maintenance/`
+- **T83 · Onboarding:** the first-run steps (welcome, Window Calls, start at login, charge limit when supported) and the empty state. Owns: `apps/web/src/onboarding/`
+
+**Gate G4C:** [ ] every action needs a confirmation and is refused by the agent outside the allowlist [ ] ST19–ST23 real [ ] the agent stays inside SPEC §4.6 with the window closed
+
+### 4D · The desktop app
+- **T82 · Tauri desktop shell [security]:** the window on `http://127.0.0.1:4710` with no IPC, single instance, `deskpulse://` links from notifications to a confirmation dialog, and the "services aren't running" page with Retry and Start. Design: #157. Enables: **ST24**
+- **T42 · systemd and autostart:** the agent's user unit, the app's autostart entry from the Settings switch, and the Window Calls check
+- **T51 · CLI:** `status`, `pause`, `resume`, `focus`, `focus stop`, `uninstall` (SPEC §4.7). Owns: `apps/agent/src/cli/`
+- **T84 · Packaging:** a `.deb` for the desktop app and the agent, and the release workflow builds it on a `v*` tag
+
+**Gate G4D:** [ ] a clean Ubuntu VM: install, onboarding, every page, uninstall leaves nothing behind [ ] `npm run security:todo` shows nothing
 
 ---
 
 ## Wave 5 · Release
 
-- **T52 · E2E:** Playwright against compose with a mocked agent: every page, both languages, both modes, and focus
-- **T53 · Battery budget:** a script that measures, over one hour, the agent's CPU and RSS and the containers' idle consumption. **Fails if SPEC §4.4 is exceeded**
+- **T52 · E2E:** Playwright against compose with a mocked agent: every page, both languages, both modes, two palettes, edit mode and every confirmation dialog; plus one tauri-driver smoke test of the desktop shell
+- **T53 · Battery budget:** a script that measures, over one hour, the agent's CPU and RSS with the window closed and open (live mode), the containers' idle use, and the web's cost with the glass surfaces. **Fails if SPEC §4.6 is exceeded**
 - **T54 · Full security review:**
   - A separate agent goes through all of SECURITY.md
-  - Manual attack attempts: DNS rebinding, CSRF from another site, access from the LAN, injection into the muter, and XSS in a title
+  - Manual attack attempts: DNS rebinding, CSRF from another site, access from the LAN, forged and replayed commands, cleanup path tricks, PID reuse, a malicious `deskpulse://` link, and XSS in an app name
   - `docker inspect` for every container
   - A report in `docs/security-review-v1.md`. Every finding gets a fix or a documented decision
-- **T55 · Detailed English README (for the portfolio):** an opening paragraph, screenshots and a GIF in both modes and both languages, an architecture diagram, engineering decisions and their reasons (short ADRs in `docs/adr/`), security, CI/CD, installation from scratch, troubleshooting, and how to verify a release signature
+- **T55 · Detailed English README (for the portfolio):** an opening paragraph, screenshots and a GIF in both modes, both languages and a few palettes, an architecture diagram, engineering decisions (short ADRs in `docs/adr/`), security, CI/CD, installation from scratch, troubleshooting
 
 **Gate G5:**
 - [ ] `security:todo --strict` passes
 - [ ] All CI is green
-- [ ] A `v1.0.0` tag → a release
+- [ ] A `v1.0.0` tag → a release with the images and the desktop package
 
 ---
 
@@ -390,43 +430,43 @@ Each service owns `services/<x>/` (including its `compose.yml`). Each collector 
 
 | Requirement | Tasks |
 |---|---|
-| Active window tracking | T20, T13, T27 |
-| Idle and screen lock | T21, T13 |
-| Categories and rules | T13, T36 |
-| Overview (day and week) and automatic categories | T35, T43, T13, T57, T59 |
-| Continuous focus (streaks) | T14, T35 |
-| Weekly summary | T14, T43, T33 |
-| Battery health, cycles and discharge rate | T22, T16, T29, T38 |
-| "What is draining my battery" | T16, T29, T38 |
-| Battery alerts (15%, 8%, 100% for a long time) | T16, T27, T33 |
-| PSI load and choke incidents | T23, T17, T29, T39, T58 |
-| Who is heaviest (including containers) | T23, T24, T17 |
-| Temperature and throttling | T24, T17 |
-| Memory leaks | T17 |
-| Desktop pop-up notifications | T33, T27 |
-| critical, important and normal levels | T18, T41 |
-| Rate limit for alerts | T18 |
-| Focus mode: manual, duration, until a time | T18, T30, T40, T51 |
-| Focus mode: schedule and automatic | T45 |
-| Pomodoro | T46 |
-| Per-app muting, profiles and exceptions | T18, T30, T34, T40 |
-| Never mute system apps | T34, T41 |
-| Restore after a crash | T34 |
-| Automatic discovery of new apps | T25, T18, T40 |
-| Chrome apps tracked separately | T25 |
-| GNOME "Do Not Disturb" | T44 |
-| Summary on leaving focus | T18, T33 |
-| Hebrew and English i18n, RTL | T08, T11, T33, every web page |
-| Light, dark and system | T11, T26, T41 |
-| "Paper and Ink" design | T26 + every web page |
-| Pause and privacy | T47, T41 |
-| Export and backup | T48 |
-| Cleaning up old data | T49 |
+| Active app tracking (no titles) | T20, T13, T27, T62 |
+| Screen lock stops time and sampling | T21, T13, T63 |
+| Time by app, day and week, compared with last week | T14, T43 |
+| Focus streaks and focus summaries | T14, T18, T69 |
+| Battery health, cycles, time left, what drains it | T22, T16, T29, T58 |
+| "Battery almost empty" always alerts | T16, T63 |
+| Slowdowns in plain words and the culprit app | T23, T17, T29, T58 |
+| Temperature, fan, throttling, memory leaks | T24, T17, T58 |
+| Live dashboard while the window is open | T73, T80, T56 |
+| Disk usage and alerts | T75, T80, T81 |
+| Cleanup with confirmation | T72, T78, T81 |
+| Pending updates (read-only) | T76, T81 |
+| Startup apps | T72, T76, T81 |
+| Power profile and charge limit | T72, T77, T58, T83 |
+| Task manager and End app | T23, T72, T73, T56 |
+| Docker status and actions | T79, T56 |
+| Internet state and uptime | T75, T80 |
+| Needs-attention list | T75, T80 |
+| Desktop notifications, held during focus | T33, T27, T63 |
+| Focus: manual, duration, until a time, profiles | T18, T30, T40, T51, T69 |
+| Per-app muting, never mute system apps, restore after a crash | T18, T34, T41, #202 |
+| Automatic discovery of new apps | T25, T18 |
+| Widget grid, edit mode, per-page layouts | T67, T68, every page task |
+| Capabilities hide unsupported widgets | T74, T67 |
+| Six pages and Settings, sidebar and rail | T57, T43, T58, T56, T81, T69, T47, T80 |
+| Hebrew and English, RTL and LTR | T08, T11, every web page |
+| Light, dark and system; ten palettes | T66, T47 |
+| Onboarding and states | T57, T83 |
+| Pause tracking | T47, T51 |
+| Silent 90-day retention | T65 |
 | Local buffer (Docker down) | T12, T32 |
-| Battery budget | T21, T23, T53 |
-| systemd, tray icon and CLI | T42, T50, T51 |
+| Battery budget | T21, T23, T73, T53 |
+| Desktop app, single instance, links | T82, T84 |
+| systemd, autostart, CLI, uninstall | T42, T51 |
 | Healthchecks | T09, T10 |
 | Only 2 ports on 127.0.0.1 | T10, ST01 |
 | No secrets in git | T02, T04, T07, ST02 |
+| Actions only through confirmed, re-validated commands | T72, ST19–ST24 |
 | CI/CD with tests and strict security | T03–T07, T52 |
 | README | T55 |
