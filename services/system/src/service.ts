@@ -2,9 +2,9 @@ import { fileURLToPath } from 'node:url';
 import { createService, type Service, type ServiceOptions } from '@deskpulse/service-kit';
 import type { Route } from '@deskpulse/service-kit/route';
 import type { z } from 'zod';
-
 import { createPgStore } from './adapters/pg-store.js';
 import { SystemConfig } from './config.js';
+import { createRetention } from './jobs/retention.js';
 import { culpritRoutes } from './routes/culprits.js';
 import { incidentRoutes } from './routes/incidents.js';
 import type { RouteDeps } from './routes/route-deps.js';
@@ -37,6 +37,7 @@ export function createSystemService(
     migrationsDir: MIGRATIONS_DIR,
     config: SystemConfig,
     ...options,
+    jobs: ({ db, log }) => [createRetention({ db, log })],
     routes: ({ db, config }) =>
       buildRoutes({ store: createPgStore(db), now: () => new Date(), timeZone: config.service.TZ }),
   });

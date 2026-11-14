@@ -1,9 +1,9 @@
 import { fileURLToPath } from 'node:url';
 import { createService, type Service, type ServiceOptions } from '@deskpulse/service-kit';
 import type { Route } from '@deskpulse/service-kit/route';
-
 import { createPgStore } from './adapters/pg-store.js';
 import { ReportsConfig } from './config.js';
+import { createRetention } from './jobs/retention.js';
 import { reportRoutes } from './routes/reports.js';
 import type { RouteDeps } from './routes/route-deps.js';
 import { sessionRoutes } from './routes/sessions.js';
@@ -27,6 +27,7 @@ export function createReportsService(options: ReportsServiceOptions = {}): Servi
     migrationsDir: MIGRATIONS_DIR,
     config: ReportsConfig,
     ...options,
+    jobs: ({ db, log }) => [createRetention({ db, log })],
     routes: ({ db, config }) =>
       buildRoutes({
         store: createPgStore(db),
