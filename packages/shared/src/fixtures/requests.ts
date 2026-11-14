@@ -4,7 +4,6 @@ import {
   FIXTURE_DATE,
   FIXTURE_IDS,
   profileFixture,
-  ruleFixture,
   settingsFixture,
   windowSampleFixture,
 } from './data.js';
@@ -15,7 +14,6 @@ export interface RequestFixture {
   readonly body?: unknown;
 }
 
-const { id: _ruleId, ...ruleInput } = ruleFixture;
 const { id: _profileId, ...profileInput } = profileFixture;
 const range = { from: '2026-11-01T00:00:00.000Z', to: '2026-11-08T00:00:00.000Z' };
 
@@ -26,11 +24,7 @@ export const requestFixtures: { readonly [K in RouteName]: RequestFixture } = {
   dashboardToday: {},
   week: { query: { start: '2026-11-02' } },
   listApps: {},
-  updateApp: { params: { id: appFixture.id }, body: { name: 'Code', category: 'work' } },
-  listRules: {},
-  createRule: { body: ruleInput },
-  updateRule: { params: { id: FIXTURE_IDS.rule }, body: ruleInput },
-  deleteRule: { params: { id: FIXTURE_IDS.rule } },
+  updateApp: { params: { id: appFixture.id }, body: { name: 'Code' } },
   batteryNow: {},
   batteryHealthTrend: { query: { days: '30' } },
   batteryPowerByApp: { query: range },

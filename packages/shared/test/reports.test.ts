@@ -5,10 +5,6 @@ import { DayReport, WeekQuery, WeekReport } from '../src/reports.js';
 const day = {
   date: '2026-11-08',
   totalSeconds: 3600,
-  byCategory: [
-    { category: 'work', seconds: 3000 },
-    { category: null, seconds: 600 },
-  ],
   topApps: [{ appId: 'code', seconds: 3000 }],
   longestFocusStreakSeconds: 1800,
 };
@@ -16,7 +12,7 @@ const week = {
   start: '2026-11-08',
   days: Array(LIMITS.daysPerWeek).fill(day),
   topApps: [],
-  summary: { totalSeconds: 25200, changePct: -12.5, topCategory: 'work' },
+  summary: { totalSeconds: 25200, changePct: -12.5 },
 };
 
 describe('reports', () => {

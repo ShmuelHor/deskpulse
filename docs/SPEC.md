@@ -193,9 +193,9 @@ All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, pino log
 
 ### gateway
 - **Authentication:** the agent sends `Authorization: Bearer <AGENT_TOKEN>`; the web gets a session cookie through `GET /v1/session`, only from the origin `http://127.0.0.1:4710` or `http://localhost:4710` (the desktop app loads that same origin)
-- **Public API (v1):** `/v1/ingest`, `/v1/dashboard/today`, `/v1/week`, `/v1/apps`, `/v1/rules`, `/v1/battery/*`, `/v1/system/*`, `/v1/focus/*`, `/v1/export`, `/v1/settings`
+- **Public API (v1):** `/v1/ingest`, `/v1/dashboard/today`, `/v1/week`, `/v1/apps`, `/v1/battery/*`, `/v1/system/*`, `/v1/focus/*`, `/v1/export`, `/v1/settings`
 - **Wave 4 public API (v1):** `/v1/ingest`, `/v1/agent/commands`, `/v1/agent/commands/<id>/result`, `/v1/agent/capabilities`, `/v1/live`, `/v1/commands`, `/v1/dashboard/<page>`, `/v1/time/*`, `/v1/battery/*`, `/v1/system/*` (including `/v1/system/attention`, `/v1/system/machine`, `/v1/system/processes`, `/v1/system/docker`, `/v1/system/updates`, `/v1/system/startup`, `/v1/system/disk`), `/v1/focus/*`, `/v1/settings`, `/v1/layouts/<page>`
-- The "Public API" and each service's "API" line list what exists today, and `packages/shared/test/routes.test.ts` checks them against the route map. The "Wave 4" lines are the target: each task moves the endpoints it builds onto the current line and drops the ones it removes (`/v1/rules`, `/v1/export`, `/v1/apps`, `/v1/week`, `/v1/dashboard/today`).
+- The "Public API" and each service's "API" line list what exists today, and `packages/shared/test/routes.test.ts` checks them against the route map. The "Wave 4" lines are the target: each task moves the endpoints it builds onto the current line and drops the ones it removes (`/v1/export`, `/v1/apps`, `/v1/week`, `/v1/dashboard/today`).
 - **Timeouts** of 3 s per service, with a partial response `{data, degraded:["battery"]}` when one is down
 - **Settings** (`gateway.settings`): language, theme (system, light, dark), palette (one of ten), tracking paused, start at login, never-mute apps, capabilities, and the page layouts
 - **Layouts:** one key per page, `{version, widgets: [{id, w, h, view, options}]}`. Unknown widget IDs are dropped when read; deleting the key restores the default

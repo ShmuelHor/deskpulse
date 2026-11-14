@@ -20,10 +20,6 @@ export type LocalDate = z.infer<typeof LocalDate>;
 export const ClockTime = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/);
 export type ClockTime = z.infer<typeof ClockTime>;
 
-/** A user-defined category slug, for example `work` or `social-media`. */
-export const Category = z.string().regex(/^[a-z0-9-]{1,32}$/);
-export type Category = z.infer<typeof Category>;
-
 /** A human-readable label: an app name, a profile name. Untrusted, so only bounded. */
 export const Label = z.string().trim().min(1).max(LIMITS.nameLength);
 export type Label = z.infer<typeof Label>;

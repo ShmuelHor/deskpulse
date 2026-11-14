@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import {
   AppId,
-  Category,
   ClockTime,
   Comm,
   DateQuery,
@@ -43,7 +42,6 @@ describe('primitives', () => {
   it('accepts valid values', () => {
     expect(EntityId.parse('0b7f8c3e-2c55-4b8e-9f3e-1d2a3b4c5d6e')).toBeTruthy();
     expect(ClockTime.parse('23:59')).toBe('23:59');
-    expect(Category.parse('social-media')).toBe('social-media');
     expect(Label.parse('  Firefox  ')).toBe('Firefox');
     expect(Comm.parse('node')).toBe('node');
   });
@@ -51,7 +49,6 @@ describe('primitives', () => {
   it('rejects invalid values', () => {
     expect(EntityId.safeParse('1').success).toBe(false);
     expect(ClockTime.safeParse('24:00').success).toBe(false);
-    expect(Category.safeParse('Work').success).toBe(false);
     expect(Label.safeParse('   ').success).toBe(false);
     expect(Comm.safeParse('').success).toBe(false);
   });
