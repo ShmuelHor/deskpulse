@@ -1,13 +1,13 @@
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { ProcessSample } from '@deskpulse/shared/ingest';
+import { ProcessSample, WindowSample } from '@deskpulse/shared/ingest';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-
 import { createPressureCollector } from '../../apps/agent/src/collectors/pressure/collector.js';
+import { createWindowCollector } from '../../apps/agent/src/collectors/window/collector.js';
 import { createLogger } from '../../apps/agent/src/core/logger.js';
 import type { CollectorContext } from '../../apps/agent/src/core/plugin.js';
-import { SessionBusError } from '../../apps/agent/src/core/session-bus.js';
+import { type SessionBus, SessionBusError } from '../../apps/agent/src/core/session-bus.js';
 
 // Distinctive markers, so a match can only mean a leak. Built at runtime and
 // low-entropy, so gitleaks never sees a token-shaped literal (ST02).
@@ -133,5 +133,42 @@ describe('ST17 agent payload privacy', () => {
     expect(ProcessSample.safeParse(sample).success).toBe(false);
   });
 
-  it.todo('[T47] the agent sends no window title when title collection is off');
+  it('[T62] the window collector never sends a window title', async () => {
+    // Arrange: the extension replies with a secret title for the focused window.
+    const title = ['st17', 'window', 'title', 'marker'].join('-');
+    const list = JSON.stringify([{ wm_class: 'firefox', pid: 1717, focus: true, title }]);
+    const sessionBus: SessionBus = {
+      call: () => Promise.resolve([list]),
+      subscribe: () => Promise.reject(new Error('the window collector does not subscribe')),
+      close: (): void => undefined,
+    };
+    const collector = createWindowCollector();
+    if (collector.collect === undefined) {
+      throw new Error('the window collector polls');
+    }
+
+    // Act
+    const samples = await collector.collect({ ...context(), sessionBus });
+
+    // Assert: the app is there, the title is not.
+    const payload = JSON.stringify(samples);
+    expect(payload).toContain('"wmClass":"firefox"');
+    expect(payload).not.toContain(title);
+    expect(payload).not.toMatch(/title/i);
+  });
+
+  it('[T62] the ingest contract rejects a window sample that carries a title', () => {
+    // Arrange
+    const sample = {
+      kind: 'window',
+      ts: '2026-11-09T08:00:00.000Z',
+      wmClass: 'firefox',
+      title: 'Inbox',
+      pid: 1717,
+      locked: false,
+    };
+
+    // Act / Assert
+    expect(WindowSample.safeParse(sample).success).toBe(false);
+  });
 });

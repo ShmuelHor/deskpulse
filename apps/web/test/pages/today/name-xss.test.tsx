@@ -9,6 +9,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { GatewayClient } from '../../../src/api/gateway.js';
 import { bundledResources } from '../../../src/i18n/bundled.js';
 import { createI18n } from '../../../src/i18n/i18n.js';
+import { CulpritsTable } from '../../../src/pages/system/culprits-table.js';
 import { TodayPage } from '../../../src/pages/today/today-page.js';
 import { renderWithTheme } from '../../support/render-with-theme.js';
 
@@ -31,16 +32,28 @@ function hostileClient(): GatewayClient {
 
 afterEach(cleanup);
 
-describe('ST13 window title XSS (web side)', () => {
+describe('ST13 app name XSS (web side)', () => {
   // The task names Playwright; it is not a dependency yet, so the same assertion runs in a DOM
   // environment: what matters is that the hostile string becomes a text node and never an element.
-  it('a title like <img src=x onerror=...> renders as text', async () => {
+  it('an app name like <img src=x onerror=...> renders as text', async () => {
     const i18n = createI18n(bundledResources, document.createElement('html'));
     renderWithTheme(
       <I18nextProvider i18n={i18n}>
         <QueryClientProvider client={new QueryClient()}>
           <TodayPage client={hostileClient()} />
         </QueryClientProvider>
+      </I18nextProvider>,
+    );
+
+    expect(await screen.findByText(PAYLOAD)).toBeTruthy();
+    expect(document.querySelector('img')).toBeNull();
+  });
+
+  it('a process name like <img src=x onerror=...> renders as text', async () => {
+    const i18n = createI18n(bundledResources, document.createElement('html'));
+    renderWithTheme(
+      <I18nextProvider i18n={i18n}>
+        <CulpritsTable culprits={[{ comm: PAYLOAD, container: null, incidents: 1 }]} />
       </I18nextProvider>,
     );
 
