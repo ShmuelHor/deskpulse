@@ -41,7 +41,7 @@ Remote takeover of the machine is out of scope. Anything that does not serve one
 | A13 | **Malicious dependency** (supply chain) | `npm ci`, `ignore-scripts=true`, npm audit, Dependabot, dependency-review, only popular and maintained packages, Actions pinned to a SHA, images pinned to a digest | T01, T04, T06 | CI |
 | A14 | **An app stays muted after a crash** | Save state before every change and restore it on startup | T34 | T34 test |
 | A15 | **docker socket = root privileges** | DeskPulse never requires or grants the `docker` group. Docker features appear only when the user already has access; containers never mount the socket | T24, T79 | ST01, ST23 |
-| A16 | **A forged or replayed command** (a local process or a page tries to make the agent act) | Commands are created only by the gateway from an authenticated, CSRF-checked web request; a closed Zod union; single-use ID; 30 s TTL; delivered only to the authenticated agent | T72 | ST19 |
+| A16 | **A forged or replayed command** (a local process or a page tries to make the agent act) | User actions are created only by the gateway from an authenticated, CSRF-checked web request; system commands (`liveMode`, `mute`, `restore`) only by the gateway itself and never from a request body; a closed Zod union; single-use ID; 30 s TTL; delivered only to the authenticated agent | T72 | ST19 |
 | A17 | **API flooding** | Rate limit: ingest once per 10 s, web 300 requests per minute. 1MB body limit | T19 | ST09, ST10 |
 | A18 | **Unexpected input crashes a service** | zod at every boundary. Fuzzing for every route | T19 | ST08 |
 | A19 | **The CI/CD itself is compromised** | `contents: read` permissions by default, no `pull_request_target`, actionlint, SHA-pinned actions, no stored keys | T03–T06 | CI |
@@ -49,7 +49,7 @@ Remote takeover of the machine is out of scope. Anything that does not serve one
 | A21 | **Ending the wrong process** (PID reuse, another user's or a system process) | Same uid only; identity = PID + start time from `/proc/<pid>/stat`; system apps, DeskPulse itself and never-mute apps refused | T56, T72 | ST21 |
 | A22 | **Startup apps or the power and charge settings changed behind the user's back** | Only through confirmed commands; startup changes only as user overrides in `~/.config/autostart` (never `/etc`); the charge-limit rule is installed once with consent and allows only `charge_control_end_threshold` values 50–100 | T76, T77 | ST22 |
 | A23 | **Docker actions hit DeskPulse's own stack or something else** | Only `stop`, `start`, `rm` of stopped containers and dangling-image prune; DeskPulse's compose project labels are refused | T79 | ST23 |
-| A24 | **The desktop shell gives a page native powers** | The Tauri window loads `http://127.0.0.1:4710` with no IPC capabilities granted to it; `deskpulse://` links carry only an allowlisted dialog name and are parsed with Zod; the shell's one command (`docker compose up -d` for DeskPulse's file) uses an args array | T82 | ST24 |
+| A24 | **The desktop shell gives a page native powers** | The Tauri window loads `http://127.0.0.1:4710` with no IPC capabilities granted to it; `deskpulse://` links carry only an allowlisted dialog name and are parsed with Zod; the shell's one command (`docker compose -f <file> up -d`, the path fixed at install time) uses an args array and is offered only with existing Docker access | T82 | ST24 |
 
 ### Content Security Policy (web)
 The web container (`apps/web/nginx/security-headers.conf`) sends this policy on every response, errors included. ST07 checks it.
@@ -98,7 +98,7 @@ CD fails if a single todo remains (`npm run security:todo`). That way no test ca
 | ST08 | **Fuzzing:** for every route, 50 invalid inputs (fast-check from the zod schema) → always 400, never 500 | T19 + every route task |
 | ST09 | Rate limit → 429 | T19 |
 | ST10 | Body larger than 1MB → 413 | T19 |
-| ST11 | **Redaction:** an injected token and title do not appear in the log output | T09, T12 |
+| ST11 | **Redaction:** an injected token and title do not appear in the log output, and neither does a cleanup file path | T09, T12, T78 |
 | ST12 | SQL injection payloads in every parameter → no DB error and no leak | T13–T18 |
 | ST13 | **XSS:** an app or process name of `<img src=x onerror=…>` is rendered as text (Playwright) | T35, T62 |
 | ST14 | Muter: an app-id containing `;`, `$()` or a space is rejected, and `execFile` is called without a shell | T34 |
@@ -106,12 +106,12 @@ CD fails if a single todo remains (`npm run security:todo`). That way no test ca
 | ST16 | Least privilege: a service's DB user cannot read another service's schema | T10 |
 | ST17 | The agent never reads or sends `cmdline` or window titles | T23, T62 |
 | ST18 | **No container egress:** every compose service except web and gateway is attached only to `internal: true` networks, and web and gateway have at most one non-internal network (needed for loopback publishing) | T10 |
-| ST19 | **Commands:** a command without a session or CSRF → 403; an unknown type, a replayed ID or one past its TTL is refused by the gateway and by the agent | T72 |
+| ST19 | **Commands:** a command without a session or CSRF → 403; a system command type (`liveMode`, `mute`, `restore`) in a web request → 400; an unknown type, a replayed ID or one past its TTL is refused by the gateway and by the agent | T72 |
 | ST20 | **Cleanup:** a symlink out of the root, `..` in a path, or a path outside the allowlist is refused, and nothing outside the root is deleted (temp-dir fixture) | T78 |
 | ST21 | **End app:** a PID owned by another uid, a reused PID (different start time), a system app or DeskPulse itself is refused | T72 |
 | ST22 | **Startup and power:** the agent writes only under `~/.config/autostart`, and the charge rule rejects values outside 50–100 | T76, T77 |
 | ST23 | **Docker:** DeskPulse's own containers and images are refused, and nothing runs without existing socket access | T79 |
-| ST24 | **Desktop shell:** the window has no IPC capabilities, and a malformed `deskpulse://` link is ignored | T82 |
+| ST24 | **Desktop shell:** the window has no IPC capabilities, a malformed `deskpulse://` link is ignored, and the start command uses only the install-time compose path | T82 |
 
 ## 4. CI security gates (blocking)
 | Tool | What it checks | When |

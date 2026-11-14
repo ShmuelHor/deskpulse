@@ -126,8 +126,10 @@ Every actuator is reached only through a confirmed command (§4.3), except the n
 
 ### 4.3 Commands
 - The agent long-polls `GET /v1/agent/commands` (held up to 25 s, no polling while locked).
-- A command is one of a closed Zod union: `endApp`, `cleanup`, `measureFolders`, `setStartupApp`, `setPowerProfile`, `setChargeLimit`, `dockerAction`, `refreshUpdates`, `liveMode`.
-- The gateway creates a command only from a confirmed web request, gives it a single-use ID and a 30 s TTL, and drops it once delivered.
+- A command is one of a closed Zod union with two kinds:
+  - **User actions**, created by the gateway only from an authenticated, CSRF-checked web request the user confirmed: `endApp`, `cleanup`, `measureFolders`, `setStartupApp`, `setPowerProfile`, `setChargeLimit`, `dockerAction`, `refreshUpdates`.
+  - **System commands**, created by the gateway itself and never from a web request body: `liveMode` (from the live stream, §3), `mute` and `restore` (from focus start and stop). They change only reversible state.
+- Every command gets a single-use ID and a 30 s TTL, and is dropped once delivered.
 - The agent re-validates every command before acting: same uid, process identity by PID **and** start time (no PID reuse), never a system or protected app, paths only under the allowlist, Docker objects not DeskPulse's own.
 - The result (`done`, `refused` with a code, or `failed`) goes back to the gateway and on to the web's stream.
 
@@ -187,7 +189,7 @@ All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, pino log
 
 ### gateway
 - **Authentication:** the agent sends `Authorization: Bearer <AGENT_TOKEN>`; the web gets a session cookie through `GET /v1/session`, only from the origin `http://127.0.0.1:4710` or `http://localhost:4710` (the desktop app loads that same origin)
-- **Public API (v1):** `/v1/ingest`, `/v1/agent/commands`, `/v1/agent/capabilities`, `/v1/live`, `/v1/commands`, `/v1/dashboard/<page>`, `/v1/time/*`, `/v1/battery/*`, `/v1/system/*`, `/v1/focus/*`, `/v1/settings`, `/v1/layouts/<page>`
+- **Public API (v1):** `/v1/ingest`, `/v1/agent/commands`, `/v1/agent/commands/<id>/result`, `/v1/agent/capabilities`, `/v1/live`, `/v1/commands`, `/v1/dashboard/<page>`, `/v1/time/*`, `/v1/battery/*`, `/v1/system/*` (including `/v1/system/attention`, `/v1/system/machine`, `/v1/system/processes`, `/v1/system/docker`, `/v1/system/updates`, `/v1/system/startup`, `/v1/system/disk`), `/v1/focus/*`, `/v1/settings`, `/v1/layouts/<page>`
 - **Timeouts** of 3 s per service, with a partial response `{data, degraded:["battery"]}` when one is down
 - **Settings** (`gateway.settings`): language, theme (system, light, dark), palette (one of ten), tracking paused, start at login, never-mute apps, capabilities, and the page layouts
 - **Layouts:** one key per page, `{version, widgets: [{id, w, h, view, options}]}`. Unknown widget IDs are dropped when read; deleting the key restores the default
@@ -200,7 +202,7 @@ All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, pino log
 
 ### 6.1 Desktop shell (Tauri)
 - One window that loads `http://127.0.0.1:4710`, with **no Tauri IPC granted to that content**. The shell itself only manages the window, a single instance, and `deskpulse://` links (used by notification actions to open a confirmation dialog).
-- If the web does not answer, the shell shows its own page: "DeskPulse's services aren't running", with Retry and "Start them" (`docker compose up -d` for DeskPulse's compose file, as the user, with an args array).
+- If the web does not answer, the shell shows its own page: "DeskPulse's services aren't running", with Retry and "Start them". "Start them" runs `docker compose -f <file> up -d` with an args array, where `<file>` is the absolute path fixed at install time; it is offered only when the user already has Docker access (the same access they use to run the stack), and otherwise the page explains how to start Docker. DeskPulse never adds the user to the `docker` group.
 - The browser keeps working at `http://127.0.0.1:4710` for development.
 
 ### 6.2 Web
