@@ -7,11 +7,10 @@ interface IdentifiedSession extends CountedSession {
   readonly id: string;
 }
 
-function toCounted({ session, category }: ClosedSession): IdentifiedSession {
+function toCounted(session: ClosedSession): IdentifiedSession {
   return {
     id: session.id,
     appId: session.appId,
-    category,
     startMs: Date.parse(session.start),
     endMs: Date.parse(session.end),
   };
@@ -32,20 +31,10 @@ async function updateStreaks(
   tx: ReportsTransaction,
   sessions: readonly CountedSession[],
 ): Promise<void> {
-  // Uncategorized time never forms a streak, so it neither needs nor widens the lookup.
-  const categorized = sessions.filter((session) => session.category !== null);
-  const categories = [
-    ...new Set(
-      categorized.flatMap((session) => (session.category === null ? [] : [session.category])),
-    ),
-  ];
-  if (categorized.length === 0) {
-    return;
-  }
-  const fromMs = Math.min(...categorized.map((session) => session.startMs)) - MAX_INTERRUPTION_MS;
-  const toMs = Math.max(...categorized.map((session) => session.endMs)) + MAX_INTERRUPTION_MS;
-  const stored = await tx.streaksNear(categories, fromMs, toMs);
-  const changes = mergeStreaks(stored, categorized);
+  const fromMs = Math.min(...sessions.map((session) => session.startMs)) - MAX_INTERRUPTION_MS;
+  const toMs = Math.max(...sessions.map((session) => session.endMs)) + MAX_INTERRUPTION_MS;
+  const stored = await tx.streaksNear(fromMs, toMs);
+  const changes = mergeStreaks(stored, sessions);
   await tx.replaceStreaks(changes.removed, changes.added);
 }
 

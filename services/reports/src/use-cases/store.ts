@@ -17,16 +17,12 @@ export interface ReportsTransaction {
   readonly lockWrites: () => Promise<void>;
   /** Records sessions as counted and returns the ids no earlier batch counted. */
   readonly markCounted: (sessions: readonly CountedSessionKey[]) => Promise<Set<string>>;
-  /** Adds each entry's time to its day, app and category. */
+  /** Adds each entry's time to its day and app. */
   readonly addToRollups: (entries: readonly RollupEntry[]) => Promise<void>;
   /** Rollups of the days in `[from, to)`. */
   readonly rollups: (from: LocalDateString, to: LocalDateString) => Promise<RollupEntry[]>;
-  /** Streaks of these categories that overlap `[fromMs, toMs]`. */
-  readonly streaksNear: (
-    categories: readonly string[],
-    fromMs: number,
-    toMs: number,
-  ) => Promise<StoredStreak[]>;
+  /** Streaks that overlap `[fromMs, toMs]`. */
+  readonly streaksNear: (fromMs: number, toMs: number) => Promise<StoredStreak[]>;
   /** Streaks that started in `[fromMs, toMs)`. */
   readonly streaksStarting: (fromMs: number, toMs: number) => Promise<StoredStreak[]>;
   readonly replaceStreaks: (removed: readonly string[], added: readonly Streak[]) => Promise<void>;

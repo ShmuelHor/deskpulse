@@ -16,7 +16,7 @@ export interface MemoryStore extends ReportsStore {
 }
 
 function sameKey(a: RollupEntry, b: RollupEntry): boolean {
-  return a.date === b.date && a.appId === b.appId && a.category === b.category;
+  return a.date === b.date && a.appId === b.appId;
 }
 
 function bind(state: State): ReportsTransaction {
@@ -43,11 +43,8 @@ function bind(state: State): ReportsTransaction {
     },
     rollups: async (from, to) =>
       state.rollups.filter((entry) => entry.date >= from && entry.date < to),
-    streaksNear: async (categories, fromMs, toMs) =>
-      state.streaks.filter(
-        (streak) =>
-          categories.includes(streak.category) && streak.startMs <= toMs && streak.endMs >= fromMs,
-      ),
+    streaksNear: async (fromMs, toMs) =>
+      state.streaks.filter((streak) => streak.startMs <= toMs && streak.endMs >= fromMs),
     streaksStarting: async (fromMs, toMs) =>
       state.streaks.filter((streak) => streak.startMs >= fromMs && streak.startMs < toMs),
     replaceStreaks: async (removed, added): Promise<void> => {

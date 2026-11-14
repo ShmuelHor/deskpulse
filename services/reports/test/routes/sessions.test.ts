@@ -7,7 +7,7 @@ import { createTestService, type TestService } from '../test-service.js';
 const HTTP_OK = 200;
 const HTTP_BAD_REQUEST = 400;
 
-const closed = { session: sessionFixture, category: 'work' };
+const closed = sessionFixture;
 
 describe('POST /sessions', () => {
   let subject: TestService;
@@ -32,29 +32,24 @@ describe('POST /sessions', () => {
 
   it.each([
     ['an empty batch', { sessions: [] }],
-    [
-      'an app id with a quote',
-      { sessions: [{ ...closed, session: { ...sessionFixture, appId: "code'--" } }] },
-    ],
-    ['a category with a space', { sessions: [{ ...closed, category: 'deep work' }] }],
+    ['an app id with a quote', { sessions: [{ ...sessionFixture, appId: "code'--" }] }],
+    ['an unknown field', { sessions: [{ ...closed, category: 'work' }] }],
     [
       'an end before the start',
       {
-        sessions: [{ ...closed, session: { ...sessionFixture, end: '2026-11-08T08:00:00.000Z' } }],
+        sessions: [{ ...sessionFixture, end: '2026-11-08T08:00:00.000Z' }],
       },
     ],
     [
       'a session longer than a week',
       {
-        sessions: [{ ...closed, session: { ...sessionFixture, end: '2026-12-08T09:00:00.000Z' } }],
+        sessions: [{ ...sessionFixture, end: '2026-12-08T09:00:00.000Z' }],
       },
     ],
     [
       'a session before 2000',
       {
-        sessions: [
-          { ...closed, session: { ...sessionFixture, start: '1999-12-31T23:00:00.000Z' } },
-        ],
+        sessions: [{ ...sessionFixture, start: '1999-12-31T23:00:00.000Z' }],
       },
     ],
     ['an unknown field', { sessions: [closed], cmdline: 'x' }],

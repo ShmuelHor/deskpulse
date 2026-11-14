@@ -9,14 +9,12 @@ export interface CountedSessionsTable {
 export interface DailyRollupsTable {
   readonly day: LocalDate;
   readonly app_id: string;
-  readonly category: string | null;
   /** `bigint`, which pg returns as a string; read through a `float8` cast. */
   readonly active_ms: ColumnType<string, number, number>;
 }
 
 export interface FocusStreaksTable {
   readonly id: Generated<string>;
-  readonly category: string;
   readonly start_at: Timestamp;
   readonly end_at: Timestamp;
 }

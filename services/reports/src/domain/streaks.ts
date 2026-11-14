@@ -7,10 +7,9 @@ import type { CountedSession } from './rollup.js';
  */
 export const MAX_INTERRUPTION_MS = 60_000;
 
-/** A stretch of continuous focus on one category. `id` is `null` until it is stored. */
+/** A stretch of continuous activity. `id` is `null` until it is stored. */
 export interface Streak {
   readonly id: string | null;
-  readonly category: string;
   readonly startMs: number;
   readonly endMs: number;
 }
@@ -31,7 +30,7 @@ function byStart(a: Streak, b: Streak): number {
   return a.startMs - b.startMs;
 }
 
-function mergeCategory(stored: readonly StoredStreak[], fresh: readonly Streak[]): StreakChanges {
+function mergeSpans(stored: readonly StoredStreak[], fresh: readonly Streak[]): StreakChanges {
   const removed: string[] = [];
   const added: Streak[] = [];
   const flush = (group: Streak[]): void => {
@@ -46,7 +45,7 @@ function mergeCategory(stored: readonly StoredStreak[], fresh: readonly Streak[]
       return; // The sessions fell inside a stored streak; nothing changes.
     }
     removed.push(...group.flatMap((streak) => (streak.id === null ? [] : [streak.id])));
-    added.push({ id: null, category: first.category, startMs, endMs });
+    added.push({ id: null, startMs, endMs });
   };
 
   let group: Streak[] = [];
@@ -64,29 +63,15 @@ function mergeCategory(stored: readonly StoredStreak[], fresh: readonly Streak[]
 }
 
 /**
- * Joins new sessions into focus streaks: a streak is a stretch on one category
+ * Joins new sessions into focus streaks: a streak is a stretch of activity
  * with no interruption longer than {@link MAX_INTERRUPTION_MS}. `stored` holds
  * the streaks near the sessions; any the sessions bridge become one. Joining
  * spans is order-independent, so batches may arrive in any order.
- * Uncategorized time is not focus, so it never forms a streak.
  */
 export function mergeStreaks(
   stored: readonly StoredStreak[],
   sessions: readonly CountedSession[],
 ): StreakChanges {
-  const categories = new Set(sessions.flatMap((s) => (s.category === null ? [] : [s.category])));
-  const removed: string[] = [];
-  const added: Streak[] = [];
-  for (const category of categories) {
-    const fresh = sessions.flatMap((s) =>
-      s.category === category ? [{ id: null, category, startMs: s.startMs, endMs: s.endMs }] : [],
-    );
-    const changes = mergeCategory(
-      stored.filter((streak) => streak.category === category),
-      fresh,
-    );
-    removed.push(...changes.removed);
-    added.push(...changes.added);
-  }
-  return { removed, added };
+  const fresh = sessions.map((s) => ({ id: null, startMs: s.startMs, endMs: s.endMs }));
+  return mergeSpans(stored, fresh);
 }
