@@ -68,7 +68,7 @@ branch t13-…  →  commits  →  push  →  PR (draft)  →  CI green  →  Re
 | 2 · Independent units | [x] T13 [x] T14 [x] T15 [x] T16 [x] T17 [x] T18 [x] T19 [x] T20 [x] T21 [x] T22 [x] T23 [x] T24 [x] T25 [x] T26 | G2 |
 | 3 · Integration (closed; G3's manual checks were dropped for the replan) | [x] T27 [x] T28 [x] T29 [x] T30 [x] T31 [x] T32 [x] T33 [x] T34 [x] T35 [x] T36 [x] T37 [x] T38 [x] T39 [x] T40 [x] T41 | G3 |
 | 4A · Fix and trim | [ ] #202 [x] T60 [ ] T61 [ ] T62 [ ] T63 [ ] T64 [ ] T65 | G4A |
-| 4B · Design system, shell, pages | [ ] T66 [ ] T68 [ ] T67 [ ] T57 [ ] T43 [ ] T58 [ ] T69 [ ] T47 | G4B |
+| 4B · Design system, shell, pages | [ ] T66 [ ] T68 [ ] T67 [ ] T57 [ ] T43 [ ] T58 [ ] T69 [ ] T47 [ ] T85 | G4B |
 | 4C · Control center | [ ] T72 [ ] T73 [ ] T74 [ ] T75 [ ] T76 [ ] T77 [ ] T78 [ ] T79 [ ] T56 [ ] T80 [ ] T81 [ ] T83 | G4C |
 | 4D · Desktop app | [ ] T82 [ ] T42 [ ] T51 [ ] T84 | G4D |
 | 5 · Release | [ ] T52 [ ] T53 [ ] T54 [ ] T55 | G5 = v1.0.0 |
@@ -377,6 +377,7 @@ T66 and T68 start during 4A (right after T60), then T67 and T57, then the pages.
 - **T58 · Performance page (redone):** slowdowns in plain words with the culprit (#189), heat and memory, battery detail, and the power widget (read-only until T77). Owns: `apps/web/src/pages/performance/`, its widget bodies
 - **T69 · Focus page:** start focus, last focus, profiles as readable lists (#196), alerts that waited, the focus banner and the focus-end summary dialog. Owns: `apps/web/src/pages/focus/`
 - **T47 · Pause (reduced) and Settings page:** pause and resume tracking end to end (agent, gateway, web), and the Settings page: language, theme, palette picker, pause, start at login (wired in T42), never-mute apps. Owns: `apps/web/src/pages/settings/`, the agent's pause state
+- **T85 · Alert sensitivity:** a `low`/`normal`/`high` setting per resource (memory, cpu, io, temperature, disk) with `normal` as the default, the threshold table from SPEC §5 (system) in the system service's `domain/`, the gateway passing the levels with each sample batch, and the Settings section with one three-way control per resource. Runs after T62 and T68 (same settings schema) and with or after T47. Owns: the sensitivity part of the settings schema, `services/system/src/domain/` thresholds, the Settings section
 
 **Gate G4B:** [ ] every page except Control, Processes and Maintenance matches the design canvas in he/en, light/dark, wide and small [ ] layouts survive a reload [ ] palette contrast test green
 
