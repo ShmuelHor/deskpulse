@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { DEFAULT_PALETTE, PaletteId } from '@deskpulse/shared/settings';
 
 import { contrastRatio, mix, over, withAlpha } from './color-math.js';
 import type { ResolvedTheme } from './theme.js';
@@ -11,22 +11,7 @@ import type { ResolvedTheme } from './theme.js';
  * `data-theme`.
  */
 
-/** The ten palettes the user can pick in Settings. */
-export const PaletteId = z.enum([
-  'stone-mustard',
-  'navy',
-  'violet',
-  'berry',
-  'ocean',
-  'crimson',
-  'plum',
-  'dusty-rose',
-  'indigo',
-  'graphite',
-]);
-export type PaletteId = z.infer<typeof PaletteId>;
-
-export const DEFAULT_PALETTE: PaletteId = 'stone-mustard';
+export { DEFAULT_PALETTE, PaletteId };
 
 /** The three colors a palette defines per mode; every other token derives from them. */
 export interface PaletteColors {

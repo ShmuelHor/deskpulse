@@ -299,8 +299,8 @@ describe('POST /v1/ingest', () => {
       systemApps: ['org.gnome.Settings'],
     };
     const broken = {
+      ...memorySettings(),
       read: () => Promise.reject(new Error('db down')),
-      write: () => Promise.reject(new Error('db down')),
     };
 
     const fromSaved = settingsDeps(memorySettings(saved), logger);

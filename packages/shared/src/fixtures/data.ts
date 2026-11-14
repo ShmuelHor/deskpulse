@@ -2,6 +2,7 @@ import type { Alert } from '../alerts.js';
 import type { BatteryNow } from '../battery.js';
 import type { FocusState, Profile } from '../focus.js';
 import type { WindowSample } from '../ingest.js';
+import type { Layout } from '../layouts/layout.js';
 import type { DayReport } from '../reports.js';
 import type { App, Session } from '../sessions.js';
 import type { Settings } from '../settings.js';
@@ -86,10 +87,19 @@ export const alertFixture: Alert = {
 export const settingsFixture: Settings = {
   language: 'he',
   theme: 'system',
+  palette: 'stone-mustard',
   privacy: { excludedApps: ['keepassxc'] },
   thresholds: { memory: 10, cpu: 40, io: 30 },
   systemApps: ['org.gnome.Settings'],
   quietHours: { enabled: true, start: '22:00', end: '07:00' },
+};
+
+export const layoutFixture: Layout = {
+  version: 1,
+  widgets: [
+    { id: 'cpu', w: 2, h: 1, view: 'ring' },
+    { id: 'network', w: 2, h: 2, options: { uploadLine: true } },
+  ],
 };
 
 export const windowSampleFixture: WindowSample = {

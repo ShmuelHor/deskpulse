@@ -8,10 +8,28 @@ export type Language = z.infer<typeof Language>;
 export const Theme = z.enum(['system', 'light', 'dark']);
 export type Theme = z.infer<typeof Theme>;
 
+/** The ten color palettes the user can pick (docs/DESIGN.md §2). */
+export const PaletteId = z.enum([
+  'stone-mustard',
+  'navy',
+  'violet',
+  'berry',
+  'ocean',
+  'crimson',
+  'plum',
+  'dusty-rose',
+  'indigo',
+  'graphite',
+]);
+export type PaletteId = z.infer<typeof PaletteId>;
+
+export const DEFAULT_PALETTE: PaletteId = 'stone-mustard';
+
 /** `gateway.settings`, the only data the gateway owns (SPEC §5 gateway). */
 export const Settings = z.strictObject({
   language: Language,
   theme: Theme,
+  palette: PaletteId,
   privacy: z.strictObject({
     /** Apps that are not tracked at all. */
     excludedApps: z.array(AppId).max(LIMITS.listSize),

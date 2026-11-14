@@ -84,7 +84,11 @@ describe('MSW handlers', () => {
   it.each(all.filter(([, r]) => r.params !== undefined))(
     '%s rejects an invalid path parameter with 400',
     async (name, route) => {
-      const response = await send(route, { ...validCall(name), params: { id: 'bad id' } });
+      const valid = validCall(name);
+      const params = Object.fromEntries(
+        Object.keys(valid.params ?? {}).map((key) => [key, 'bad id']),
+      );
+      const response = await send(route, { ...valid, params });
       expect(response.status).toBe(BAD_REQUEST);
     },
   );

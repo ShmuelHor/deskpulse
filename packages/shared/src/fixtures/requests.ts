@@ -3,6 +3,7 @@ import {
   appFixture,
   FIXTURE_DATE,
   FIXTURE_IDS,
+  layoutFixture,
   profileFixture,
   settingsFixture,
   windowSampleFixture,
@@ -44,4 +45,7 @@ export const requestFixtures: { readonly [K in RouteName]: RequestFixture } = {
   export: { query: { from: '2026-11-01', to: FIXTURE_DATE } },
   getSettings: {},
   updateSettings: { body: settingsFixture },
+  getLayout: { params: { page: 'control' } },
+  saveLayout: { params: { page: 'control' }, body: layoutFixture },
+  resetLayout: { params: { page: 'control' } },
 };

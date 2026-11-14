@@ -15,6 +15,7 @@ import {
 } from './focus.js';
 import { DashboardToday, ExportBundle, ExportQuery, WebSession } from './gateway.js';
 import { IngestBatch, IngestResult } from './ingest.js';
+import { Layout, LayoutParams } from './layouts/layout.js';
 import { WeekQuery, WeekReport } from './reports.js';
 import { App, AppList, AppUpdate } from './sessions.js';
 import { Settings } from './settings.js';
@@ -242,6 +243,33 @@ export const routes = {
     status: 200,
     body: Settings,
     response: Settings,
+  },
+
+  getLayout: {
+    method: 'GET',
+    path: '/v1/layouts/:page',
+    auth: 'session',
+    status: 200,
+    params: LayoutParams,
+    /** `null` when the user has not arranged this page: the web uses the page's default. */
+    response: Layout.nullable(),
+  },
+  saveLayout: {
+    method: 'PUT',
+    path: '/v1/layouts/:page',
+    auth: 'session',
+    status: 200,
+    params: LayoutParams,
+    body: Layout,
+    response: Layout,
+  },
+  resetLayout: {
+    method: 'DELETE',
+    path: '/v1/layouts/:page',
+    auth: 'session',
+    status: 204,
+    params: LayoutParams,
+    response: null,
   },
 } as const satisfies Record<string, RouteContract>;
 

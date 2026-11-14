@@ -15,6 +15,7 @@ const available = await dockerAvailable();
 const CHANGED: Settings = {
   language: 'en',
   theme: 'dark',
+  palette: 'navy',
   privacy: { excludedApps: ['keepassxc'] },
   thresholds: { memory: 15, cpu: 50, io: 35 },
   systemApps: ['org.gnome.Settings'],
@@ -74,5 +75,32 @@ describe.skipIf(!available)('createSettingsStore', () => {
 
     await expect(attempt).rejects.toThrow();
     expect(await store().read()).toEqual(DEFAULT_SETTINGS);
+  });
+
+  it('has no layout for a page until one is saved', async () => {
+    expect(await store().readLayout('time')).toBeNull();
+  });
+
+  it('keeps a layout per page and replaces it on the next write', async () => {
+    const settings = store();
+    const first = { version: 1 as const, widgets: [{ id: 'cpu', w: 1, h: 1 }] };
+    const second = { version: 1 as const, widgets: [{ id: 'memory', w: 2, h: 2 }] };
+
+    await settings.writeLayout('control', first);
+    await settings.writeLayout('control', second);
+    await settings.writeLayout('time', first);
+
+    expect(await settings.readLayout('control')).toEqual(second);
+    expect(await settings.readLayout('time')).toEqual(first);
+  });
+
+  it('forgets a layout on delete, and deleting twice is harmless', async () => {
+    const settings = store();
+    await settings.writeLayout('focus', { version: 1, widgets: [] });
+
+    await settings.deleteLayout('focus');
+    await settings.deleteLayout('focus');
+
+    expect(await settings.readLayout('focus')).toBeNull();
   });
 });
