@@ -49,7 +49,7 @@ Every palette is **three colors per mode**: background, ink and accent. Stone an
 | `ring` | accent | accent |
 | `tooltip` | white, ink text, hairline border | bg mixed 10% toward white, ink text |
 
-Every text pair passes **4.5:1** (muted on bg, accentText on bg and on accentSoft, onAccent on accent). A new palette ships only with a test that checks this.
+Every text pair passes **4.5:1** (muted on bg, accentText on bg and on accentSoft, onAccent on accent). Where the table's mix falls short, `accentText` deepens in 5-point steps toward its target until both of its pairs pass. A new palette ships only with a test that checks this.
 
 ## 3. Typography
 | Role | Font | Size / weight |

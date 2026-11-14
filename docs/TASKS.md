@@ -67,8 +67,8 @@ branch t13-…  →  commits  →  push  →  PR (draft)  →  CI green  →  Re
 | 1 · Contracts and infrastructure | [x] T08 [x] T09 [x] T10 [x] T11 [x] T12 | G1 |
 | 2 · Independent units | [x] T13 [x] T14 [x] T15 [x] T16 [x] T17 [x] T18 [x] T19 [x] T20 [x] T21 [x] T22 [x] T23 [x] T24 [x] T25 [x] T26 | G2 |
 | 3 · Integration (closed; G3's manual checks were dropped for the replan) | [x] T27 [x] T28 [x] T29 [x] T30 [x] T31 [x] T32 [x] T33 [x] T34 [x] T35 [x] T36 [x] T37 [x] T38 [x] T39 [x] T40 [x] T41 | G3 |
-| 4A · Fix and trim | [ ] #202 [x] T60 [ ] T61 [ ] T62 [ ] T63 [ ] T64 [ ] T65 | G4A |
-| 4B · Design system, shell, pages | [ ] T66 [ ] T68 [ ] T67 [ ] T57 [ ] T43 [ ] T58 [ ] T69 [ ] T47 [ ] T85 | G4B |
+| 4A · Fix and trim | [x] #202 [x] T60 [x] T61 [x] T62 [x] T63 [x] T64 [x] T65 | G4A ✓ |
+| 4B · Design system, shell, pages | [x] T66 [x] T68 [ ] T67 [ ] T57 [ ] T43 [ ] T58 [ ] T69 [ ] T47 [ ] T85 | G4B |
 | 4C · Control center | [ ] T72 [ ] T73 [ ] T74 [ ] T75 [ ] T76 [ ] T77 [ ] T78 [ ] T79 [ ] T56 [ ] T80 [ ] T81 [ ] T83 | G4C |
 | 4D · Desktop app | [ ] T82 [ ] T42 [ ] T51 [ ] T84 | G4D |
 | 5 · Release | [ ] T52 [ ] T53 [ ] T54 [ ] T55 | G5 = v1.0.0 |
@@ -364,7 +364,7 @@ Dropped from the old plan (their issues are closed): T44 GNOME "Do Not Disturb",
 - **T64 · Security test stubs:** ST19–ST24 as `it.todo` with their owners, and ST15 without the backups case. Owns: `tests/security/`
 - **T65 · Silent retention:** a nightly job per service deletes raw samples older than 90 days and keeps rollups and summaries; a log line says how much was deleted. Owns: `services/*/src/jobs/retention.ts`
 
-**Gate G4A:** [ ] #202 merged [ ] no categories, titles, idle or alert levels left in the services, the gateway, the agent or the contracts [ ] `npm run security:todo` lists only ST19–ST24 owners
+**Gate G4A:** [x] #202 merged [x] no categories, titles, idle or alert levels left in the services, the gateway, the agent or the contracts [x] `npm run security:todo` lists only ST19–ST24 owners
 
 ### 4B · Design system, shell and existing pages
 T66 and T68 start during 4A (right after T60), then T67 and T57, then the pages. T57 deletes the old pages and their i18n.

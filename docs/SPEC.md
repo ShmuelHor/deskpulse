@@ -192,15 +192,15 @@ All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, pino log
     | disk (warning / critical) | 90% / 97% | 85% / 95% | 80% / 90% |
 
     The gateway passes the levels with each `POST /samples`; the system service maps them to thresholds in `domain/`
-  - "Needs attention" list: pending updates (security first), disk above 85%, a container down, a slowdown right now, a heavy app
+  - "Needs attention" list: pending updates (security first), disk above the warning threshold, a container down, a slowdown right now, a heavy app
 - **API:** `POST /samples`, `GET /incidents?from&to`, `GET /culprits?days`, `GET /timeline?date`
 - **Wave 4 API:** `GET /slowdowns?from&to` replaces `/incidents` (T58), and `GET /machine`, `GET /attention`, `GET /connectivity?days` are added (T75)
 
 ### focus
 - **Entities:** `profiles` (name, muted apps, exceptions, mute new apps), `focus_sessions`, `held_alerts`, `known_apps`
-- **Alert rule (fixed, no settings):** "battery almost empty" always gets through. Everything else is delivered right away outside focus and held during focus, then shown in the focus-end summary. Duplicate alerts (same key within 10 min) are dropped
+- **Alert rule (fixed, no settings):** "battery almost empty" always gets through. Everything else is delivered right away outside focus and held during focus, then shown in the focus-end summary. Duplicate alerts (same key within 10 min) are dropped. Alert sensitivity (T85) changes only when a resource alert opens, never how it is delivered
 - **API:** `POST /start`, `POST /stop`, `GET /state`, CRUD for `/profiles`, `POST /route`, `GET /queue`, `GET /known-apps`, `POST /known-apps`
-- **Wave 4 API:** `/alert-policy` goes (T63); `GET /held` replaces `/queue`, and `POST /extend` and `GET /summary/<id>` are added (T69)
+- **Wave 4 API:** `GET /held` replaces `/queue`, and `POST /extend` and `GET /summary/<id>` are added (T69)
 
 ### gateway
 - **Authentication:** the agent sends `Authorization: Bearer <AGENT_TOKEN>`; the web gets a session cookie through `GET /v1/session`, only from the origin `http://127.0.0.1:4710` or `http://localhost:4710` (the desktop app loads that same origin)
