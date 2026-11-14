@@ -1,6 +1,6 @@
 # DeskPulse: agent rules
 
-Local-only desktop control center for Linux (GNOME Wayland): live system state, slowdowns, a task manager, cleanup, updates, startup apps, time by app, and focus mode. Called Yoman until wave 4; code still uses `yoman` names until T60.
+Local-only desktop control center for Linux (GNOME Wayland): live system state, slowdowns, a task manager, cleanup, updates, startup apps, time by app, and focus mode. Called Yoman until wave 4.
 Read before any task: `docs/TASKS.md` (work queue and parallel rules), `docs/SPEC.md` (what), `docs/SECURITY.md` (threats and required tests), `docs/DESIGN.md` (look).
 
 ## Roles
