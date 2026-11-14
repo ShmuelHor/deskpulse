@@ -31,7 +31,7 @@ describe('API docs', () => {
     const document = OpenApiDocument.parse(response.json());
     expect(document.openapi).toMatch(/^3\./);
     expect(Object.keys(document.paths['/v1/ingest'] ?? {})).toEqual(['post']);
-    expect(document.paths['/v1/rules/{id}']).toHaveProperty('delete');
+    expect(document.paths['/v1/focus/profiles/{id}']).toHaveProperty('delete');
   });
 
   it('serves Swagger UI with a CSP that allows only its own files', async () => {

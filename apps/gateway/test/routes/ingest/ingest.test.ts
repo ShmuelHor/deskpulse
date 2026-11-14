@@ -25,7 +25,7 @@ import { type CallKey, fakeServices, type RecordedCall, routeHarness } from '../
 import { batterySample, pressureSample, windowSample } from './samples.js';
 
 const THRESHOLDS = { memory: 11, cpu: 41, io: 31 };
-const closed = { session: sessionFixture, category: 'work' };
+const closed = sessionFixture;
 
 const FULL_BATCH: IngestBatch = {
   agentVersion: '0.1.0',
