@@ -180,16 +180,20 @@ All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, pino log
   - Memory leak suspicion: an app's RSS grows by more than 1 GiB per hour
   - Temperature above 95°C or throttling, disk above 85% and above 95%
   - "Needs attention" list: pending updates (security first), disk above 85%, a container down, a slowdown right now, a heavy app
-- **API:** `POST /samples`, `GET /slowdowns?from&to`, `GET /culprits?days`, `GET /machine`, `GET /attention`, `GET /connectivity?days`
+- **API:** `POST /samples`, `GET /incidents?from&to`, `GET /culprits?days`, `GET /timeline?date`
+- **Wave 4 API:** `GET /slowdowns?from&to` replaces `/incidents` (T58), and `GET /machine`, `GET /attention`, `GET /connectivity?days` are added (T75)
 
 ### focus
 - **Entities:** `profiles` (name, muted apps, exceptions, mute new apps), `focus_sessions`, `held_alerts`, `known_apps`
 - **Alert rule (fixed, no settings):** "battery almost empty" always gets through. Everything else is delivered right away outside focus and held during focus, then shown in the focus-end summary. Duplicate alerts (same key within 10 min) are dropped
-- **API:** `POST /start`, `POST /stop`, `POST /extend`, `GET /state`, CRUD for `/profiles`, `POST /route`, `GET /held`, `GET /summary/<id>`, `GET /known-apps`, `POST /known-apps`
+- **API:** `POST /start`, `POST /stop`, `GET /state`, CRUD for `/profiles`, `POST /route`, `GET /queue`, `GET /known-apps`, `POST /known-apps`
+- **Wave 4 API:** `/alert-policy` goes (T63); `GET /held` replaces `/queue`, and `POST /extend` and `GET /summary/<id>` are added (T69)
 
 ### gateway
 - **Authentication:** the agent sends `Authorization: Bearer <AGENT_TOKEN>`; the web gets a session cookie through `GET /v1/session`, only from the origin `http://127.0.0.1:4710` or `http://localhost:4710` (the desktop app loads that same origin)
-- **Public API (v1):** `/v1/ingest`, `/v1/agent/commands`, `/v1/agent/commands/<id>/result`, `/v1/agent/capabilities`, `/v1/live`, `/v1/commands`, `/v1/dashboard/<page>`, `/v1/time/*`, `/v1/battery/*`, `/v1/system/*` (including `/v1/system/attention`, `/v1/system/machine`, `/v1/system/processes`, `/v1/system/docker`, `/v1/system/updates`, `/v1/system/startup`, `/v1/system/disk`), `/v1/focus/*`, `/v1/settings`, `/v1/layouts/<page>`
+- **Public API (v1):** `/v1/ingest`, `/v1/dashboard/today`, `/v1/week`, `/v1/apps`, `/v1/rules`, `/v1/battery/*`, `/v1/system/*`, `/v1/focus/*`, `/v1/export`, `/v1/settings`
+- **Wave 4 public API (v1):** `/v1/ingest`, `/v1/agent/commands`, `/v1/agent/commands/<id>/result`, `/v1/agent/capabilities`, `/v1/live`, `/v1/commands`, `/v1/dashboard/<page>`, `/v1/time/*`, `/v1/battery/*`, `/v1/system/*` (including `/v1/system/attention`, `/v1/system/machine`, `/v1/system/processes`, `/v1/system/docker`, `/v1/system/updates`, `/v1/system/startup`, `/v1/system/disk`), `/v1/focus/*`, `/v1/settings`, `/v1/layouts/<page>`
+- The "Public API" and each service's "API" line list what exists today, and `packages/shared/test/routes.test.ts` checks them against the route map. The "Wave 4" lines are the target: each task moves the endpoints it builds onto the current line and drops the ones it removes (`/v1/rules`, `/v1/export`, `/v1/apps`, `/v1/week`, `/v1/dashboard/today`).
 - **Timeouts** of 3 s per service, with a partial response `{data, degraded:["battery"]}` when one is down
 - **Settings** (`gateway.settings`): language, theme (system, light, dark), palette (one of ten), tracking paused, start at login, never-mute apps, capabilities, and the page layouts
 - **Layouts:** one key per page, `{version, widgets: [{id, w, h, view, options}]}`. Unknown widget IDs are dropped when read; deleting the key restores the default
