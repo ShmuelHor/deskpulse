@@ -67,7 +67,7 @@ branch t13-…  →  commits  →  push  →  PR (draft)  →  CI green  →  Re
 | 1 · Contracts and infrastructure | [x] T08 [x] T09 [x] T10 [x] T11 [x] T12 | G1 |
 | 2 · Independent units | [x] T13 [x] T14 [x] T15 [x] T16 [x] T17 [x] T18 [x] T19 [x] T20 [x] T21 [x] T22 [x] T23 [x] T24 [x] T25 [x] T26 | G2 |
 | 3 · Integration (closed; G3's manual checks were dropped for the replan) | [x] T27 [x] T28 [x] T29 [x] T30 [x] T31 [x] T32 [x] T33 [x] T34 [x] T35 [x] T36 [x] T37 [x] T38 [x] T39 [x] T40 [x] T41 | G3 |
-| 4A · Fix and trim | [ ] #202 [ ] T60 [ ] T61 [ ] T62 [ ] T63 [ ] T64 [ ] T65 | G4A |
+| 4A · Fix and trim | [ ] #202 [x] T60 [ ] T61 [ ] T62 [ ] T63 [ ] T64 [ ] T65 | G4A |
 | 4B · Design system, shell, pages | [ ] T66 [ ] T68 [ ] T67 [ ] T57 [ ] T43 [ ] T58 [ ] T69 [ ] T47 | G4B |
 | 4C · Control center | [ ] T72 [ ] T73 [ ] T74 [ ] T75 [ ] T76 [ ] T77 [ ] T78 [ ] T79 [ ] T56 [ ] T80 [ ] T81 [ ] T83 | G4C |
 | 4D · Desktop app | [ ] T82 [ ] T42 [ ] T51 [ ] T84 | G4D |
