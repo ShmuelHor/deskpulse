@@ -50,6 +50,4 @@ describe('ST15 file permissions', () => {
       await rm(home, { recursive: true, force: true });
     }
   });
-
-  it.todo('[T48] backups are 0600 in a 0700 directory');
 });
