@@ -63,23 +63,22 @@ export function mix(from: string, to: string, percent: number): string {
   });
 }
 
-/** `color` at `percent` opacity, as a CSS `rgb()` with alpha. */
+/** `color` at `percent` opacity, as `#rrggbbaa`. */
 export function withAlpha(color: string, percent: number): string {
-  const { r, g, b } = parseHex(color);
-  return `rgb(${r} ${g} ${b} / ${percent / PERCENT})`;
+  return `${color}${channelHex((percent / PERCENT) * CHANNEL_MAX)}`;
 }
 
-const ALPHA_COLOR = /^rgb\((\d+) (\d+) (\d+) \/ ([\d.]+)\)$/u;
+const ALPHA_HEX_COLOR = /^(#[0-9a-f]{6})([0-9a-f]{2})$/iu;
 
 /** Flattens a color made by {@link withAlpha} onto an opaque background. */
 export function over(color: string, background: string): string {
-  const match = ALPHA_COLOR.exec(color);
+  const match = ALPHA_HEX_COLOR.exec(color);
   if (match === null) {
     return color;
   }
-  const [, r = '0', g = '0', b = '0', alpha = '1'] = match;
-  const flat = toHex({ r: Number(r), g: Number(g), b: Number(b) });
-  return mix(background, flat, Number(alpha) * PERCENT);
+  const [, opaque = '', alpha = 'ff'] = match;
+  const opacity = Number.parseInt(alpha, HEX_RADIX) / CHANNEL_MAX;
+  return mix(background, opaque, opacity * PERCENT);
 }
 
 function linear(channel: number): number {

@@ -1,12 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { contrastRatio, over } from '../../src/theme/color-math.js';
-import {
-  MIN_TEXT_CONTRAST,
-  PaletteId,
-  palettes,
-  tokensFor,
-} from '../../src/theme/color-tokens.js';
+import { MIN_TEXT_CONTRAST, PaletteId, palettes, tokensFor } from '../../src/theme/color-tokens.js';
 import type { ResolvedTheme } from '../../src/theme/theme.js';
 
 const MODES: readonly ResolvedTheme[] = ['light', 'dark'];
@@ -53,10 +48,10 @@ describe('derived tokens', () => {
     expect(contrastRatio(t.muted, t.bg)).toBeLessThan(contrastRatio(t.ink, t.bg));
   });
 
-  it('lets every color be an opaque hex or an rgb() with alpha', () => {
+  it('makes every color a hex, with alpha where the design says so', () => {
     for (const [id, mode] of CASES) {
       for (const value of Object.values(tokensFor(id, mode))) {
-        expect(value).toMatch(/^(#[0-9a-f]{6}|rgb\(\d+ \d+ \d+ \/ [\d.]+\)|transparent)$/iu);
+        expect(value).toMatch(/^(#[0-9a-f]{6}([0-9a-f]{2})?|transparent)$/iu);
       }
     }
   });
