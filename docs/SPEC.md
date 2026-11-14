@@ -1,8 +1,9 @@
-# Yoman: specification
+# DeskPulse: specification
 
-> Your computer's automatic journal ("yoman" is Hebrew for journal): time, battery, load and focus. Local only.
-> Automatic time tracking, battery health, system load and focus mode for a personal Linux computer.
+> A calm control center for your Linux desktop: how busy the computer is, what is running, what to clean up or update, where your time went, and quiet when you need it.
 > Runs locally only. No data ever leaves the computer.
+
+DeskPulse was called Yoman until wave 4. Until T60 (the code rename) lands, package names, paths, units and the CLI in the code still use `yoman`; this document uses the target names.
 
 ---
 
@@ -10,16 +11,22 @@
 
 | # | Goal |
 |---|---|
-| G1 | Know where the time went: which apps, how long and when, without entering anything by hand |
-| G2 | Track battery health over time and know what is draining it |
-| G3 | Get alerted when the computer is choking, and know who is to blame |
-| G4 | A focus mode that mutes apps for a set time and lets only important things through |
-| G5 | A Hebrew and English UI, with light and dark modes, in the "Paper and Ink" design |
+| G1 | See the state of the computer at a glance: load, memory, disk, battery, internet, uptime, and what needs attention |
+| G2 | Know why the computer is slow, in plain words, and which app is to blame |
+| G3 | See and control what is running: apps, processes and the user's Docker containers |
+| G4 | Keep the computer tidy: disk usage and cleanup, pending updates, startup apps |
+| G5 | Know where the time went, by app, without entering anything by hand |
+| G6 | A focus mode that holds notifications for a set time and summarizes what waited |
+| G7 | A desktop app in Hebrew and English, light and dark, with ten color palettes and a layout every user can arrange |
+
+### Principle
+Convenient for the user, like a control center: every page answers one question, plain language comes first, and every page can be rearranged.
 
 ### Non-goals
-- No cloud, no accounts and no sync between computers
+- No cloud, no accounts, no sync between computers, and no external network calls (no speed test, no update servers)
 - No Windows or macOS support in the first version
-- No screenshots and no keylogging
+- No screenshots, no keylogging, and no window titles
+- No installing updates (DeskPulse lists them and opens the system's updater), and nothing that needs root after the one-time charge-limit setup
 
 ---
 
@@ -27,46 +34,54 @@
 
 | Item | Value |
 |---|---|
-| OS | Ubuntu, GNOME on **Wayland** |
+| OS | Ubuntu and Debian-based distributions, GNOME on **Wayland** |
 | Node | 22 LTS |
-| Docker | Docker Engine + Compose v2 (**not** Docker Desktop, which uses more battery) |
-| GNOME extensions | **Window Calls** (required, for the active window). AppIndicator (ships with Ubuntu, for the tray icon) |
+| Docker | Docker Engine + Compose v2 (**not** Docker Desktop, which uses more battery). DeskPulse never adds the user to the `docker` group |
+| GNOME extension | **Window Calls** (required for time tracking; the rest of the app works without it) |
+| Desktop app | Tauri v2 (WebKitGTK) |
+| Updates sources | apt and snap (Flatpak later) |
 
 ---
 
 ## 3. Architecture
 
 ```
- on the host                              docker compose · internal network "core"
-┌───────────────────────┐
-│ agent                 │──HTTP──┐
-│ collectors / actuators│        │      ┌───────────┐
-│ buffer · tray · cli   │        ├────▶│  gateway  │ 127.0.0.1:4711
-└───────────────────────┘        │      └─────┬─────┘
-┌───────────────────────┐        │            │ routes and orchestrates
-│ web (React)           │────────┘   ┌──────┬─┴────┬────────┬───────┐
-│ 127.0.0.1:4710        │            ▼      ▼      ▼        ▼       ▼
-└───────────────────────┘        sessions reports battery  system  focus
-                                     └──────┴───┬───┴────────┴───────┘
-                                                   ┌───▼────┐
-                                                   │postgres│ one schema per service
-                                                   └────────┘
+ on the host                                   docker compose · internal network "core"
+┌──────────────────────────┐
+│ DeskPulse app (Tauri)    │  window → http://127.0.0.1:4710
+│ single instance, links   │                 │
+└──────────────────────────┘                 ▼
+┌──────────────────────────┐          ┌────────────┐
+│ web (React)  :4710       │──HTTP───▶│  gateway   │ 127.0.0.1:4711
+└──────────────────────────┘   SSE    └─────┬──────┘
+┌──────────────────────────┐   ▲            │ routes and orchestrates
+│ agent                    │───┘ ingest,    ├──────┬──────┬────────┬───────┐
+│ collectors · actuators   │  commands      ▼      ▼      ▼        ▼       ▼
+│ buffer · cli             │◀── (long poll) sessions reports battery system focus
+└──────────────────────────┘                └──────┴──┬───┴────────┴───────┘
+                                                  ┌───▼────┐
+                                                  │postgres│ one schema per service
+                                                  └────────┘
 ```
 
 ### Principles
-1. **Only the gateway talks to the outside world.** The web and the agent know only the gateway. Services never talk to each other directly: the gateway orchestrates every flow. The only data the gateway owns is the settings (`gateway.settings`).
+1. **Only the gateway talks to the outside world.** The web, the agent and the desktop app know only the gateway. Services never talk to each other directly: the gateway orchestrates every flow. The only data the gateway owns is the settings (`gateway.settings`) and the short-lived command queue.
 2. **Each service owns its data:** its own Postgres schema and its own DB user. Reading another service's schema is not allowed.
-3. **The agent runs on the host, not in Docker**, because it needs access to D-Bus, `/proc`, `/sys` and the GNOME settings.
-4. **Ports:** only `4710` (web) and `4711` (gateway), and both listen on `127.0.0.1` only. Internal services are not exposed at all.
-5. **Resilience:** the agent stores data locally and sends it when the gateway is available. Docker can be shut down without losing data.
+3. **The agent runs on the host, not in Docker**, because it needs D-Bus, `/proc`, `/sys` and the user's files. It never listens on a port: it only calls the gateway.
+4. **Ports:** only `4710` (web) and `4711` (gateway), both on `127.0.0.1` only.
+5. **Resilience:** the agent buffers samples locally and sends them when the gateway is available. Docker can be stopped without losing data.
+6. **Actions are confirmed in the UI and executed by the agent.** The web never runs anything on the host; it asks the gateway, which queues a command the agent picks up and re-validates (§4.3).
 
 ### Flows the gateway orchestrates
 | Flow | Steps |
 |---|---|
-| **ingest** (from the agent, every 60 s) | The gateway splits the batch: window and idle samples → `sessions`, battery → `battery`, load → `system`. It then forwards closed sessions to `reports` and collects events to alert on. Each event goes through `focus` for a decision (deliver now or queue), and the decisions return to the agent in the response. |
-| **dashboard/today** | The gateway calls `reports`, `battery`, `system` and `focus` in parallel and returns a single response |
-| **known apps** (from the agent, on start and on change) | gateway → `focus` `POST /known-apps` → the Focus page lists them and profiles can mute them |
-| **focus start/stop** | gateway → `focus` (state and profile) → returns mute and restore commands to the agent |
+| **ingest** (from the agent, every 60 s) | The gateway splits the batch: window and lock samples → `sessions`, battery → `battery`, pressure, processes, thermal and machine state (disk, network, uptime, updates, startup apps, Docker) → `system`. Closed sessions go on to `reports`. Events to alert on go through `focus`, which decides deliver now or hold, and the decisions return to the agent in the response |
+| **dashboard** (per page) | The gateway calls the services a page's widgets need, in parallel, and returns one response with `degraded` for any service that did not answer |
+| **live** (while the window is open) | The web opens `GET /v1/live` (SSE). While at least one visible client is connected, the gateway sets `liveMode` for the agent, which sends a live sample every 2 s; the gateway relays it to the stream without storing it |
+| **command** (an action the user confirmed) | web → gateway `POST /v1/commands` → queue → agent long poll `GET /v1/agent/commands` → agent re-validates and runs → `POST /v1/agent/commands/<id>/result` → the web sees the result on the stream |
+| **capabilities** (from the agent, on start and on change) | The agent reports what this computer supports (§4.5). The gateway stores it with the settings and the web hides widgets the computer cannot support |
+| **known apps** (from the agent, on start and on change) | gateway → `focus` `POST /known-apps`, so focus profiles can mute them |
+| **focus start/stop** | gateway → `focus` (state and profile) → mute and restore commands back to the agent |
 
 ---
 
@@ -75,139 +90,168 @@
 ### 4.1 Collectors
 | Collector | Source | Frequency | Notes |
 |---|---|---|---|
-| window | D-Bus `org.gnome.Shell.Extensions.Windows` (Window Calls): `List` → the window with `focus=true` | 5 s | `wm_class`, `title`, `pid`. The title is stored only if the setting allows it. The app ID is `wm_class` with each run of disallowed characters replaced by `-` (case kept, at most 128), so values that differ only in punctuation or case are different apps |
-| idle | D-Bus `org.gnome.Mutter.IdleMonitor.GetIdletime` | 5 s | idle ≥ 120 s = away from the computer |
-| lock | D-Bus `org.gnome.ScreenSaver` signal `ActiveChanged` | Event | While locked, sampling stops completely |
-| battery | `/sys/class/power_supply/BAT*`: energy_full, energy_full_design, cycle_count, power_now, capacity, status | 60 s | Devices without a battery: the service is off |
-| pressure | `/proc/pressure/{cpu,memory,io}`, the `some avg10` and `full avg10` values | 5 s | Very cheap |
-| processes | `/proc/[pid]/{stat,status,io,cgroup}` (never `cmdline` or `environ`) | **Only under load** (PSI above the threshold), at most every 15 s, + every 5 min | The top 10 processes by CPU, RSS and IO (`io` holds byte counters only). Only `comm` is sent. cgroup → container name mapping |
-| thermal | `/sys/class/thermal`, `/sys/class/hwmon`, `/sys/devices/system/cpu/cpu*/thermal_throttle` | 30 s | CPU temperature and CPU throttling |
-| apps | inotify on `.desktop` directories (apt, snap, flatpak, `~/.local`) + `gsettings monitor org.gnome.desktop.notifications application-children` | Event | No polling |
+| window | D-Bus Window Calls: `List` → the window with `focus=true` | 5 s | `wm_class` and `pid` only. **Titles are never read or stored.** The app ID is `wm_class` with each run of disallowed characters replaced by `-` (case kept, at most 128) |
+| lock | D-Bus `org.gnome.ScreenSaver` `ActiveChanged` | Event | While locked, time stops and all sampling stops. There is no idle detection |
+| battery | `/sys/class/power_supply/BAT*` | 60 s | Devices without a battery: the battery features are hidden |
+| pressure | `/proc/pressure/{cpu,memory,io}` (`some`/`full avg10`) | 5 s | Very cheap |
+| processes | `/proc/[pid]/{stat,status,io,cgroup}` (never `cmdline` or `environ`) | Only under load (at most every 15 s), every 5 min, and every 2 s in live mode | The top processes by CPU, RSS and IO, grouped by app. Only `comm` is sent |
+| thermal | `/sys/class/thermal`, `/sys/class/hwmon`, `thermal_throttle` | 30 s | CPU temperature, fan speed when exposed, throttling |
+| disk | `statfs` on `/` and `$HOME` | 10 min, and on the Maintenance page | Used and free space. Top folders are measured only on demand (a command) |
+| network | NetworkManager D-Bus `Connectivity` and `StateChanged`; `/proc/net/dev` byte counters | Event; counters 60 s (2 s live) | Connected or not, disconnection history, throughput. **No external calls** |
+| uptime | `/proc/uptime`, boot time | 10 min | Time since the last restart |
+| updates | `apt list --upgradable`, `snap refresh --list` (execFile, read-only) | 4 times a day and on demand | Package, source and whether it is a security update. Nothing is installed |
+| startup apps | `~/.config/autostart/*.desktop`, `/etc/xdg/autostart/*.desktop` (read) | inotify | Name, enabled state, and whether the entry is the user's or the system's |
+| power | power-profiles-daemon D-Bus | Event | Current profile and the profiles offered |
+| docker | `/var/run/docker.sock`, only when the user already has access | 60 s (2 s live) | Containers: name, image, state, health, CPU and memory. Hidden when there is no access |
+| apps | inotify on `.desktop` directories + `gsettings monitor` on notification apps | Event | The known-app catalog for focus |
 
 ### 4.2 Actuators
+Every actuator is reached only through a confirmed command (§4.3), except the notifier and the muter, which focus drives.
+
 | Actuator | Implementation |
 |---|---|
-| notifier | D-Bus `org.freedesktop.Notifications.Notify` with urgency: critical=2 (gets through even GNOME's "Do Not Disturb"), important and normal=1 |
-| muter | `gsettings set org.gnome.desktop.notifications.application:/org/gnome/desktop/notifications/application/<id>/ show-banners false` |
-| dnd | `org.gnome.desktop.notifications show-banners` (optional, per setting) |
+| notifier | D-Bus `org.freedesktop.Notifications.Notify`. An action button ("End Chrome") never acts by itself: it opens DeskPulse on the matching confirmation dialog |
+| muter | `gsettings set …application/<id>/ show-banners false`, saved first and restored after focus or a crash |
+| end app | `SIGTERM` to every process of the app (same uid only), then `SIGKILL` after 5 s if asked again |
+| cleanup | Deletes the selected categories under the allowlisted paths (§7). Never follows symlinks and never leaves `$HOME` |
+| startup app | Writes `~/.config/autostart/<id>.desktop` with `Hidden=true` (disable) or removes that override (enable). Never touches `/etc` |
+| power profile | power-profiles-daemon `ActiveProfile` |
+| charge limit | Writes `charge_control_end_threshold` through the udev/polkit rule installed once with consent |
+| docker | `stop`, `start`, `rm` (stopped containers), `image prune` (dangling images), only with existing access. DeskPulse's own containers and images are refused |
+| folder sizes | Measures the top folders of `$HOME` on demand for the Maintenance page |
 
-**Muter safety.** Before every change, the agent saves the original value in `~/.local/state/yoman/mute-state.json`. On startup, and whenever `focus.endsAt < now`, it restores automatically. An app must never stay muted after a crash.
+**Muter safety.** The original value is saved in `~/.local/state/deskpulse/mute-state.json` before every change, and restored on startup and whenever focus has ended. An app must never stay muted after a crash.
 
-**Never muted:** `gnome-*`, `org.gnome.*`, `org.freedesktop.*`, `io.snapcraft.*`, `update-manager`, `yoman`, `desktop-security-center`, `firmware-updater`, `snapd-desktop-integration`, `snap-store`, `nm-connection-editor`, `im-config`, and every app on the "system" list in the settings. IDs are matched with dots and dashes treated alike and without case (the agent reports `org-gnome-settings`; a snap's doubled name such as `firmware-updater-firmware-updater` counts as the name). The gateway filters these out of every mute command, and the agent's muter refuses them again as a last line of defense.
+**Never muted and never ended:** `gnome-*`, `org.gnome.*`, `org.freedesktop.*`, `io.snapcraft.*`, `update-manager`, DeskPulse itself (`yoman` until T60), `desktop-security-center`, `firmware-updater`, `snapd-desktop-integration`, `snap-store`, `nm-connection-editor`, `im-config`, and every app on the user's "never mute" list. IDs are matched with dots and dashes treated alike and without case (the agent reports `org-gnome-settings`; a snap's doubled name such as `firmware-updater-firmware-updater` counts as the name). The gateway filters these out of every mute command, and the agent's muter refuses them again as a last line of defense.
 
 **Mute new apps.** An app is new only if the focus service first saw it after the first known-apps sync. The first catalog is never new, so turning the option on does not mute everything already installed. The focus service lists each app's `firstSeenAt`; without it an app is not new.
 
-### 4.3 Buffer and sending
-- A local JSONL file in `~/.local/state/yoman/buffer/`, with a new file every hour
-- Every 60 s a batch is sent to `POST /v1/ingest`. If sending succeeds, the files are deleted. If it fails, exponential backoff up to 10 min
-- A 50MB cap. Beyond it the oldest files are deleted, with a warning in the log
-- **Known apps:** the apps collector's catalog is not a sample and does not go through the buffer. The agent sends the whole catalog (at most 500 apps) to `POST /v1/focus/known-apps` once at start and again whenever it changes, never on a schedule. The latest catalog replaces one still waiting. If the gateway is unreachable or busy it retries with a backoff (10 s, doubling up to 10 min); a catalog the gateway refuses (4xx) is dropped. Nothing is sent while the screen is locked, and it goes out when the screen unlocks. The gateway forwards it to focus `POST /known-apps`, which stores it for the Focus page; the never-muted rule applies when the mute list is built, not here
+### 4.3 Commands
+- The agent long-polls `GET /v1/agent/commands` (held up to 25 s, no polling while locked).
+- A command is one of a closed Zod union with two kinds:
+  - **User actions**, created by the gateway only from an authenticated, CSRF-checked web request the user confirmed: `endApp`, `cleanup`, `measureFolders`, `setStartupApp`, `setPowerProfile`, `setChargeLimit`, `dockerAction`, `refreshUpdates`.
+  - **System commands**, created by the gateway itself and never from a web request body: `liveMode` (from the live stream, §3), `mute` and `restore` (from focus start and stop). They change only reversible state.
+- Every command gets a single-use ID and a 30 s TTL, and is dropped once delivered.
+- The agent re-validates every command before acting: same uid, process identity by PID **and** start time (no PID reuse), never a system or protected app, paths only under the allowlist, Docker objects not DeskPulse's own.
+- The result (`done`, `refused` with a code, or `failed`) goes back to the gateway and on to the web's stream.
 
-### 4.4 Battery budget (required)
-- Agent average CPU **≤ 0.5%** and memory **≤ 60MB**
-- No polling beyond the table above. No sampling while locked or idle
-- Processes are collected only under load
+### 4.4 Buffer and sending
+- A local JSONL file per hour in `~/.local/state/deskpulse/buffer/`. Every 60 s a batch goes to `POST /v1/ingest`; on success the files are deleted, on failure exponential backoff up to 10 min. A 50MB cap drops the oldest files with a warning.
+- Live samples are not buffered: if the gateway is down, they are dropped.
+- **Known apps** and **capabilities** are not samples. Each goes to its own route at start and on change, replacing one still waiting, with a 10 s → 10 min backoff.
 
-### 4.5 Interfaces
-- **systemd user unit** `yoman-agent.service`, with `Restart=on-failure`
-- **CLI** `yoman`: `status`, `pause [dur]`, `resume`, `focus <dur|until HH:MM> [--profile name]`, `focus stop`
-- **Tray**: today's time, state (active, paused or focus), start and stop focus, pause, open the dashboard
+### 4.5 Capabilities
+Reported at start and on change: Window Calls installed, battery present, charge threshold supported, power-profiles-daemon present, apt and snap present, Docker access, NetworkManager present, thermal sensors. The widget catalog and the onboarding use them.
+
+### 4.6 Battery budget (required)
+- Agent average CPU **≤ 0.5%** and memory **≤ 60MB** while the window is closed.
+- Live mode (2 s) runs only while the window is open and visible, and stops 10 s after it closes, hides or is minimized.
+- No polling beyond the table above. Nothing runs while the screen is locked.
+
+### 4.7 Interfaces
+- **systemd user unit** `deskpulse-agent.service` with `Restart=on-failure`. Only one agent may run at a time (a lock file).
+- **CLI** `deskpulse`: `status`, `pause [dur]`, `resume`, `focus <dur|until HH:MM> [--profile name]`, `focus stop`, `uninstall`.
+- **`deskpulse uninstall`** restores GNOME settings, removes the charge-limit rule (asks for the password once), removes only the autostart overrides DeskPulse created (tracked in a state file), and removes the units.
 
 ---
 
 ## 5. Services
 
-All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, JSON logging (pino), config validated with zod, and their own migrations.
+All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, pino logging, config validated with Zod, their own migrations.
 
 ### sessions
-- **Input:** samples `{ts, wmClass, title?, pid, idleMs, locked}`
-- **Logic:** merge consecutive samples of the same app into a session. A gap of more than 15 s or idle closes the session
-- **Entities:** `apps` (wm_class, name, icon, category), `sessions` (app_id, start, end, title?), `category_rules` (pattern on wm_class or title → category, priority)
-- **API:** `POST /samples`, `GET /sessions?from&to`, `GET/PUT /apps`, `GET/POST/PUT/DELETE /rules`
+- **Input:** samples `{ts, appId, pid, locked}`
+- **Logic:** merge consecutive samples of the same app into a session. A gap of more than 15 s or a lock closes the session
+- **Entities:** `apps` (app ID, display name, icon), `sessions` (app, start, end)
+- **API:** `POST /samples`, `GET /sessions?from&to`, `GET /apps`
 
 ### reports
-- **Input:** closed sessions
-- **Entities:** `daily_rollups` (date, app, category, seconds), `focus_streaks`
-- **API:** `GET /today`, `GET /week?start`, `GET /top-apps?from&to`, `GET /weekly-summary`
-- **Data retention:** sessions older than 90 days are merged into rollups and deleted, in a daily run
+- **Entities:** `daily_rollups` (date, app, seconds), `focus_streaks`
+- **API:** `GET /day?date`, `GET /week?start` (with the previous week for comparison), `GET /top-apps?from&to`
 
 ### battery
 - **Entities:** `battery_samples`, `battery_daily` (health %, cycles, average W)
-- **Logic:** health = energy_full / energy_full_design. Time remaining is based on average consumption over the last 30 minutes. **Per-app power attribution:** average `power_now` while each app is in focus; the gateway supplies the session timeline
-- **Alerts:** below 15% (important), below 8% (critical), plugged in at 100% for more than 4 hours (normal)
-- **API:** `POST /samples`, `GET /health-trend?days`, `GET /now`, `POST /power-by-app` (`from`, `to` and the session timeline in the body)
+- **Logic:** health = energy_full / energy_full_design. Time left from the last 30 minutes. What drains it: average power while each app is in focus (the gateway supplies the session timeline)
+- **Alert:** "battery almost empty" (below 8%) always gets through, even during focus. Below 15% is held during focus
+- **API:** `POST /samples`, `GET /now`, `GET /health-trend?days`, `POST /power-by-app`
 
 ### system
-- **Entities:** `pressure_samples` and `process_snapshots` (both kept for 7 days), `incidents` (type, start, end, peak, culprits jsonb). Thermal samples are not stored, only the incidents they open
+- **Entities:** `pressure_samples` and `process_snapshots` (7 days), `incidents` (slowdowns: type, start, end, peak, culprit app), `machine_state` (the latest disk, network, uptime, updates, startup apps and Docker snapshot), `connectivity_events`
 - **Logic:**
-  - An incident opens when `some avg10` exceeds the threshold for **more than 15 s**. Defaults: memory 10%, cpu 40%, io 30%
-  - Available memory below 5% with swap active = critical
-  - Temperature above 95°C or throttling = important
-  - **Memory leak:** a process's RSS grows steadily by more than 1 GiB per hour
-  - Default alert levels: a pressure incident is normal, a memory leak is important. `alert_policy` in focus can change them
-- **API:** `POST /samples` (the gateway sends the current thresholds from the settings in the body), `GET /incidents?from&to`, `GET /culprits?days`, `GET /timeline?date`
+  - A slowdown opens when `some avg10` stays above the threshold for **more than 15 s** (memory 10%, cpu 40%, io 30%) and is described in plain words ("memory filled up", "processor was busy") with the heaviest app
+  - Memory leak suspicion: an app's RSS grows by more than 1 GiB per hour
+  - Temperature above 95°C or throttling, disk above 85% and above 95%
+  - "Needs attention" list: pending updates (security first), disk above 85%, a container down, a slowdown right now, a heavy app
+- **API:** `POST /samples`, `GET /incidents?from&to`, `GET /culprits?days`, `GET /timeline?date`
+- **Wave 4 API:** `GET /slowdowns?from&to` replaces `/incidents` (T58), and `GET /machine`, `GET /attention`, `GET /connectivity?days` are added (T75)
 
 ### focus
-- **Entities:** `profiles` (name, muted apps, exceptions, mute new apps by default), `schedules`, `focus_sessions`, `queued_alerts`, `alert_policy` (alert type → level)
-- **Levels:** `critical` always gets through, `important` gets through only outside focus, `normal` gets through only outside focus. During focus, everything that did not get through is queued
-- **Rate limit:** one alert per `alertKey` per 10 min
-- **Automation:** by schedule, Pomodoro, or an app in continuous focus for more than N min
-- **API:** `POST /start`, `POST /stop`, `GET /state`, CRUD for `/profiles`, `POST /route` (events → deliver[] and queue[]), `GET /queue`, `GET /known-apps`, `POST /known-apps`
+- **Entities:** `profiles` (name, muted apps, exceptions, mute new apps), `focus_sessions`, `held_alerts`, `known_apps`
+- **Alert rule (fixed, no settings):** "battery almost empty" always gets through. Everything else is delivered right away outside focus and held during focus, then shown in the focus-end summary. Duplicate alerts (same key within 10 min) are dropped
+- **API:** `POST /start`, `POST /stop`, `GET /state`, CRUD for `/profiles`, `POST /route`, `GET /queue`, `GET /known-apps`, `POST /known-apps`
+- **Wave 4 API:** `/alert-policy` goes (T63); `GET /held` replaces `/queue`, and `POST /extend` and `GET /summary/<id>` are added (T69)
 
 ### gateway
-- **Authentication:**
-  - The agent sends `Authorization: Bearer <AGENT_TOKEN>`, which is generated in `.env`
-  - The web gets a local session cookie through `GET /v1/session`, which works only from the origin `http://127.0.0.1:4710` or `http://localhost:4710`
+- **Authentication:** the agent sends `Authorization: Bearer <AGENT_TOKEN>`; the web gets a session cookie through `GET /v1/session`, only from the origin `http://127.0.0.1:4710` or `http://localhost:4710` (the desktop app loads that same origin)
 - **Public API (v1):** `/v1/ingest`, `/v1/dashboard/today`, `/v1/week`, `/v1/apps`, `/v1/rules`, `/v1/battery/*`, `/v1/system/*`, `/v1/focus/*`, `/v1/export`, `/v1/settings`
-- **Timeouts** of 3 s per service, and a partial response when a service is down: `{data, degraded:["battery"]}`
-- **Settings** (`gateway.settings`): language, color theme, privacy (titles and excluded apps), load thresholds, system apps that must never be muted, and quiet hours. The gateway passes each service and the agent whatever is relevant to them
+- **Wave 4 public API (v1):** `/v1/ingest`, `/v1/agent/commands`, `/v1/agent/commands/<id>/result`, `/v1/agent/capabilities`, `/v1/live`, `/v1/commands`, `/v1/dashboard/<page>`, `/v1/time/*`, `/v1/battery/*`, `/v1/system/*` (including `/v1/system/attention`, `/v1/system/machine`, `/v1/system/processes`, `/v1/system/docker`, `/v1/system/updates`, `/v1/system/startup`, `/v1/system/disk`), `/v1/focus/*`, `/v1/settings`, `/v1/layouts/<page>`
+- The "Public API" and each service's "API" line list what exists today, and `packages/shared/test/routes.test.ts` checks them against the route map. The "Wave 4" lines are the target: each task moves the endpoints it builds onto the current line and drops the ones it removes (`/v1/rules`, `/v1/export`, `/v1/apps`, `/v1/week`, `/v1/dashboard/today`).
+- **Timeouts** of 3 s per service, with a partial response `{data, degraded:["battery"]}` when one is down
+- **Settings** (`gateway.settings`): language, theme (system, light, dark), palette (one of ten), tracking paused, start at login, never-mute apps, capabilities, and the page layouts
+- **Layouts:** one key per page, `{version, widgets: [{id, w, h, view, options}]}`. Unknown widget IDs are dropped when read; deleting the key restores the default
+- **Retention (silent):** raw samples older than 90 days are deleted every night by each service's job; rollups and summaries are kept. No UI
 - **Security:** Host allowlist, Origin check, CSRF, rate limit and body limit. Details in [SECURITY.md](SECURITY.md)
 
 ---
 
-## 6. Web
+## 6. The app
 
-- Vite + React 19 + TypeScript, MUI (Emotion, MUI X), TanStack Router, TanStack Query, react-hook-form, react-i18next
-- **Pages (five, in this order):**
-  - **Overview** (`/`): a day/week switch. Day: active time, focus streak, where the time went, top apps. Clicking an app in the top apps opens a small menu to change its category; that is the only category editing in the UI. Week: columns by day and category, comparison with the previous week, the weekly summary.
-  - **Computer** (`/computer`): one plain-language summary line at the top (for example "Battery healthy · the computer got stuck twice today, mostly while Chrome was running"), then two tabs: **Battery** (charge, health, cycles, time remaining, what is draining it), **Load** (slowdowns as an incident timeline with the resource and the active app in plain words, recurring culprits, and the raw pressure chart as a secondary "Details" view)
-  - **Processes** (`/processes`): the task manager. What is running now with live CPU, RAM and IO, grouping by app, All/Apps/Docker views, and End task with confirmation
-  - **Focus mode** (`/focus`): start and stop, profiles, apps with a "new" tag, exceptions, schedules, Pomodoro, the alert center (held alerts) and FocusBanner
-  - **Settings** (`/settings`): language, color theme, privacy, thresholds, system apps, quiet hours, and the **alert level policy**
-- **Categories:** apps are categorized automatically by the built-in category rules (the `sessions` rules API stays); there is no page or settings section for managing apps or rules
-- **Old paths** (`/apps`, `/battery`, `/system`, `/week`) redirect to their new place, so links in notifications keep working
-- **Shell:** the navigation follows DESIGN.md (nav tabs). The header language and theme pickers save to the settings, so a reload keeps the choice and the Settings form stays in sync
-- **i18n:** `he` (default) and `en`. `dir` on `<html>` updates with the language. Only logical properties are used (in `sx` and `styled`). Dates and numbers go through `Intl`
-- **Color theme:** `system`, `light` or `dark`, stored in the settings. See [DESIGN.md](DESIGN.md)
-- **Charts:** MUI X Charts, in token colors only
+### 6.1 Desktop shell (Tauri)
+- One window that loads `http://127.0.0.1:4710`, with **no Tauri IPC granted to that content**. The shell itself only manages the window, a single instance, and `deskpulse://` links (used by notification actions to open a confirmation dialog).
+- If the web does not answer, the shell shows its own page: "DeskPulse's services aren't running", with Retry and "Start them". "Start them" runs `docker compose -f <file> up -d` with an args array, where `<file>` is the absolute path fixed at install time; it is offered only when the user already has Docker access (the same access they use to run the stack), and otherwise the page explains how to start Docker. DeskPulse never adds the user to the `docker` group.
+- The browser keeps working at `http://127.0.0.1:4710` for development.
+
+### 6.2 Web
+- Vite + React 19 + TypeScript, MUI (Emotion, MUI X), TanStack Router and Query, react-hook-form, react-i18next, react-grid-layout.
+- **Sidebar (in order):** Control, Time, Performance, Processes, Maintenance, Focus; Settings at the bottom. The brand row has a button that collapses the sidebar to an icon rail with tooltips.
+
+| Page | Question | Default widgets |
+|---|---|---|
+| **Control** (`/`) | What's the state? | CPU, memory, disk, battery, load today, needs attention, active time today, network, focus |
+| **Time** (`/time`) | Where did my time go? | Week by day (compared with last week), by app, focus this week |
+| **Performance** (`/performance`) | Why is it slow? | Slowdowns today with the culprit, heat and memory (temperature, fan, leak), battery detail (health, time left, what drains it), power (profile, charge limit) |
+| **Processes** (`/processes`) | What is running? | Task manager with All/Apps/Docker, search, sortable columns, End with confirmation, the user's containers |
+| **Maintenance** (`/maintenance`) | What to clean or update? | Disk space, cleanup, updates (opens Software Updates), startup apps |
+| **Focus** (`/focus`) | Give me quiet | Start focus (duration, profile), last focus, profiles, alerts that waited |
+| **Settings** (`/settings`) | | Language, theme, palette, pause tracking, start at login, never-mute apps |
+
+- **Widget grid:** every page except Settings is a 4-column grid of widgets with a default layout. Edit mode: drag to move with live reorder, drag the corner to resize, a ⋯ menu (view: ring, bars, line, meter, number, or the widget's detail view; size presets; widget options; remove), add from the page's catalog (click or drag), undo after remove, reset to default, cancel, and full keyboard control. A widget never cuts its content: a resize that would cut it snaps back. The full catalog and its rules are in [DESIGN.md](DESIGN.md).
+- **Capabilities:** widgets the computer cannot support are hidden from the catalog and the defaults.
+- **States:** skeleton loading in the shape of the real tiles; banners for missing Window Calls, services not answering (data dimmed, "data from 14:20", retry), and the agent not running; an empty state while data is still being collected; a focus banner; the focus-end summary; confirmation dialogs for every action.
+- **Onboarding (first run):** welcome, Window Calls, start at login, charge limit (only when supported, with a one-time consent).
+- **Small windows:** under 1100px the sidebar starts as the icon rail and the grid becomes 2 columns.
+- **i18n:** `he` (default) and `en`, `dir` on `<html>`, logical properties only, dates and numbers through `Intl`. Time axes run left to right in both languages.
+- **Theme:** system, light or dark, and one of ten palettes, all from the theme. See [DESIGN.md](DESIGN.md).
+- **Charts:** MUI X Charts, in token colors only.
 
 ---
 
 ## 7. Privacy and security
 
-- All data is stored in the Postgres volume and in the `~/.local/state/yoman` directory. Nothing leaves the computer
-- A "don't store window titles" setting, and a list of apps that are not tracked at all
-- A "pause tracking" button
-- **Secrets:** only in `.env` (`0600`), which is in `.gitignore`. `npm run setup` generates random passwords and tokens. The repo contains only `.env.example`
-- Ports listen on `127.0.0.1` only
+- All data is in the Postgres volume and `~/.local/state/deskpulse`. Nothing leaves the computer.
+- **No window titles** are collected, sent or stored. Process command lines are never read.
+- Pause tracking in Settings and in the CLI.
+- **Cleanup allowlist:** `~/.cache/*` (per app, with per-app choice), the trash (`~/.local/share/Trash`), `~/.cache/thumbnails`, and dangling Docker images when the user has access. Sizes are shown and confirmed before anything is deleted.
+- **Secrets:** only in `.env` (`0600`), never in git. `npm run setup` generates random values.
+- Ports listen on `127.0.0.1` only.
 - **The threat model, mitigations and required security tests:** [SECURITY.md](SECURITY.md)
 
 ---
 
 ## 8. Quality, CI/CD
 
-**CI/CD is built first (wave 0), before any feature code.**
-
-- **Tests:**
-  - vitest with coverage thresholds: 80% for logic (`domain`, `apps/agent/core`) and 60% for everything else
-  - fast-check for route fuzzing
-  - Contract tests: every response is validated against `packages/shared`
-  - Playwright for E2E
-  - `tests/security/` with ST01–ST18
-- **CI (on every PR):** lint, typecheck, tests, build, and every security gate from SECURITY.md §4. All of them are blocking
-- **CD:**
-  - On push to main: compose up with smoke and security tests
-  - On a `v*` tag: build and push to a private GHCR, and a GitHub Release with a compose file pinned to digests
-- **Nightly:** gitleaks and npm audit
-- **Repo:** private, branch protection, secret scanning and push protection
-- **Healthchecks** in compose and `depends_on: condition: service_healthy`
+- **Tests:** vitest with coverage thresholds (80% for `domain` and `apps/agent/src/core`, 60% for the rest), fast-check for route fuzzing, contract tests against `packages/shared`, Playwright E2E on the web, one tauri-driver smoke test of the desktop shell, and `tests/security/` (ST01–ST24).
+- **CI (every PR):** lint, typecheck, tests, build, and every security gate from SECURITY.md §4. All blocking.
+- **CD:** on push to main, compose up with smoke and security tests; on a `v*` tag, images to a private GHCR, a GitHub Release with a compose file pinned to digests, and the desktop app package.
+- **Nightly:** gitleaks and npm audit.
+- **Healthchecks** in compose with `depends_on: condition: service_healthy`, and `restart: unless-stopped`.
