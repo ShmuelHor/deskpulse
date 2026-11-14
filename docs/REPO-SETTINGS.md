@@ -4,7 +4,7 @@
 
 ```
 scripts/github-protect.sh --dry-run            # print every API call, change nothing
-scripts/github-protect.sh [owner/repo]         # apply (default: ShmuelHor/yoman)
+scripts/github-protect.sh [owner/repo]         # apply (default: ShmuelHor/deskpulse)
 ```
 
 It needs `gh` authenticated with admin rights, and is run by the coordinator only after the repo owner approves.

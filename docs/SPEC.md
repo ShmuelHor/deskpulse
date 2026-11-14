@@ -3,7 +3,7 @@
 > A calm control center for your Linux desktop: how busy the computer is, what is running, what to clean up or update, where your time went, and quiet when you need it.
 > Runs locally only. No data ever leaves the computer.
 
-DeskPulse was called Yoman until wave 4. Until T60 (the code rename) lands, package names, paths, units and the CLI in the code still use `yoman`; this document uses the target names.
+DeskPulse was called Yoman until wave 4. The code was renamed in T60; an existing install is migrated by `npm run migrate:yoman` and the agent's first start (see the README).
 
 ---
 
@@ -122,7 +122,7 @@ Every actuator is reached only through a confirmed command (§4.3), except the n
 
 **Muter safety.** The original value is saved in `~/.local/state/deskpulse/mute-state.json` before every change, and restored on startup and whenever focus has ended. An app must never stay muted after a crash.
 
-**Never muted and never ended:** `gnome-*`, `org.gnome.*`, `org.freedesktop.*`, `io.snapcraft.*`, `update-manager`, DeskPulse itself (`yoman` until T60), `desktop-security-center`, `firmware-updater`, `snapd-desktop-integration`, `snap-store`, `nm-connection-editor`, `im-config`, and every app on the user's "never mute" list. IDs are matched with dots and dashes treated alike and without case (the agent reports `org-gnome-settings`; a snap's doubled name such as `firmware-updater-firmware-updater` counts as the name). The gateway filters these out of every mute command, and the agent's muter refuses them again as a last line of defense.
+**Never muted and never ended:** `gnome-*`, `org.gnome.*`, `org.freedesktop.*`, `io.snapcraft.*`, `update-manager`, DeskPulse itself, `desktop-security-center`, `firmware-updater`, `snapd-desktop-integration`, `snap-store`, `nm-connection-editor`, `im-config`, and every app on the user's "never mute" list. IDs are matched with dots and dashes treated alike and without case (the agent reports `org-gnome-settings`; a snap's doubled name such as `firmware-updater-firmware-updater` counts as the name). The gateway filters these out of every mute command, and the agent's muter refuses them again as a last line of defense.
 
 **Mute new apps.** An app is new only if the focus service first saw it after the first known-apps sync. The first catalog is never new, so turning the option on does not mute everything already installed. The focus service lists each app's `firstSeenAt`; without it an app is not new.
 
