@@ -120,7 +120,7 @@ describe('window collector', () => {
     ]);
   });
 
-  it('never sends the title, since no setting allows storing it yet', async () => {
+  it('never sends the title, since DeskPulse does not collect titles', async () => {
     // Arrange
     const ctx = context(busReplying(windows(BROWSER)));
 

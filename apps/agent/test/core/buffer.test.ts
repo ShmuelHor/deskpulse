@@ -13,14 +13,13 @@ const HOUR_THREE = new Date('2026-11-08T11:15:00Z');
 const OPEN_FILE_MODE = 0o644;
 const BATCH = 3;
 
-function sample(pid: number, title?: string): Sample {
+function sample(pid: number): Sample {
   return {
     kind: 'window',
     ts: '2026-11-08T09:15:00Z',
     wmClass: 'firefox',
     pid,
     locked: false,
-    ...(title === undefined ? {} : { title }),
   };
 }
 
@@ -142,11 +141,11 @@ describe('createBuffer', () => {
 
   it('rejects invalid samples without echoing their values', async () => {
     const buffer = await open();
-    const secret = 'Private Title';
-    const bad = { ...sample(PID_A, secret), pid: -1 } as Sample;
+    const secret = 'Private Name';
+    const bad = { ...sample(PID_A), wmClass: secret, pid: -1 } as Sample;
     const error: unknown = await buffer.append([bad]).catch((reason: unknown) => reason);
     expect(error).toBeInstanceOf(Error);
-    expect((error as Error).message).toBe('invalid sample at: pid');
+    expect((error as Error).message).toBe('invalid sample at: wmClass, pid');
     await buffer.append([]);
     expect(await readdir(bufferDir)).toEqual([]);
   });

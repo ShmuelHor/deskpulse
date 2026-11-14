@@ -20,10 +20,10 @@ const MAX_OUTAGE_ATTEMPTS = 10;
 const GATEWAY_RATE_WINDOW_MS = 10_000;
 /** The gateway's body limit (SECURITY A17). */
 const GATEWAY_BODY_LIMIT = 1_048_576;
-const TITLE_LENGTH = 500;
-const ASCII_TITLE = 'a'.repeat(TITLE_LENGTH);
-/** Three UTF-8 bytes per character: an hour of these is more than one request body. */
-const WIDE_TITLE = '\u20ac'.repeat(TITLE_LENGTH);
+/** A full process list per sample: an hour of these is more than one request body. */
+const PROCESSES_PER_SAMPLE = 30;
+const COMM_LENGTH = 64;
+const COMM = 'c'.repeat(COMM_LENGTH);
 const TOKEN = 'test-agent-token';
 const STATUS_OK = 200;
 const STATUS_UNAUTHORIZED = 401;
@@ -85,14 +85,17 @@ class FakeGateway {
   }
 }
 
-function windowSample(at: number, pid: number, title: string): Sample {
+function bulkySample(at: number, pid: number): Sample {
   return {
-    kind: 'window',
+    kind: 'processes',
     ts: new Date(at).toISOString(),
-    wmClass: 'org.gnome.TextEditor',
-    title,
-    pid,
-    locked: false,
+    processes: Array.from({ length: PROCESSES_PER_SAMPLE }, (_unused, index) => ({
+      pid: pid + index,
+      comm: COMM,
+      cpuPct: 1,
+      rssBytes: 1_000_000,
+      ioBytesPerSec: 1_000,
+    })),
   };
 }
 
@@ -105,11 +108,11 @@ describe('sender during a gateway outage', () => {
   let collected: Sample[];
   let replies: number;
 
-  /** Collects a window sample every 5 s until `until`, running the sender in between. */
-  async function collectUntil(until: number, title: string): Promise<void> {
+  /** Collects a sample every 5 s until `until`, running the sender in between. */
+  async function collectUntil(until: number): Promise<void> {
     while (timers.now + WINDOW_EVERY_MS <= until) {
       await timers.advanceTo(timers.now + WINDOW_EVERY_MS, () => sender.whenIdle());
-      const sample = windowSample(START + timers.now, collected.length + 1, title);
+      const sample = bulkySample(START + timers.now, collected.length + 1);
       collected.push(sample);
       await buffer.append([sample]);
     }
@@ -165,11 +168,11 @@ describe('sender during a gateway outage', () => {
     async () => {
       sender.start();
       await sender.whenIdle();
-      await collectUntil(ONE_HOUR, ASCII_TITLE);
+      await collectUntil(ONE_HOUR);
       const duringOutage = gateway.attempts.length;
 
       gateway.up = true;
-      await collectUntil(ONE_HOUR + RECOVERY_MS, ASCII_TITLE);
+      await collectUntil(ONE_HOUR + RECOVERY_MS);
       await settle();
 
       expect(gateway.received).toHaveLength(collected.length);
@@ -192,12 +195,12 @@ describe('sender during a gateway outage', () => {
     async () => {
       sender.start();
       await sender.whenIdle();
-      await collectUntil(ONE_HOUR, WIDE_TITLE);
+      await collectUntil(ONE_HOUR);
       expect(buffer.sizeBytes).toBeGreaterThan(GATEWAY_BODY_LIMIT);
       const backlog = collected.length;
 
       gateway.up = true;
-      await collectUntil(ONE_HOUR + RECOVERY_MS, WIDE_TITLE);
+      await collectUntil(ONE_HOUR + RECOVERY_MS);
       await settle();
 
       expect(gateway.batches[0]).toBeLessThan(backlog);
