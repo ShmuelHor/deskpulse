@@ -41,6 +41,15 @@ function Probe(): React.JSX.Element {
   );
 }
 
+function PalettePicker(): React.JSX.Element {
+  const { palette, setPalette } = useTheme();
+  return (
+    <button type="button" onClick={(): void => setPalette('navy')}>
+      {palette}
+    </button>
+  );
+}
+
 describe('ThemeProvider', () => {
   let root: HTMLElement;
 
@@ -89,6 +98,21 @@ describe('ThemeProvider', () => {
     );
 
     expect(root.getAttribute('data-theme')).toBe('dark');
+  });
+
+  it('switches the palette without touching the mode', () => {
+    fakeSystemTheme(false);
+    render(
+      <ThemeProvider root={root}>
+        <PalettePicker />
+      </ThemeProvider>,
+    );
+    expect(screen.getByRole('button').textContent).toBe('stone-mustard');
+
+    act(() => screen.getByRole('button').click());
+
+    expect(screen.getByRole('button').textContent).toBe('navy');
+    expect(root.getAttribute('data-theme')).toBe('light');
   });
 
   it('throws when useTheme is used outside the provider', () => {
