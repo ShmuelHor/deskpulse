@@ -5,7 +5,6 @@ export interface AppsTable {
   readonly id: string;
   readonly name: string;
   readonly icon: string | null;
-  readonly category: string | null;
   readonly created_at: Generated<Date>;
 }
 
@@ -15,18 +14,7 @@ export interface SessionsTable {
   readonly start_at: Timestamp;
   readonly end_at: Timestamp;
   readonly title: string | null;
-  readonly category: string | null;
   readonly closed: Generated<boolean>;
-}
-
-export interface CategoryRulesTable {
-  readonly id: Generated<string>;
-  readonly field: string;
-  readonly match_type: string;
-  readonly pattern: string;
-  readonly category: string;
-  readonly priority: number;
-  readonly created_at: Generated<Date>;
 }
 
 export interface SampleWatermarkTable {
@@ -38,6 +26,5 @@ export interface SampleWatermarkTable {
 export interface SessionsDatabase {
   readonly apps: AppsTable;
   readonly sessions: SessionsTable;
-  readonly category_rules: CategoryRulesTable;
   readonly sample_watermark: SampleWatermarkTable;
 }

@@ -1,12 +1,11 @@
-import { parseRow, parseRows, pgArray, toPgText, unnest } from '@deskpulse/service-kit/sql';
+import { parseRow, parseRows, toPgText } from '@deskpulse/service-kit/sql';
 import type { TimeRangeQuery } from '@deskpulse/shared/common';
 import type { Session } from '@deskpulse/shared/sessions';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 
-import type { CategorizedSubject, CategoryChange } from '../domain/categorize.js';
 import type { Span } from '../domain/merge-samples.js';
-import type { CategorizedSpan, StoredSpan } from '../use-cases/store.js';
+import type { StoredSpan } from '../use-cases/store.js';
 import type { SessionsDatabase } from './database.js';
 
 type Db = Kysely<SessionsDatabase>;
@@ -19,15 +18,6 @@ const SessionRow = z.object({
   title: z.string().nullable(),
 });
 type SessionRow = z.infer<typeof SessionRow>;
-
-const ClosedRow = SessionRow.extend({ category: z.string().nullable() });
-
-const SubjectRow = z.object({
-  id: z.string(),
-  app_id: z.string(),
-  title: z.string().nullable(),
-  category: z.string().nullable(),
-});
 
 const IdRow = z.object({ id: z.string() });
 const SESSION_COLUMNS = ['id', 'app_id', 'start_at', 'end_at', 'title'] as const;
@@ -90,7 +80,7 @@ export async function setRecordedUntil(db: Db, tsMs: number): Promise<void> {
     .execute();
 }
 
-async function insertSpan(db: Db, span: CategorizedSpan): Promise<string> {
+async function insertSpan(db: Db, span: Span): Promise<string> {
   const row = parseRow(
     IdRow,
     await db
@@ -100,7 +90,6 @@ async function insertSpan(db: Db, span: CategorizedSpan): Promise<string> {
         start_at: new Date(span.startMs),
         end_at: new Date(span.endMs),
         title: span.title,
-        category: span.category,
         closed: span.closed,
       })
       .returning('id')
@@ -112,13 +101,12 @@ async function insertSpan(db: Db, span: CategorizedSpan): Promise<string> {
   return row.id;
 }
 
-async function updateSpan(db: Db, id: string, span: CategorizedSpan): Promise<void> {
+async function updateSpan(db: Db, id: string, span: Span): Promise<void> {
   await db
     .updateTable('sessions')
     .set({
       end_at: new Date(span.endMs),
       title: span.title,
-      category: span.category,
       closed: span.closed,
     })
     .where('id', '=', id)
@@ -129,7 +117,7 @@ async function updateSpan(db: Db, id: string, span: CategorizedSpan): Promise<vo
  * In order: a closed span must be written before the next one opens (one open
  * at most). The result holds the title as stored, so the reply matches the row.
  */
-export async function saveSpans(db: Db, spans: readonly CategorizedSpan[]): Promise<StoredSpan[]> {
+export async function saveSpans(db: Db, spans: readonly Span[]): Promise<StoredSpan[]> {
   const saved: StoredSpan[] = [];
   for (const original of spans) {
     const span = { ...original, title: toPgText(original.title) };
@@ -172,10 +160,10 @@ export async function closedSpansOverlapping(
   limit: number,
 ): Promise<StoredSpan[]> {
   const rows = parseRows(
-    ClosedRow,
+    SessionRow,
     await db
       .selectFrom('sessions')
-      .select([...SESSION_COLUMNS, 'category'])
+      .select(SESSION_COLUMNS)
       .where('closed', '=', true)
       .where('start_at', '<=', new Date(toMs))
       .where('end_at', '>=', new Date(fromMs))
@@ -190,44 +178,6 @@ export async function closedSpansOverlapping(
     startMs: row.start_at.getTime(),
     endMs: row.end_at.getTime(),
     title: row.title,
-    category: row.category,
     closed: true,
   }));
-}
-
-export async function sessionsEndingSince(db: Db, cutoff: Date): Promise<CategorizedSubject[]> {
-  const rows = parseRows(
-    SubjectRow,
-    await db
-      .selectFrom('sessions')
-      .select(['id', 'app_id', 'title', 'category'])
-      .where('end_at', '>=', cutoff)
-      .execute(),
-  );
-  return rows.map((row) => ({
-    id: row.id,
-    wmClass: row.app_id,
-    title: row.title,
-    category: row.category,
-  }));
-}
-
-export async function setCategories(db: Db, changes: readonly CategoryChange[]): Promise<void> {
-  await db
-    .updateTable('sessions as s')
-    .from(
-      unnest<{ id: string; category: string | null }, 'c'>('c', {
-        id: pgArray(
-          'uuid',
-          changes.map((change) => change.id),
-        ),
-        category: pgArray(
-          'text',
-          changes.map((change) => change.category),
-        ),
-      }),
-    )
-    .set((eb) => ({ category: eb.ref('c.category') }))
-    .whereRef('s.id', '=', 'c.id')
-    .execute();
 }

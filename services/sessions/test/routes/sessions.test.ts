@@ -15,7 +15,6 @@ function stored(id: string, start: string, end: string, title: string | null): S
     startMs: Date.parse(start),
     endMs: Date.parse(end),
     title,
-    category: 'work',
     closed: true,
   };
 }

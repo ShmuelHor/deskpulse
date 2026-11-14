@@ -39,7 +39,7 @@ describe('POST /samples', () => {
 
     expect(response.statusCode).toBe(HTTP_OK);
     const body = SampleResult.parse(response.json());
-    expect(body.closed.map((closed) => Session.parse(closed.session).appId)).toEqual(['code']);
+    expect(body.closed.map((closed) => Session.parse(closed).appId)).toEqual(['code']);
   });
 
   it.each([

@@ -1,10 +1,10 @@
 import type { WindowSample } from '@deskpulse/shared/ingest';
 import { LIMITS } from '@deskpulse/shared/limits';
+import type { Session } from '@deskpulse/shared/sessions';
 
-import type { ClosedSession, SampleResult } from '../contracts.js';
-import { resolveCategory } from '../domain/categorize.js';
+import type { SampleResult } from '../contracts.js';
 import { type ActivitySample, mergeSamples } from '../domain/merge-samples.js';
-import type { CategorizedSpan, SessionsStore, SessionsTransaction, StoredSpan } from './store.js';
+import type { SessionsStore, SessionsTransaction, StoredSpan } from './store.js';
 
 function toActivity(sample: WindowSample): ActivitySample {
   return {
@@ -16,16 +16,13 @@ function toActivity(sample: WindowSample): ActivitySample {
   };
 }
 
-function toClosedSession(span: StoredSpan): ClosedSession {
+function toClosedSession(span: StoredSpan): Session {
   return {
-    session: {
-      id: span.id,
-      appId: span.appId,
-      start: new Date(span.startMs).toISOString(),
-      end: new Date(span.endMs).toISOString(),
-      ...(span.title === null ? {} : { title: span.title }),
-    },
-    category: span.category,
+    id: span.id,
+    appId: span.appId,
+    start: new Date(span.startMs).toISOString(),
+    end: new Date(span.endMs).toISOString(),
+    ...(span.title === null ? {} : { title: span.title }),
   };
 }
 
@@ -44,7 +41,7 @@ async function replayedClosures(
   samples: readonly WindowSample[],
   excluded: ReadonlySet<string>,
   room: number,
-): Promise<ClosedSession[]> {
+): Promise<Session[]> {
   if (samples.length === 0) {
     return [];
   }
@@ -61,7 +58,7 @@ async function replayedClosures(
 
 /**
  * Merges a batch into the stored sessions in one transaction: continues the
- * open session, stores new ones under their category, and returns the
+ * open session, stores new ones, and returns the
  * sessions the batch closed.
  */
 export function recordSamples(
@@ -79,13 +76,13 @@ export function recordSamples(
       await tx.setRecordedUntil(recordedUntilMs);
     }
     // Any late sample may be a retry, so the sessions it closed are returned again.
-    const replay = (closed: readonly ClosedSession[]): Promise<ClosedSession[]> =>
+    const replay = (closed: readonly Session[]): Promise<Session[]> =>
       late === 0
         ? Promise.resolve([])
         : replayedClosures(
             tx,
             samples,
-            new Set(closed.map(({ session }) => session.id)),
+            new Set(closed.map((session) => session.id)),
             LIMITS.ingestSamples - closed.length,
           );
     if (spans.length === 0) {
@@ -93,20 +90,7 @@ export function recordSamples(
     }
 
     await tx.ensureApps([...new Set(spans.map((span) => span.appId))]);
-    const rules = await tx.listRules(LIMITS.listSize);
-    const appCategories = await tx.appCategories();
-    const categorized = spans.map(
-      (span): CategorizedSpan => ({
-        ...span,
-        category: resolveCategory(
-          { wmClass: span.appId, title: span.title },
-          rules,
-          appCategories.get(span.appId) ?? null,
-        ),
-      }),
-    );
-
-    const saved = await tx.saveSpans(categorized);
+    const saved = await tx.saveSpans(spans);
     const closed = saved.filter((span) => span.closed).map(toClosedSession);
     return { accepted, late, closed: [...closed, ...(await replay(closed))] };
   });

@@ -4,8 +4,6 @@ import { createService, type Service } from '@deskpulse/service-kit';
 import { buildRoutes } from '../src/service.js';
 import { createMemoryStore, type MemoryStore } from './memory-store.js';
 
-export const NOW = new Date('2026-11-08T10:00:00.000Z');
-
 /** Never connected to: the routes run on the memory store. Port 1 refuses at once. */
 const ENV = { SESSIONS_DB_PASSWORD: 'not-a-real-secret', DB_HOST: '127.0.0.1', DB_PORT: '1' };
 
@@ -20,7 +18,7 @@ export interface TestService {
   readonly store: MemoryStore;
 }
 
-/** The real routes and error handling over an in-memory store and a fixed clock. */
+/** The real routes and error handling over an in-memory store. */
 export function createTestService(store: MemoryStore = createMemoryStore()): TestService {
   const service = createService({
     name: 'sessions',
@@ -28,7 +26,7 @@ export function createTestService(store: MemoryStore = createMemoryStore()): Tes
     env: ENV,
     logStream: discard,
     handleSignals: false,
-    routes: buildRoutes({ store, now: () => NOW }),
+    routes: buildRoutes({ store }),
   });
   return { service, store };
 }

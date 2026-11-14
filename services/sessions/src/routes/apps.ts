@@ -5,7 +5,7 @@ import { App, AppList, AppUpdate } from '@deskpulse/shared/sessions';
 import { listApps, updateApp } from '../use-cases/manage-apps.js';
 import type { RouteDeps } from './route-deps.js';
 
-export function appRoutes({ store, now }: RouteDeps): Route[] {
+export function appRoutes({ store }: RouteDeps): Route[] {
   return [
     defineRoute({
       method: 'GET',
@@ -17,7 +17,7 @@ export function appRoutes({ store, now }: RouteDeps): Route[] {
       method: 'PUT',
       url: '/apps/:id',
       schema: { params: AppIdParams, body: AppUpdate, response: App },
-      handler: ({ params, body }) => updateApp(store, params.id, body, now()),
+      handler: ({ params, body }) => updateApp(store, params.id, body),
     }),
   ];
 }
