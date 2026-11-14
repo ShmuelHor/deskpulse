@@ -23,8 +23,7 @@ export function createLockCollector(): Collector {
       );
       return;
     }
-    // Someone just unlocked the screen, so they are not idle, whatever the last poll said.
-    context.reportPresence(locked ? { locked } : { locked, idleMs: 0 });
+    context.reportPresence({ locked });
   }
 
   function warnUntracked(context: CollectorContext, error: SessionBusError): void {

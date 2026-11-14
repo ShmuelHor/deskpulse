@@ -1,15 +1,11 @@
 /** A gap between samples longer than this closes the session (SPEC §5 sessions). */
 export const MAX_GAP_MS = 15_000;
 
-/** Idle for at least this long means the user is away from the computer (SPEC §4.1). */
-export const IDLE_THRESHOLD_MS = 120_000;
-
 /** One focused-window sample, with its timestamp already parsed. */
 export interface ActivitySample {
   readonly tsMs: number;
   readonly appId: string;
   readonly title: string | null;
-  readonly idleMs: number;
   readonly locked: boolean;
 }
 
@@ -38,7 +34,7 @@ export interface MergeResult {
 }
 
 function isAway(sample: ActivitySample): boolean {
-  return sample.locked || sample.idleMs >= IDLE_THRESHOLD_MS;
+  return sample.locked;
 }
 
 function isContinuous(span: Span, sample: ActivitySample): boolean {
@@ -51,16 +47,9 @@ function chronological(samples: readonly ActivitySample[]): ActivitySample[] {
   return sorted.filter((sample, index) => index === 0 || sample.tsMs !== sorted[index - 1]?.tsMs);
 }
 
-/**
- * The user went away `idleMs` before this sample, so time after that is not
- * the app's. A gap already ended the span at its last sample.
- */
-function closeOnAway(span: Span, sample: ActivitySample): Span {
-  if (!isContinuous(span, sample)) {
-    return { ...span, closed: true };
-  }
-  const awaySince = Math.min(span.endMs, sample.tsMs - sample.idleMs);
-  return { ...span, endMs: Math.max(span.startMs, awaySince), closed: true };
+/** The screen locked, so the span ends at its last sample: locked time is never counted. */
+function closeOnAway(span: Span): Span {
+  return { ...span, closed: true };
 }
 
 /** On a switch the previous app is in focus until the new one appears, unless there was a gap. */
@@ -96,7 +85,7 @@ function step(current: Span | null, sample: ActivitySample): Step {
     return { closed: null, current: isAway(sample) ? null : open(sample) };
   }
   if (isAway(sample)) {
-    return { closed: closeOnAway(current, sample), current: null };
+    return { closed: closeOnAway(current), current: null };
   }
   if (current.appId === sample.appId && isContinuous(current, sample)) {
     return { closed: null, current: extend(current, sample) };
@@ -107,7 +96,7 @@ function step(current: Span | null, sample: ActivitySample): Step {
 /**
  * Merges a batch of window samples into sessions, continuing from the stored
  * open session. Consecutive samples of one app form a session; a gap of more
- * than {@link MAX_GAP_MS}, an idle or locked sample, or a switch to another
+ * than {@link MAX_GAP_MS}, a locked sample, or a switch to another
  * app closes it. Samples may arrive in any order.
  *
  * `recordedUntilMs` is the newest sample any earlier batch applied. Samples at

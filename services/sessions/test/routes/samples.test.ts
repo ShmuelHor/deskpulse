@@ -16,7 +16,6 @@ function window(clock: string, wmClass: string): WindowSample {
     wmClass,
     title: `${wmClass} window`,
     pid: PID,
-    idleMs: 0,
     locked: false,
   };
 }

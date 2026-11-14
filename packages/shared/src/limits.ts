@@ -31,7 +31,6 @@ export const LIMITS = {
   timelinePoints: 17_280,
   exportSessions: 100_000,
   pid: 4_194_304,
-  idleMs: 86_400_000,
   minutesPerDay: 1_440,
   focusMinutes: 720,
   secondsPerWeek: 604_800,

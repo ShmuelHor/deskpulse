@@ -25,7 +25,7 @@ export type SignalHandler = (body: readonly unknown[]) => void;
 export type Unsubscribe = () => Promise<void>;
 
 /**
- * One shared session-bus connection for every plugin (window, idle, lock,
+ * One shared session-bus connection for every plugin (window, lock,
  * app-discovery, notifier). It connects on first use, so an agent with no
  * D-Bus plugin never opens a socket.
  */

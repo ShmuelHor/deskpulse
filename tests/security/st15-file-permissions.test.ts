@@ -34,7 +34,6 @@ describe('ST15 file permissions', () => {
           ts: new Date().toISOString(),
           wmClass: 'firefox',
           pid: 1,
-          idleMs: 0,
           locked: false,
         },
       ]);
