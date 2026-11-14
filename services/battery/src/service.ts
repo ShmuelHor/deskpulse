@@ -3,6 +3,7 @@ import { createService, type Service, type ServiceOptions } from '@deskpulse/ser
 import type { Route } from '@deskpulse/service-kit/route';
 import { createPgStore } from './adapters/pg-store.js';
 import { BatteryConfig } from './config.js';
+import { createRetention } from './jobs/retention.js';
 import { batteryRoutes } from './routes/battery.js';
 import type { RouteDeps } from './routes/route-deps.js';
 import { sampleRoutes } from './routes/samples.js';
@@ -26,6 +27,7 @@ export function createBatteryService(options: BatteryServiceOptions = {}): Servi
     migrationsDir: MIGRATIONS_DIR,
     config: BatteryConfig,
     ...options,
+    jobs: ({ db, log }) => [createRetention({ db, log })],
     routes: ({ db, config }) =>
       buildRoutes({
         store: createPgStore(db),

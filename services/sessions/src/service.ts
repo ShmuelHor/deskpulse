@@ -2,8 +2,8 @@ import { fileURLToPath } from 'node:url';
 import { createService, type Service, type ServiceOptions } from '@deskpulse/service-kit';
 import type { Route } from '@deskpulse/service-kit/route';
 import type { z } from 'zod';
-
 import { createPgStore } from './adapters/pg-store.js';
+import { createRetention } from './jobs/retention.js';
 import { appRoutes } from './routes/apps.js';
 import type { RouteDeps } from './routes/route-deps.js';
 import { sampleRoutes } from './routes/samples.js';
@@ -32,6 +32,7 @@ export function createSessionsService(
     name: 'sessions',
     migrationsDir: MIGRATIONS_DIR,
     ...options,
+    jobs: ({ db, log }) => [createRetention({ db, log })],
     routes: ({ db }) => buildRoutes({ store: createPgStore(db) }),
   });
 }

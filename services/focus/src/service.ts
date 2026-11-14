@@ -1,9 +1,9 @@
 import { fileURLToPath } from 'node:url';
 import { createService, type Service, type ServiceOptions } from '@deskpulse/service-kit';
 import type { Route } from '@deskpulse/service-kit/route';
-
 import { createPgStore } from './adapters/pg-store.js';
 import { FocusConfig } from './config.js';
+import { createRetention } from './jobs/retention.js';
 import { alertRoutes } from './routes/alerts.js';
 import { focusRoutes } from './routes/focus.js';
 import { knownAppRoutes } from './routes/known-apps.js';
@@ -34,6 +34,7 @@ export function createFocusService(options: FocusServiceOptions = {}): Service<F
     migrationsDir: MIGRATIONS_DIR,
     config: FocusConfig,
     ...options,
+    jobs: ({ db, log }) => [createRetention({ db, log })],
     routes: ({ db, config }) =>
       buildRoutes({
         store: createPgStore(db),
