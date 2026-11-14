@@ -1,7 +1,7 @@
 # Security tests
 
 The automated security tests from `docs/SECURITY.md` section 3, one file per test:
-`stNN-<slug>.test.ts` for ST01 to ST18, directly in this directory. Helpers live in `lib/` and
+`stNN-<slug>.test.ts` for ST01 to ST24, directly in this directory. Helpers live in `lib/` and
 fixtures in `fixtures/`.
 
 ```
