@@ -1,10 +1,11 @@
-import { mkdir, mkdtemp, readdir, rm, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { createBuffer } from '../../apps/agent/src/core/buffer.js';
 import { resolveAgentPaths } from '../../apps/agent/src/core/paths.js';
 import { modeOf } from '../../apps/agent/src/core/private-fs.js';
+import { ensureEnvFile } from '../../scripts/lib/env-file.js';
 
 const PRIVATE_DIR = 0o700;
 const PRIVATE_FILE = 0o600;
@@ -13,7 +14,29 @@ const WORLD_READABLE_FILE = 0o644;
 const PERMISSIVE_UMASK = 0o000;
 
 describe('ST15 file permissions', () => {
-  it.todo('[T02] npm run setup creates .env with mode 0600');
+  it('[T02] npm run setup creates .env with mode 0600', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'deskpulse-st15-env-'));
+    const envPath = join(dir, '.env');
+    // A permissive umask must not loosen the file setup creates.
+    const previousUmask = process.umask(PERMISSIVE_UMASK);
+    try {
+      const first = await ensureEnvFile(envPath);
+      expect(first.created).toBe(true);
+      expect(await modeOf(envPath)).toBe(PRIVATE_FILE);
+      const secrets = await readFile(envPath, 'utf8');
+
+      // Re-running keeps the secrets, and tightens a file that was loosened.
+      await chmod(envPath, WORLD_READABLE_FILE);
+      const second = await ensureEnvFile(envPath);
+      expect(second.created).toBe(false);
+      expect(second.fixedMode).toBe(true);
+      expect(await modeOf(envPath)).toBe(PRIVATE_FILE);
+      expect(await readFile(envPath, 'utf8')).toBe(secrets);
+    } finally {
+      process.umask(previousUmask);
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
 
   it('[T12] agent state files are 0600 in a 0700 directory', async () => {
     const home = await mkdtemp(join(tmpdir(), 'deskpulse-st15-'));
