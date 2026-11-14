@@ -1,6 +1,6 @@
-# Yoman: agent rules
+# DeskPulse: agent rules
 
-Local-only time tracker, battery and system monitor, and focus mode for Linux (GNOME Wayland).
+Local-only desktop control center for Linux (GNOME Wayland): live system state, slowdowns, a task manager, cleanup, updates, startup apps, time by app, and focus mode. Called Yoman until wave 4; code still uses `yoman` names until T60.
 Read before any task: `docs/TASKS.md` (work queue and parallel rules), `docs/SPEC.md` (what), `docs/SECURITY.md` (threats and required tests), `docs/DESIGN.md` (look).
 
 ## Roles
@@ -62,7 +62,7 @@ Merge only when CI is green, the latest review says `Verdict: approved`, and eve
 ## Security rules (blocking)
 - **Secrets:** never commit `.env`, tokens, passwords or real data. Only placeholders in `.env.example`. Never bypass or weaken gitleaks, CI security jobs or branch protection. No `continue-on-error`.
 - **Network:** only `127.0.0.1:4710` (web) and `127.0.0.1:4711` (gateway) are published. Internal services stay on the internal network. Don't touch the Host, Origin, CORS or CSP rules without updating SECURITY.md.
-- **Input:** validate every external input with Zod at the boundary. Window titles are untrusted input.
+- **Input:** validate every external input with Zod at the boundary. App, process and container names are untrusted input. Window titles are never collected.
 
 ## Validation with Zod
 Zod is the only validation library in the repo.
@@ -73,8 +73,8 @@ Zod is the only validation library in the repo.
 - **Constrain everything:** string lengths, number ranges, enums and regexes (app IDs, for example). Unbounded strings and arrays are not allowed at the public API.
 - **Execution:** `execFile` with an args array only. Never `shell: true`, never build a command from a string.
 - **SQL:** parameterized queries only. Each service uses its own DB role and schema.
-- **Logs:** never log titles, cmdlines, tokens, cookies or passwords. Use the pino redaction in service-kit or agent core.
-- **Agent:** send process `comm` only, never `cmdline`. Never require the `docker` group. Save GNOME settings before changing them, and make them restorable after a crash. Never touch system apps.
+- **Logs:** never log titles, cmdlines, file paths from cleanup, tokens, cookies or passwords. Use the pino redaction in service-kit or agent core.
+- **Agent:** send process `comm` only, never `cmdline`. Never read window titles. Never require or grant the `docker` group: Docker features appear only when the user already has access, and DeskPulse's own containers are protected. Act on the host only through a confirmed command that the agent re-validates (SPEC §4.3), only inside the allowlists, and never as root. Save GNOME settings before changing them, and make them restorable after a crash. Never touch system apps.
 - **Files:** `.env` and state files `0600`, their directories `0700`.
 - **Dependencies:** prefer a popular, well-maintained library over hand-written infrastructure code (UI kit, query builder, retries, dates, HTTP plumbing), always at its latest stable version, pinned exactly. Justify every new one in the PR. It must be maintained, popular and permissively licensed. Pin Actions to a SHA and images to a digest.
 - **Containers:** non-root, read-only rootfs, `cap_drop: [ALL]`, `no-new-privileges`, memory limits. No docker.sock mounts.
@@ -98,8 +98,8 @@ This repo is a portfolio piece. Code should read like it was written by a strong
 
 ## Product rules
 - **Boundaries:** web and agent talk only to the gateway. Services never call each other and never read another service's schema. The gateway orchestrates and owns only `gateway.settings`.
-- **Battery budget:** the agent stays ≤ 0.5% CPU and ≤ 60MB RSS. No new polling without updating SPEC §4.1. Everything pauses while the screen is locked.
-- **Design:** the UI is built with MUI. Colors come only from `apps/web/src/theme/color-tokens.ts` and every other token from the MUI theme (`apps/web/src/theme/mui-theme.ts`). No hand-written CSS files. No hex values elsewhere, no gradients or shadows.
+- **Battery budget:** the agent stays ≤ 0.5% CPU and ≤ 60MB RSS with the window closed. Live 2 s sampling only while the window is open and visible. No new polling without updating SPEC §4.1. Everything pauses while the screen is locked.
+- **Design:** the UI is built with MUI. Colors come only from `apps/web/src/theme/color-tokens.ts` and every other token from the MUI theme (`apps/web/src/theme/mui-theme.ts`). No hand-written CSS files. No hex values elsewhere. Shadows only from the theme's elevation tokens, the only gradient is the skeleton shimmer, and live blur only on the sidebar and dialogs (DESIGN §4). No orange and no green.
 - **i18n:** every user-facing string goes in both `he` and `en` (Hebrew is the default). CSS uses logical properties only. Dates and numbers go through `Intl`.
 
 ## Stack

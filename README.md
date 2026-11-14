@@ -1,27 +1,29 @@
-# Yoman
+# DeskPulse
 
-**Your computer's automatic diary: time, battery, load and focus. Local only.**
+**A calm control center for your Linux desktop. Local only.**
 
-_Yoman_ (Hebrew for "diary") quietly records how you use your Linux machine and turns it into a calm,
-readable daily journal. It tracks which apps you spend time in, how your battery is aging, when the
-system is choking and why, and gives you a focus mode that silences the apps you choose.
-Nothing ever leaves your computer.
+DeskPulse shows how your computer is doing at a glance and helps you keep it that way: live load,
+memory, disk and battery, why it slowed down and which app was to blame, a task manager, disk
+cleanup, pending updates, startup apps, where your time went, and a focus mode that holds
+notifications until you're done. Every page is a grid of widgets you can arrange, in Hebrew or
+English, light or dark, with ten color palettes. Nothing ever leaves your computer.
 
-> **Status:** early development. Only the repository tooling exists so far: TypeScript, Biome with
-> custom security lint rules, commitlint, Vitest and a language check. The CI/CD and security gates
-> come next, before any feature code. Features and Architecture below describe the design being
-> built, not shipped behavior, and Security separates what is in place from what is planned. See
-> the [roadmap](#roadmap).
+> **Status:** in development. The services, the agent, the gateway and the first web pages exist
+> (waves 0–3, called Yoman then). Wave 4 turns them into DeskPulse: the new design, the control
+> center features and the Tauri desktop app. Until the code rename (T60) lands, package names,
+> paths, units and commands below still say `yoman`. See [docs/TASKS.md](docs/TASKS.md).
 
 ## Features (planned)
 
-| Area               | What it does                                                                                                                                                                                                                            |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Time tracking**  | Records the focused window every few seconds, merges samples into sessions, detects idle time and screen lock, and sorts apps into categories with editable rules.                                                                      |
-| **Battery health** | Tracks capacity versus design capacity, charge cycles and discharge rate over months, and shows which apps drain the battery the most.                                                                                                  |
-| **System load**    | Uses Linux [PSI](https://docs.kernel.org/accounting/psi.html) to detect when the machine is actually stalling (not just busy), then names the heaviest processes and Docker containers. Also flags memory leaks and thermal throttling. |
-| **Focus mode**     | Mutes notifications from selected apps (Telegram, Chrome web apps, anything installed later) for a set time. Critical alerts still get through, and you get a summary at the end. Settings survive crashes and are always restored.     |
-| **Bilingual UI**   | Hebrew (RTL) and English (LTR), plus light, dark and system themes in a warm "paper and ink" design.                                                                                                                                    |
+| Area | What it does |
+| --- | --- |
+| **Control** | Live CPU, memory, disk, network and battery; internet state and uptime; a "needs attention" list that links to the fix. |
+| **Performance** | Detects real stalls with Linux [PSI](https://docs.kernel.org/accounting/psi.html), explains them in plain words with the app to blame, and watches temperature, memory leaks, battery health, the power profile and the charge limit. |
+| **Processes** | A task manager grouped by app, with End and your own Docker containers. |
+| **Maintenance** | Disk usage and cleanup (caches, trash, old Docker images) with a confirmation, pending apt and snap updates, and startup apps. |
+| **Time** | Where your time went, by app, day and week, without entering anything. No window titles are ever collected. |
+| **Focus** | Holds notifications from the apps you choose for a set time, then shows what waited. Settings survive crashes and are always restored. |
+| **Your layout** | Every page is a widget grid you can rearrange, resize and change; Hebrew (RTL) and English, light and dark, ten palettes. |
 
 ## Architecture (by design)
 
@@ -59,7 +61,7 @@ flowchart LR
 
 ## Security
 
-The data Yoman collects is as sensitive as browser history, so security is enforced by automation
+The data DeskPulse collects is as sensitive as browser history, so security is enforced by automation
 rather than good intentions. The full threat model is in [`docs/SECURITY.md`](docs/SECURITY.md).
 
 **In place today**
