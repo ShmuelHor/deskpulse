@@ -66,8 +66,8 @@ branch t13-…  →  commits  →  push  →  PR (draft)  →  CI green  →  Re
 | 0 · CI/CD and security | [x] T01 [x] T02 [x] T03 [x] T04 [x] T05 [x] T06 [x] T07 | G0 |
 | 1 · Contracts and infrastructure | [x] T08 [x] T09 [x] T10 [x] T11 [x] T12 | G1 |
 | 2 · Independent units | [x] T13 [x] T14 [x] T15 [x] T16 [x] T17 [x] T18 [x] T19 [x] T20 [x] T21 [x] T22 [x] T23 [x] T24 [x] T25 [x] T26 | G2 |
-| 3 · Integration | [x] T27 [x] T28 [x] T29 [x] T30 [x] T31 [x] T32 [x] T33 [x] T34 [x] T35 [x] T36 [x] T37 [x] T38 [x] T39 [x] T40 [x] T41 | G3 |
-| 4A · Fix and trim | [ ] #202 [ ] #200 [ ] T60 [ ] T61 [ ] T62 [ ] T63 [ ] T64 [ ] T65 | G4A |
+| 3 · Integration (closed; G3's manual checks were dropped for the replan) | [x] T27 [x] T28 [x] T29 [x] T30 [x] T31 [x] T32 [x] T33 [x] T34 [x] T35 [x] T36 [x] T37 [x] T38 [x] T39 [x] T40 [x] T41 | G3 |
+| 4A · Fix and trim | [ ] #202 [ ] T60 [ ] T61 [ ] T62 [ ] T63 [ ] T64 [ ] T65 | G4A |
 | 4B · Design system, shell, pages | [ ] T66 [ ] T68 [ ] T67 [ ] T57 [ ] T43 [ ] T58 [ ] T69 [ ] T47 | G4B |
 | 4C · Control center | [ ] T72 [ ] T73 [ ] T74 [ ] T75 [ ] T76 [ ] T77 [ ] T78 [ ] T79 [ ] T56 [ ] T80 [ ] T81 [ ] T83 | G4C |
 | 4D · Desktop app | [ ] T82 [ ] T42 [ ] T51 [ ] T84 | G4D |
@@ -354,20 +354,20 @@ The product became DeskPulse (SPEC.md, DESIGN.md). Wave 4 runs as four sub-waves
 Dropped from the old plan (their issues are closed): T44 GNOME "Do Not Disturb", T45 automatic focus, T46 Pomodoro, T48 export and backup, T49 visible retention (replaced by T65), T50 tray icon, T59 Settings absorbs alert levels (there are no alert levels now).
 
 ### 4A · Fix and trim
-Open items first: merge #202 (never mute system apps, with a security review) and fix #200 (one agent instance). **T60 runs alone and first**, because it touches every package; the rest run in parallel after it. T61–T63 change `packages/shared`, so each ships its contract change as a small PR first.
+**Fast track.** #202 (never mute system apps) merges first, because the bug mutes system apps today and focus stays in DeskPulse. #200 (one agent instance) moves into T42. The rest of G3's manual checks are dropped: the old UI is replaced in 4B. **T60 runs alone and first**, because it touches every package. Then T61–T63 run in parallel, together with T66 and T68 from 4B, which touch none of their files. T61–T63 trim the services, the gateway, the agent and `packages/shared` only: the old web pages are not trimmed, because T57 deletes them. Each ships its contract change as a small PR first.
 
 - **T60 · Rename to DeskPulse in code:** packages `@yoman/*` → `@deskpulse/*`, the compose project, containers and images, env vars, the session cookie, DB names and roles, the CLI, systemd units, state and config paths, i18n strings, README and scripts. Existing local state (`~/.config/yoman`, `~/.local/state/yoman`, the Postgres volume) is migrated once on first start and never lost. Owns: everything it renames; nothing else runs during it
   - **Done when:** [ ] `grep -ri yoman` finds only the migration code and the changelog [ ] an existing install keeps its data after the upgrade
-- **T61 · Remove categories and rules:** the `category_rules` table, category fields, the rules API, category charts and the category click in the web. A migration drops the data. Owns: `services/sessions/src/` (rules), `services/reports/src/` (categories), the gateway's rules routes, the web's category UI
-- **T62 · Remove window titles:** the agent stops reading titles; sessions, the gateway, settings and the web drop them; a migration deletes every stored title. Enables: **ST17** (titles part), updates **ST13** to app and process names. Owns: the window collector, the title fields in sessions and settings
-- **T63 · One alert rule, lock only:** remove idle detection (keep lock), the alert-level policy and its UI, the rate-limit settings, focus schedules and Pomodoro leftovers (#182), and the Apps page. Focus routing becomes the fixed rule in SPEC §5 (focus). Owns: `services/focus/src/` (policy, schedules), the idle collector, the web's alert-policy and apps pages
+- **T61 · Remove categories and rules:** the `category_rules` table, category fields and the rules API. A migration drops the data. Owns: `services/sessions/src/` (rules), `services/reports/src/` (categories), the gateway's rules routes
+- **T62 · Remove window titles:** the agent stops reading titles; sessions, the gateway and settings drop them; a migration deletes every stored title. Enables: **ST17** (titles part), updates **ST13** to app and process names. Owns: the window collector, the title fields in sessions and settings
+- **T63 · One alert rule, lock only:** remove idle detection (keep lock), the alert-level policy, the rate-limit settings, and focus schedules and Pomodoro leftovers (#182). Focus routing becomes the fixed rule in SPEC §5 (focus). Owns: `services/focus/src/` (policy, schedules), the idle collector
 - **T64 · Security test stubs:** ST19–ST24 as `it.todo` with their owners, and ST15 without the backups case. Owns: `tests/security/`
 - **T65 · Silent retention:** a nightly job per service deletes raw samples older than 90 days and keeps rollups and summaries; a log line says how much was deleted. Owns: `services/*/src/jobs/retention.ts`
 
-**Gate G4A:** [ ] #202 and #200 merged [ ] no categories, titles, idle, alert levels or Apps page left in code or UI [ ] `npm run security:todo` lists only ST19–ST24 owners
+**Gate G4A:** [ ] #202 merged [ ] no categories, titles, idle or alert levels left in the services, the gateway, the agent or the contracts [ ] `npm run security:todo` lists only ST19–ST24 owners
 
 ### 4B · Design system, shell and existing pages
-T66 and T68 first (in parallel), then T67 and T57, then the pages.
+T66 and T68 start during 4A (right after T60), then T67 and T57, then the pages. T57 deletes the old pages and their i18n.
 
 - **T66 · Theme:** DESIGN.md as code: the ten palettes and derived tokens in `color-tokens.ts`, Heebo + Inter, radii, elevation, motion, `prefers-reduced-motion`, the static background and glass surfaces, and a test that every palette's text pairs pass 4.5:1. Owns: `apps/web/src/theme/`
 - **T68 · Layouts and appearance settings API:** `GET/PUT/DELETE /v1/layouts/<page>` with the Zod schema from SPEC §5 (unknown widget IDs dropped on read), and palette and theme in the settings. Owns: `packages/shared/src/layouts/`, `apps/gateway/src/routes/layouts/`
@@ -400,7 +400,7 @@ T72, T73 and T74 first (the channels), then the collectors, then the pages.
 
 ### 4D · The desktop app
 - **T82 · Tauri desktop shell [security]:** the window on `http://127.0.0.1:4710` with no IPC, single instance, `deskpulse://` links from notifications to a confirmation dialog, and the "services aren't running" page with Retry and Start. Design: #157. Enables: **ST24**
-- **T42 · systemd and autostart:** the agent's user unit, the app's autostart entry from the Settings switch, and the Window Calls check
+- **T42 · systemd, autostart and one agent:** the agent's user unit, the app's autostart entry from the Settings switch, the Window Calls check, and only one agent at a time (a lock file, #200)
 - **T51 · CLI:** `status`, `pause`, `resume`, `focus`, `focus stop`, `uninstall` (SPEC §4.7). Owns: `apps/agent/src/cli/`
 - **T84 · Packaging:** a `.deb` for the desktop app and the agent, and the release workflow builds it on a `v*` tag
 
