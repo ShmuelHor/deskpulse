@@ -5,7 +5,7 @@ CREATE TABLE daily_rollups_by_app (
   day date NOT NULL,
   app_id text NOT NULL CHECK (app_id ~ '^[a-zA-Z0-9._-]{1,128}$'),
   active_ms bigint NOT NULL CHECK (active_ms >= 0),
-  PRIMARY KEY (day, app_id)
+  CONSTRAINT daily_rollups_pkey PRIMARY KEY (day, app_id)
 );
 INSERT INTO daily_rollups_by_app (day, app_id, active_ms)
   SELECT day, app_id, sum(active_ms) FROM daily_rollups GROUP BY day, app_id;

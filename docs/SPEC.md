@@ -166,7 +166,7 @@ All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, pino log
 - **API:** `POST /samples`, `GET /sessions?from&to`, `GET /apps`
 
 ### reports
-- **Entities:** `daily_rollups` (date, app, seconds), `focus_streaks`
+- **Entities:** `daily_rollups` (date, app, seconds), `focus_streaks` (a streak is continuous activity with gaps of at most 60 s, in any app)
 - **API:** `GET /day?date`, `GET /week?start` (with the previous week for comparison), `GET /top-apps?from&to`
 
 ### battery
