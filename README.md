@@ -15,15 +15,15 @@ English, light or dark, with ten color palettes. Nothing ever leaves your comput
 
 ## Features (planned)
 
-| Area | What it does |
-| --- | --- |
-| **Control** | Live CPU, memory, disk, network and battery; internet state and uptime; a "needs attention" list that links to the fix. |
+| Area            | What it does                                                                                                                                                                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Control**     | Live CPU, memory, disk, network and battery; internet state and uptime; a "needs attention" list that links to the fix.                                                                                                               |
 | **Performance** | Detects real stalls with Linux [PSI](https://docs.kernel.org/accounting/psi.html), explains them in plain words with the app to blame, and watches temperature, memory leaks, battery health, the power profile and the charge limit. |
-| **Processes** | A task manager grouped by app, with End and your own Docker containers. |
-| **Maintenance** | Disk usage and cleanup (caches, trash, old Docker images) with a confirmation, pending apt and snap updates, and startup apps. |
-| **Time** | Where your time went, by app, day and week, without entering anything. No window titles are ever collected. |
-| **Focus** | Holds notifications from the apps you choose for a set time, then shows what waited. Settings survive crashes and are always restored. |
-| **Your layout** | Every page is a widget grid you can rearrange, resize and change; Hebrew (RTL) and English, light and dark, ten palettes. |
+| **Processes**   | A task manager grouped by app, with End and your own Docker containers.                                                                                                                                                               |
+| **Maintenance** | Disk usage and cleanup (caches, trash, old Docker images) with a confirmation, pending apt and snap updates, and startup apps.                                                                                                        |
+| **Time**        | Where your time went, by app, day and week, without entering anything. No window titles are ever collected.                                                                                                                           |
+| **Focus**       | Holds notifications from the apps you choose for a set time, then shows what waited. Settings survive crashes and are always restored.                                                                                                |
+| **Your layout** | Every page is a widget grid you can rearrange, resize and change; Hebrew (RTL) and English, light and dark, ten palettes.                                                                                                             |
 
 ## Architecture (by design)
 
