@@ -108,7 +108,6 @@ function window(minute: number, overrides: Record<string, unknown> = {}): object
     ts: new Date(Date.parse('2026-11-08T09:00:00.000Z') + minute * MINUTE_MS).toISOString(),
     wmClass: 'firefox',
     pid: PID,
-    idleMs: 0,
     locked: false,
     ...overrides,
   };
@@ -177,7 +176,7 @@ describe('ST12 SQL injection', () => {
         const result = SampleResult.parse((await send('POST', '/samples', batch)).json);
         closedTitles.push(...result.closed.map((closed) => closed.session.title));
 
-        for (const field of ['kind', 'ts', 'wmClass', 'pid', 'idleMs', 'locked']) {
+        for (const field of ['kind', 'ts', 'wmClass', 'pid', 'locked']) {
           const bad = { samples: [window(minute, { [field]: payload })] };
           expect((await send('POST', '/samples', bad)).status).toBe(HTTP_BAD_REQUEST);
         }

@@ -4,7 +4,7 @@ import { AppId, Bytes, Comm, Label, Percent, Pid, ServiceName, Timestamp } from 
 import { MuteDirective } from './focus.js';
 import { LIMITS } from './limits.js';
 
-/** The focused window, idle time and lock state, every 5 s (SPEC §4.1, §5 sessions). */
+/** The focused window and lock state, every 5 s (SPEC §4.1, §5 sessions). */
 export const WindowSample = z.strictObject({
   kind: z.literal('window'),
   ts: Timestamp,
@@ -12,7 +12,6 @@ export const WindowSample = z.strictObject({
   /** Untrusted. Sent only when the privacy setting allows storing titles. */
   title: z.string().max(LIMITS.titleLength).optional(),
   pid: Pid,
-  idleMs: z.int().min(0).max(LIMITS.idleMs),
   locked: z.boolean(),
 });
 export type WindowSample = z.infer<typeof WindowSample>;

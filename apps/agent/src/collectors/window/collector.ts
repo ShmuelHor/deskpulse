@@ -15,7 +15,7 @@ export interface WindowCollectorOptions {
 type Problem = 'unavailable' | 'malformed';
 
 /**
- * Samples the focused window with the latest presence (SPEC §4.1). Without
+ * Samples the focused window with the latest lock state (SPEC §4.1). Without
  * the Window Calls extension it warns once and keeps trying, so enabling the
  * extension later is picked up without a restart.
  *
@@ -75,7 +75,6 @@ export function createWindowCollector(options: WindowCollectorOptions = {}): Col
           ts: now().toISOString(),
           wmClass: window.wmClass,
           pid: window.pid,
-          idleMs: context.presence.idleMs,
           locked: context.presence.locked,
         }),
       ];

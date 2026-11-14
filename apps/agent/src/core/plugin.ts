@@ -15,11 +15,11 @@ export interface PluginContext {
 export interface CollectorContext extends PluginContext {
   /** For event-driven collectors: buffers samples outside the polling schedule. */
   readonly emit: (samples: readonly Sample[]) => Promise<void>;
-  /** The latest idle time and lock state. */
+  /** The latest lock state. */
   readonly presence: Presence;
   /** For the apps collector: the whole catalog, on start and on every change (SPEC §4.3). */
   readonly reportKnownApps: (apps: readonly KnownApp[]) => void;
-  /** For the idle and lock collectors only. Locking pauses every polling collector. */
+  /** For the lock collector only. Locking pauses every polling collector. */
   readonly reportPresence: (update: PresenceUpdate) => void;
 }
 

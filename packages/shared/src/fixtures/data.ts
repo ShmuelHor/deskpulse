@@ -115,6 +115,5 @@ export const windowSampleFixture: WindowSample = {
   ts: FIXTURE_NOW,
   wmClass: 'code',
   pid: 4_242,
-  idleMs: 0,
   locked: false,
 };

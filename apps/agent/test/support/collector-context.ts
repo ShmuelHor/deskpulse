@@ -17,7 +17,7 @@ export interface RecordedPresence {
 
 /** Presence that records reports without a scheduler behind it. */
 export function recordedPresence(initial: Partial<Presence> = {}): RecordedPresence {
-  const current = { idleMs: 0, locked: false, ...initial };
+  const current = { locked: false, ...initial };
   const reports: PresenceUpdate[] = [];
   return {
     presence: current,

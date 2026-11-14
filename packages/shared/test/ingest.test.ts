@@ -3,7 +3,7 @@ import { IngestBatch, IngestResult, Sample } from '../src/ingest.js';
 import { LIMITS } from '../src/limits.js';
 
 const ts = '2026-11-08T10:00:00Z';
-const window = { kind: 'window', ts, wmClass: 'firefox', pid: 4242, idleMs: 0, locked: false };
+const window = { kind: 'window', ts, wmClass: 'firefox', pid: 4242, locked: false };
 const samples = [
   window,
   { ...window, title: 'DeskPulse – Mozilla Firefox' },
@@ -49,7 +49,7 @@ describe('Sample', () => {
       false,
     );
     expect(Sample.safeParse({ ...window, pid: 0 }).success).toBe(false);
-    expect(Sample.safeParse({ ...window, idleMs: -1 }).success).toBe(false);
+    expect(Sample.safeParse({ ...window, idleMs: 0 }).success).toBe(false);
     expect(Sample.safeParse({ ...window, ts: 'yesterday' }).success).toBe(false);
     expect(Sample.safeParse({ ...samples[2], capacityPct: 101 }).success).toBe(false);
   });

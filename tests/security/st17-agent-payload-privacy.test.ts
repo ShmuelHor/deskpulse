@@ -57,7 +57,7 @@ function context(): CollectorContext {
   return {
     logger: createLogger({ level: 'silent' }),
     sessionBus: { call: unavailable, subscribe: unavailable, close: (): void => undefined },
-    presence: { idleMs: 0, locked: false },
+    presence: { locked: false },
     reportPresence: (): void => undefined,
     emit: (): Promise<void> => Promise.resolve(),
     reportKnownApps: (): void => undefined,
