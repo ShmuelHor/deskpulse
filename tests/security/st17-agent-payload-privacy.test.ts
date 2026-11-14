@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { createPool } from '@deskpulse/service-kit/database';
 import { runMigrations } from '@deskpulse/service-kit/migrations';
 import { ProcessSample, WindowSample } from '@deskpulse/shared/ingest';
-import { Settings } from '@deskpulse/shared/settings';
+import { DEFAULT_PALETTE, Settings } from '@deskpulse/shared/settings';
 import pino from 'pino';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createPressureCollector } from '../../apps/agent/src/collectors/pressure/collector.js';
@@ -249,7 +249,11 @@ describe.skipIf(!available)('ST17 stored title setting is removed', () => {
 
       const { privacy, ...rest } = OLD_SETTINGS;
       expect(await store.read()).toEqual(
-        Settings.parse({ ...rest, privacy: { excludedApps: privacy.excludedApps } }),
+        Settings.parse({
+          ...rest,
+          palette: DEFAULT_PALETTE,
+          privacy: { excludedApps: privacy.excludedApps },
+        }),
       );
     } finally {
       await pool.end();

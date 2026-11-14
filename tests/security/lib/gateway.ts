@@ -33,6 +33,8 @@ export const NO_RATE_LIMIT = { global: UNLIMITED, ingest: UNLIMITED } as const;
 
 export const STATE_CHANGING = new Set(['POST', 'PUT', 'DELETE']);
 
+const NO_DATABASE = new Error('no database in the security suite');
+
 /** The gateway as it runs in production, minus the network: no route handlers, no services. */
 export function securityGateway(options: Partial<GatewayOptions> = {}): Promise<FastifyInstance> {
   return buildGateway({
@@ -40,8 +42,11 @@ export function securityGateway(options: Partial<GatewayOptions> = {}): Promise<
     agentToken: AGENT_TOKEN,
     services: { call: () => Promise.reject(new Error('no services in the security suite')) },
     settings: {
-      read: () => Promise.reject(new Error('no database in the security suite')),
-      write: () => Promise.reject(new Error('no database in the security suite')),
+      read: () => Promise.reject(NO_DATABASE),
+      write: () => Promise.reject(NO_DATABASE),
+      readLayout: () => Promise.reject(NO_DATABASE),
+      writeLayout: () => Promise.reject(NO_DATABASE),
+      deleteLayout: () => Promise.reject(NO_DATABASE),
     },
     ...options,
   });

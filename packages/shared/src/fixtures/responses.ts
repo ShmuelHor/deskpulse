@@ -9,6 +9,7 @@ import {
   FIXTURE_NOW,
   focusActiveFixture,
   incidentFixture,
+  layoutFixture,
   profileFixture,
   sessionFixture,
   settingsFixture,
@@ -106,4 +107,7 @@ export const responseFixtures: ResponseFixtures = {
   },
   getSettings: settingsFixture,
   updateSettings: settingsFixture,
+  getLayout: layoutFixture,
+  saveLayout: layoutFixture,
+  resetLayout: null,
 };
