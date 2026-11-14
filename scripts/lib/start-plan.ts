@@ -11,7 +11,8 @@ export const WEB_URL = 'http://127.0.0.1:4710/';
 export const HEALTHY_TIMEOUT_SECONDS = 300;
 
 /**
- * The commands before the agent. `setup` runs only when `.env` is missing:
+ * The commands before the agent. The legacy data migration always runs first (after
+ * `setup`); `setup` runs only when `.env` is missing:
  * it is safe to re-run, but the quiet path should not print on every start.
  * `--wait` returns once every service with a healthcheck is healthy, and
  * fails if one is not within the timeout.
@@ -21,6 +22,13 @@ export function planStartSteps(options: { readonly envExists: boolean }): readon
     label: 'Creating .env',
     command: 'npm',
     args: ['run', '--silent', 'setup'],
+  };
+  // Brings a pre-DeskPulse install's database over before the new stack can create an
+  // empty one. A no-op on every start after the first.
+  const migrate: StartStep = {
+    label: 'Checking for data from a pre-DeskPulse install',
+    command: 'npm',
+    args: ['run', '--silent', 'migrate:yoman'],
   };
   const stack: StartStep = {
     label: 'Starting the stack',
@@ -35,7 +43,7 @@ export function planStartSteps(options: { readonly envExists: boolean }): readon
       String(HEALTHY_TIMEOUT_SECONDS),
     ],
   };
-  return options.envExists ? [stack] : [setup, stack];
+  return options.envExists ? [migrate, stack] : [setup, migrate, stack];
 }
 
 /** The agent runs in the foreground, so Ctrl+C stops it. */

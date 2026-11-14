@@ -10,19 +10,20 @@ describe('planStartSteps', () => {
   it('runs setup first when .env is missing', () => {
     const steps = planStartSteps({ envExists: false });
 
-    expect(steps.map((step) => step.command)).toEqual(['npm', 'docker']);
+    expect(steps.map((step) => step.command)).toEqual(['npm', 'npm', 'docker']);
     expect(steps[0]?.args).toContain('setup');
+    expect(steps[1]?.args).toContain('migrate:yoman');
   });
 
   it('skips setup when .env exists', () => {
     const steps = planStartSteps({ envExists: true });
 
-    expect(steps).toHaveLength(1);
-    expect(steps[0]?.command).toBe('docker');
+    expect(steps.map((step) => step.command)).toEqual(['npm', 'docker']);
+    expect(steps[0]?.args).toContain('migrate:yoman');
   });
 
   it('builds and waits for a healthy stack', () => {
-    const [stack] = planStartSteps({ envExists: true });
+    const stack = planStartSteps({ envExists: true }).at(-1);
 
     expect(stack?.args).toEqual(expect.arrayContaining(['up', '--detach', '--build', '--wait']));
   });

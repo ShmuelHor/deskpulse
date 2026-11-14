@@ -144,6 +144,23 @@ npm stop        # stops the stack (the data stays in the Docker volume)
 
 `npm start` needs Docker Engine with Compose v2. Ctrl+C stops the agent, and the stack keeps running until `npm stop`. To run only the agent against a running stack: `npm run agent:dev`. The agent reads `AGENT_TOKEN` from `.env` (that key only) or from its environment, and `~/.config/deskpulse/agent.json` for optional settings (`gatewayUrl`, `logLevel`, `logFormat`).
 
+## Upgrading from a pre-DeskPulse install
+
+Installs from before the rename (called Yoman) keep their data. From the old checkout, or any
+checkout of this version:
+
+```bash
+docker compose -p yoman down     # stop the old stack; the data stays in the yoman_pgdata volume
+git pull                         # get this version
+npm ci
+npm run migrate:yoman            # copies yoman_pgdata to deskpulse_pgdata; npm start runs it too
+npm start                        # the agent moves ~/.config/yoman and ~/.local/state/yoman on start
+```
+
+`.env` is unchanged: database roles and passwords were never named after the project and travel
+inside the copied volume. The old volume and old directories are never deleted. Once everything
+looks right, remove them with `docker volume rm yoman_pgdata`. The migration is safe to repeat.
+
 ## Logs
 
 Every container prints one readable line per request, tied together by a request id (`reqId`): the agent, the gateway and each service log the same id for one request. Set `LOG_FORMAT=json` in `.env` for JSON lines instead (the default is `pretty`). Titles, command lines, tokens and cookies are never logged.

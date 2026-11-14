@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "setup": "tsx scripts/setup.ts",
+    "migrate:yoman": "tsx scripts/migrate-from-yoman.ts",
     "start": "tsx scripts/start.ts",
     "stop": "tsx scripts/stop.ts",
     "agent:dev": "npm run --silent build:packages && tsx apps/agent/src/main.ts",
