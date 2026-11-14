@@ -7,6 +7,7 @@ import { buildApp } from './app.js';
 import { type Environment, loadConfig, type ServiceConfig } from './config.js';
 import { installCrashHandlers } from './crash-handlers.js';
 import { createPool } from './database.js';
+import type { Job } from './job.js';
 import { runMigrations } from './migrations.js';
 import { buildLoggerOptions } from './redaction.js';
 import type { Route } from './route.js';
@@ -26,6 +27,8 @@ export interface ServiceOptions<Schema extends z.ZodObject> {
   /** Lowercase identifier. It is also the DB role and schema (`SESSIONS_DB_PASSWORD`). */
   readonly name: string;
   readonly routes: readonly Route[] | ((deps: ServiceDeps<z.output<Schema>>) => readonly Route[]);
+  /** Background jobs, started after the service listens and stopped before it closes. */
+  readonly jobs?: (deps: ServiceDeps<z.output<Schema>>) => readonly Job[];
   /** Directory of `.sql` migrations, applied on start. */
   readonly migrationsDir: string;
   /** The service's own environment variables. The shared ones are always validated. */
@@ -69,10 +72,12 @@ export function createService<Schema extends z.ZodObject = z.ZodObject<Record<ne
   const deps: ServiceDeps<z.output<Schema>> = { db, config, log };
   const routes = typeof options.routes === 'function' ? options.routes(deps) : options.routes;
   const app = buildApp({ logger: log, routes, db });
+  const jobs = options.jobs?.(deps) ?? [];
 
   let stopping: Promise<void> | undefined;
   const stop = (): Promise<void> => {
     stopping ??= (async (): Promise<void> => {
+      await Promise.all(jobs.map((job) => job.stop()));
       await app.close();
       await db.end();
     })();
@@ -104,6 +109,9 @@ export function createService<Schema extends z.ZodObject = z.ZodObject<Record<ne
       );
       log.info({ migrations: applied }, 'Migrations applied');
       await app.listen({ host: config.host, port: config.port });
+      for (const job of jobs) {
+        job.start();
+      }
     } catch (error) {
       log.fatal({ err: error }, 'Service failed to start');
       await stop();
