@@ -1,11 +1,5 @@
 import { LIMITS } from '@deskpulse/shared/limits';
-import type {
-  AppTotal,
-  CategoryTotal,
-  DayReport,
-  WeeklySummary,
-  WeekReport,
-} from '@deskpulse/shared/reports';
+import type { AppTotal, DayReport, WeeklySummary, WeekReport } from '@deskpulse/shared/reports';
 
 import { addDays, type LocalDateString, localDateOf, weekdayOf } from './local-time.js';
 import type { RollupEntry } from './rollup.js';
@@ -30,7 +24,7 @@ function sumMs(entries: readonly RollupEntry[]): number {
   return entries.reduce((total, entry) => total + entry.ms, 0);
 }
 
-function totalsBy<K extends string | null>(
+function totalsBy<K extends string>(
   entries: readonly RollupEntry[],
   keyOf: (entry: RollupEntry) => K,
 ): [K, number][] {
@@ -52,12 +46,6 @@ export function topApps(entries: readonly RollupEntry[]): AppTotal[] {
     .map(([appId, ms]) => ({ appId, seconds: toSeconds(ms) }));
 }
 
-function byCategory(entries: readonly RollupEntry[]): CategoryTotal[] {
-  return totalsBy(entries, (entry) => entry.category)
-    .slice(0, LIMITS.listSize)
-    .map(([category, ms]) => ({ category, seconds: toSeconds(ms) }));
-}
-
 function longestStreakMs(streaks: readonly Streak[]): number {
   return Math.max(0, ...streaks.map((streak) => streak.endMs - streak.startMs));
 }
@@ -77,7 +65,6 @@ export function buildDayReport(
   return {
     date,
     totalSeconds: toSeconds(sumMs(own)),
-    byCategory: byCategory(own),
     topApps: topApps(own),
     longestFocusStreakSeconds: toSeconds(longestStreakMs(ownStreaks)),
   };
@@ -99,14 +86,9 @@ export function buildWeeklySummary(
   const week = entries.filter(inWeek(start));
   const weekMs = sumMs(week);
   const previousMs = sumMs(entries.filter(inWeek(addDays(start, -LIMITS.daysPerWeek))));
-  const [top] = totalsBy(
-    week.filter((entry) => entry.category !== null),
-    (entry) => entry.category,
-  );
   return {
     totalSeconds: toSeconds(weekMs),
     changePct: previousMs === 0 ? null : ((weekMs - previousMs) / previousMs) * PERCENT,
-    topCategory: top?.[0] ?? null,
   };
 }
 

@@ -4,7 +4,6 @@ import type { Kysely, PostgresPool } from 'kysely';
 import type { SessionsStore, SessionsTransaction } from '../use-cases/store.js';
 import * as apps from './apps-table.js';
 import type { SessionsDatabase } from './database.js';
-import * as rules from './rules-table.js';
 import * as sessions from './sessions-table.js';
 
 function bind(db: Kysely<SessionsDatabase>): SessionsTransaction {
@@ -16,17 +15,9 @@ function bind(db: Kysely<SessionsDatabase>): SessionsTransaction {
     closedSpansOverlapping: (fromMs, toMs, limit) =>
       sessions.closedSpansOverlapping(db, fromMs, toMs, limit),
     listSessions: (range, limit) => sessions.listSessions(db, range, limit),
-    sessionsEndingSince: (cutoff) => sessions.sessionsEndingSince(db, cutoff),
-    setCategories: (changes) => sessions.setCategories(db, changes),
     ensureApps: (ids) => apps.ensureApps(db, ids),
-    appCategories: () => apps.appCategories(db),
     listApps: (limit) => apps.listApps(db, limit),
     updateApp: (id, update) => apps.updateApp(db, id, update),
-    listRules: (limit) => rules.listRules(db, limit),
-    countRules: () => rules.countRules(db),
-    createRule: (input) => rules.createRule(db, input),
-    updateRule: (id, input) => rules.updateRule(db, id, input),
-    deleteRule: (id) => rules.deleteRule(db, id),
   };
 }
 

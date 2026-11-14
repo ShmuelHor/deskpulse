@@ -9,8 +9,6 @@ export const LIMITS = {
   titleLength: 512,
   /** Linux `comm` is at most 15 bytes plus NUL; 64 leaves room for multibyte UTF-8. */
   commLength: 64,
-  patternLength: 256,
-  categoryLength: 32,
   paramKeyLength: 32,
   paramValueLength: 256,
   paramCount: 8,
@@ -37,7 +35,6 @@ export const LIMITS = {
   trendDays: 365,
   culpritDays: 90,
   percent: 100,
-  rulePriority: 1_000,
   watts: 1_000,
   celsius: 150,
   bytes: Number.MAX_SAFE_INTEGER,

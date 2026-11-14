@@ -1,4 +1,4 @@
-import { Category, LocalDate } from '@deskpulse/shared/common';
+import { LocalDate } from '@deskpulse/shared/common';
 import { LIMITS } from '@deskpulse/shared/limits';
 import { AppTotal } from '@deskpulse/shared/reports';
 import { Session } from '@deskpulse/shared/sessions';
@@ -32,19 +32,16 @@ export const ReportDate = LocalDate.refine((date) => date >= FIRST_DAY && date <
 export type ReportDate = z.infer<typeof ReportDate>;
 
 /**
- * A session the sessions service closed, with the category it was stored
- * under. The same shape as the sessions service's `ClosedSession`, so the
- * gateway forwards its `closed` list as it is (SPEC §3, ingest flow).
+ * A session the sessions service closed, within the range reports can count.
+ * The gateway forwards the sessions service's `closed` list as it is
+ * (SPEC §3, ingest flow).
  */
-export const ClosedSession = z
-  .strictObject({ session: Session, category: Category.nullable() })
-  .refine(
-    ({ session }) => Date.parse(session.start) >= FIRST_MS && Date.parse(session.end) < END_MS,
-    { message: `the session must be from ${FIRST_DAY} and before ${END_DAY}` },
-  )
-  .refine(({ session }) => Date.parse(session.end) - Date.parse(session.start) <= MAX_SESSION_MS, {
-    message: 'a session is at most a week long',
-  });
+export const ClosedSession = Session.refine(
+  (session) => Date.parse(session.start) >= FIRST_MS && Date.parse(session.end) < END_MS,
+  { message: `the session must be from ${FIRST_DAY} and before ${END_DAY}` },
+).refine((session) => Date.parse(session.end) - Date.parse(session.start) <= MAX_SESSION_MS, {
+  message: 'a session is at most a week long',
+});
 export type ClosedSession = z.infer<typeof ClosedSession>;
 
 /** `POST /sessions`: the sessions one ingest batch closed. */

@@ -13,7 +13,7 @@ function bind(db: Kysely<ReportsDatabase>): ReportsTransaction {
     markCounted: (sessions) => counted.markCounted(db, sessions),
     addToRollups: (entries) => rollups.addToRollups(db, entries),
     rollups: (from, to) => rollups.rollups(db, from, to),
-    streaksNear: (categories, fromMs, toMs) => streaks.streaksNear(db, categories, fromMs, toMs),
+    streaksNear: (fromMs, toMs) => streaks.streaksNear(db, fromMs, toMs),
     streaksStarting: (fromMs, toMs) => streaks.streaksStarting(db, fromMs, toMs),
     replaceStreaks: (removed, added) => streaks.replaceStreaks(db, removed, added),
   };

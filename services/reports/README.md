@@ -30,7 +30,7 @@ every week and every local date a valid `LocalDate`.
 ## Counting
 
 - `POST /sessions` takes the `closed` list the sessions service returns, as it is. Each session's
-  time is added to `daily_rollups` per local day, app and category, in milliseconds; reports
+  time is added to `daily_rollups` per local day and app, in milliseconds; reports
   round to whole seconds once, on read.
 - A session id is remembered in `counted_sessions` once counted. A retried batch, or the same
   session twice in one batch, is counted once and reported as `duplicates`.
@@ -38,9 +38,8 @@ every week and every local date a valid `LocalDate`.
 
 ## Focus streaks
 
-- A streak is a stretch on one category with no interruption longer than **60 s**. A glance at
+- A streak is a stretch of activity with no interruption longer than **60 s**. A glance at
   another app does not end it; stepping away does, because the agent's idle threshold is 120 s.
-- Uncategorized time is not focus and never forms a streak.
 - New sessions are joined into the stored streaks they touch, which is order-independent, so
   batches may arrive in any order. Writers take a table lock, so two batches never merge one
   streak at once.

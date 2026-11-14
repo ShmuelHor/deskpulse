@@ -7,7 +7,7 @@ import { STATUS, silentLogger } from '../../harness.js';
 import { memorySettings } from '../../memory-settings.js';
 import { type CallKey, fakeServices, type RouteHarness, routeHarness } from '../route-harness.js';
 
-const update = { name: 'Code', category: 'work' };
+const update = { name: 'Code' };
 const JSON_HEADERS = { 'content-type': 'application/json' };
 
 describe('app routes', () => {
@@ -32,7 +32,7 @@ describe('app routes', () => {
     expect(response.json()).toEqual(responseFixtures.listApps);
   });
 
-  it('renames and recategorizes the app named in the path', async () => {
+  it('renames the app named in the path', async () => {
     const { app, headers, calls } = await start({
       [`sessions PUT /apps/${appFixture.id}`]: appFixture,
     });

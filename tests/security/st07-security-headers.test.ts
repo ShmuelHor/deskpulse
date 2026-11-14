@@ -276,7 +276,7 @@ describe('ST07 security headers', () => {
         'a CORS preflight',
         {
           method: 'OPTIONS',
-          url: '/v1/rules',
+          url: '/v1/focus/profiles',
           headers: {
             host: GATEWAY_HOST,
             origin: WEB_ORIGIN,

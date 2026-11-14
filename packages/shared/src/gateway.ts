@@ -4,7 +4,7 @@ import { LocalDate, Timestamp, withDegraded } from './common.js';
 import { FocusState } from './focus.js';
 import { LIMITS } from './limits.js';
 import { DayReport } from './reports.js';
-import { AppList, RuleList, Session } from './sessions.js';
+import { AppList, Session } from './sessions.js';
 import { Settings } from './settings.js';
 import { IncidentList } from './system.js';
 
@@ -40,7 +40,6 @@ export const ExportBundle = z.strictObject({
   to: LocalDate,
   settings: Settings,
   apps: AppList,
-  rules: RuleList,
   sessions: z.array(Session).max(LIMITS.exportSessions),
 });
 export type ExportBundle = z.infer<typeof ExportBundle>;

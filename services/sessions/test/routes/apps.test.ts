@@ -8,7 +8,7 @@ const HTTP_OK = 200;
 const HTTP_BAD_REQUEST = 400;
 const HTTP_NOT_FOUND = 404;
 
-const code: App = { id: 'code', name: 'code', icon: null, category: null };
+const code: App = { id: 'code', name: 'code', icon: null };
 
 describe('apps routes', () => {
   let subject: TestService;
@@ -26,17 +26,17 @@ describe('apps routes', () => {
     expect(AppList.parse(response.json())).toEqual({ items: [code] });
   });
 
-  it('renames and recategorizes an app, valid against the shared App contract', async () => {
+  it('renames an app, valid against the shared App contract', async () => {
     subject = createTestService(createMemoryStore({ apps: [code] }));
 
     const response = await subject.service.app.inject({
       method: 'PUT',
       url: '/apps/code',
-      payload: { name: 'VS Code', category: 'work' },
+      payload: { name: 'VS Code' },
     });
 
     expect(response.statusCode).toBe(HTTP_OK);
-    expect(App.parse(response.json())).toEqual({ ...code, name: 'VS Code', category: 'work' });
+    expect(App.parse(response.json())).toEqual({ ...code, name: 'VS Code' });
   });
 
   it('answers 404 for an unknown app', async () => {
@@ -45,7 +45,7 @@ describe('apps routes', () => {
     const response = await subject.service.app.inject({
       method: 'PUT',
       url: '/apps/vlc',
-      payload: { name: 'VLC', category: null },
+      payload: { name: 'VLC' },
     });
 
     expect(response.statusCode).toBe(HTTP_NOT_FOUND);
@@ -60,7 +60,7 @@ describe('apps routes', () => {
     const response = await subject.service.app.inject({
       method: 'PUT',
       url: '/apps/code%3B%20DROP%20TABLE%20apps',
-      payload: { name: 'x', category: null },
+      payload: { name: 'x' },
     });
 
     expect(response.statusCode).toBe(HTTP_BAD_REQUEST);

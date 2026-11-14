@@ -11,7 +11,7 @@ import {
   ProfileList,
 } from '@deskpulse/shared/focus';
 import { DayReport, WeeklySummary, WeekReport } from '@deskpulse/shared/reports';
-import { App, AppList, Rule, RuleList } from '@deskpulse/shared/sessions';
+import { App, AppList } from '@deskpulse/shared/sessions';
 import { CulpritList, IncidentList, SystemTimeline } from '@deskpulse/shared/system';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
@@ -40,8 +40,6 @@ const PID = 4242;
 const MINUTE_MS = 60_000;
 const MS_PER_SECOND = 1_000;
 const UUID_NODE_LENGTH = 12;
-/** The default rules the sessions migrations seed; none may be lost. */
-const SEEDED_RULES = 14;
 
 /**
  * Classic and Postgres-specific payloads: quote breaking, stacked statements,
@@ -53,7 +51,7 @@ const PAYLOADS = [
   "' OR '1'='1",
   "'; DROP TABLE sessions; --",
   '"; DROP TABLE apps; --',
-  "'); DELETE FROM category_rules; --",
+  "'); DELETE FROM apps; --",
   "' UNION SELECT usename, passwd FROM pg_catalog.pg_shadow --",
   "' AND 1=CAST((SELECT current_user) AS int) --",
   "' || pg_sleep(5) || '",
@@ -173,7 +171,7 @@ describe('ST12 SQL injection', () => {
       for (const [minute, payload] of PAYLOADS.entries()) {
         const batch = { samples: [window(minute, { title: payload })] };
         const result = SampleResult.parse((await send('POST', '/samples', batch)).json);
-        closedTitles.push(...result.closed.map((closed) => closed.session.title));
+        closedTitles.push(...result.closed.map((closed) => closed.title));
 
         for (const field of ['kind', 'ts', 'wmClass', 'pid', 'locked']) {
           const bad = { samples: [window(minute, { [field]: payload })] };
@@ -202,60 +200,27 @@ describe('ST12 SQL injection', () => {
       }
     });
 
-    it('stores injected app names verbatim and rejects injected ids and categories', {
+    it('stores injected app names verbatim and rejects injected ids and fields', {
       timeout: REQUEST_TIMEOUT_MS,
     }, async () => {
       // The app exists once a sample has named it.
       await send('POST', '/samples', { samples: [window(0)] });
       for (const payload of PAYLOADS) {
-        const renamed = await send('PUT', '/apps/firefox', { name: payload, category: null });
+        const renamed = await send('PUT', '/apps/firefox', { name: payload });
         expect(App.parse(renamed.json).name).toBe(stored(payload));
 
         const badId = `/apps/${encodeURIComponent(payload)}`;
-        expect((await send('PUT', badId, { name: 'x', category: null })).status).toBe(
-          HTTP_BAD_REQUEST,
-        );
-        const badCategory = { name: 'Firefox', category: payload };
-        expect((await send('PUT', '/apps/firefox', badCategory)).status).toBe(HTTP_BAD_REQUEST);
-      }
-    });
-
-    it('stores injected rule patterns verbatim and rejects injection in every other field', {
-      timeout: REQUEST_TIMEOUT_MS,
-    }, async () => {
-      const rule = {
-        field: 'title',
-        match: 'contains',
-        pattern: 'x',
-        category: 'test',
-        priority: 1,
-      };
-      for (const payload of PAYLOADS) {
-        const created = Rule.parse(
-          (await send('POST', '/rules', { ...rule, pattern: payload })).json,
-        );
-        expect(created.pattern).toBe(stored(payload));
-        const updated = await send('PUT', `/rules/${created.id}`, { ...rule, pattern: payload });
-        expect(Rule.parse(updated.json).pattern).toBe(stored(payload));
-        expect((await send('DELETE', `/rules/${created.id}`)).status).toBe(HTTP_NO_CONTENT);
-
-        for (const field of ['field', 'match', 'category', 'priority']) {
-          const bad = { ...rule, [field]: payload };
-          expect((await send('POST', '/rules', bad)).status).toBe(HTTP_BAD_REQUEST);
-        }
-        const badId = `/rules/${encodeURIComponent(payload)}`;
-        expect((await send('PUT', badId, rule)).status).toBe(HTTP_BAD_REQUEST);
-        expect((await send('DELETE', badId)).status).toBe(HTTP_BAD_REQUEST);
+        expect((await send('PUT', badId, { name: 'x' })).status).toBe(HTTP_BAD_REQUEST);
+        const badField = { name: 'Firefox', category: payload };
+        expect((await send('PUT', '/apps/firefox', badField)).status).toBe(HTTP_BAD_REQUEST);
       }
     });
 
     it('leaves every table intact and logs no database error', {
       timeout: REQUEST_TIMEOUT_MS,
     }, async () => {
-      const rules = RuleList.parse((await send('GET', '/rules')).json).items;
       const apps = AppList.parse((await send('GET', '/apps')).json).items;
 
-      expect(rules).toHaveLength(SEEDED_RULES);
       expect(apps.map((app) => app.id)).toEqual(['firefox']);
       expect(logs.output()).not.toContain('DatabaseError');
       expect(logs.output()).not.toContain('Request failed');
@@ -317,14 +282,11 @@ describe('ST12 SQL injection', () => {
     function closed(minute: number, overrides: Record<string, unknown> = {}): object {
       const start = Date.parse('2026-11-08T09:00:00.000Z') + minute * MINUTE_MS;
       return {
-        session: {
-          id: `00000000-0000-4000-8000-${String(minute).padStart(UUID_NODE_LENGTH, '0')}`,
-          appId: 'code',
-          start: new Date(start).toISOString(),
-          end: new Date(start + MINUTE_MS).toISOString(),
-          ...overrides,
-        },
-        category: minute % 2 === 0 ? 'work' : null,
+        id: `00000000-0000-4000-8000-${String(minute).padStart(UUID_NODE_LENGTH, '0')}`,
+        appId: 'code',
+        start: new Date(start).toISOString(),
+        end: new Date(start + MINUTE_MS).toISOString(),
+        ...overrides,
       };
     }
 
@@ -340,10 +302,8 @@ describe('ST12 SQL injection', () => {
           const bad = { sessions: [closed(minute, { [field]: payload })] };
           expect((await send('POST', '/sessions', bad)).status).toBe(HTTP_BAD_REQUEST);
         }
-        const badCategory = { sessions: [{ ...closed(minute), category: payload }] };
-        expect((await send('POST', '/sessions', badCategory)).status).toBe(HTTP_BAD_REQUEST);
       }
-      // A retry of the whole run is recognized, uncategorized rows included.
+      // A retry of the whole run is recognized.
       const retry = { sessions: PAYLOADS.map((_payload, minute) => closed(minute)) };
       const result = SessionBatchResult.parse((await send('POST', '/sessions', retry)).json);
       expect(result).toEqual({ counted: 0, duplicates: PAYLOADS.length });
@@ -374,13 +334,8 @@ describe('ST12 SQL injection', () => {
 
       const countedSeconds = (PAYLOADS.length * MINUTE_MS) / MS_PER_SECOND;
       expect(week.days[0]?.totalSeconds).toBe(countedSeconds);
-      // Work and uncategorized minutes alternate, and a one-minute interruption does not end a
-      // streak, so the batches joined into one streak from the first work minute to the last.
-      const workMinutes = PAYLOADS.flatMap((_payload, minute) =>
-        minute % 2 === 0 ? [minute] : [],
-      );
-      const streakMs = (Math.max(...workMinutes) + 1) * MINUTE_MS;
-      expect(week.days[0]?.longestFocusStreakSeconds).toBe(streakMs / MS_PER_SECOND);
+      // The minutes follow each other, so the batches joined into one streak.
+      expect(week.days[0]?.longestFocusStreakSeconds).toBe(countedSeconds);
       expect(TopAppList.parse(top.json).items).toEqual([
         { appId: 'code', seconds: countedSeconds },
       ]);

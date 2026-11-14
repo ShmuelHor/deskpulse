@@ -11,21 +11,20 @@ const HTTP_BAD_REQUEST = 400;
 const HOUR_MS = 3_600_000;
 const HOUR_SECONDS = 3_600;
 
-function hourOn(date: string, appId: string, category: string | null): RollupEntry {
-  return { date, appId, category, ms: HOUR_MS };
+function hourOn(date: string, appId: string): RollupEntry {
+  return { date, appId, ms: HOUR_MS };
 }
 
 const rollups = [
-  hourOn('2026-11-01', 'code', 'work'),
-  hourOn('2026-11-09', 'code', 'work'),
-  hourOn('2026-11-09', 'firefox', null),
-  hourOn('2026-11-18', 'slack', 'chat'),
+  hourOn('2026-11-01', 'code'),
+  hourOn('2026-11-09', 'code'),
+  hourOn('2026-11-09', 'firefox'),
+  hourOn('2026-11-18', 'slack'),
 ];
 
 const streaks = [
   {
     id: '00000000-0000-4000-8000-000000000001',
-    category: 'work',
     startMs: Date.parse('2026-11-18T07:00:00.000Z'),
     endMs: Date.parse('2026-11-18T08:30:00.000Z'),
   },
@@ -63,7 +62,6 @@ describe('report routes', () => {
     expect(report.summary).toEqual({
       totalSeconds: 2 * HOUR_SECONDS,
       changePct: 100,
-      topCategory: 'work',
     });
   });
 
@@ -85,7 +83,6 @@ describe('report routes', () => {
     expect(WeeklySummary.parse(body)).toEqual({
       totalSeconds: 2 * HOUR_SECONDS,
       changePct: 100,
-      topCategory: 'work',
     });
   });
 

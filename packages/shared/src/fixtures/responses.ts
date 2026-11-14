@@ -10,7 +10,6 @@ import {
   focusActiveFixture,
   incidentFixture,
   profileFixture,
-  ruleFixture,
   sessionFixture,
   settingsFixture,
 } from './data.js';
@@ -43,20 +42,16 @@ export const responseFixtures: ResponseFixtures = {
     start: '2026-11-02',
     days: weekDays,
     topApps: dayReportFixture.topApps,
-    summary: { totalSeconds: 113_400, changePct: -8.5, topCategory: 'work' },
+    summary: { totalSeconds: 113_400, changePct: -8.5 },
   },
   listApps: {
     items: [
       appFixture,
-      { id: 'firefox', name: 'Firefox', icon: 'firefox', category: 'browsing' },
-      { id: 'slack', name: 'Slack', icon: 'slack', category: 'social' },
+      { id: 'firefox', name: 'Firefox', icon: 'firefox' },
+      { id: 'slack', name: 'Slack', icon: 'slack' },
     ],
   },
   updateApp: appFixture,
-  listRules: { items: [ruleFixture] },
-  createRule: ruleFixture,
-  updateRule: ruleFixture,
-  deleteRule: null,
   batteryNow: batteryNowFixture,
   batteryHealthTrend: {
     items: [
@@ -107,7 +102,6 @@ export const responseFixtures: ResponseFixtures = {
     to: FIXTURE_DATE,
     settings: settingsFixture,
     apps: { items: [appFixture] },
-    rules: { items: [ruleFixture] },
     sessions: [sessionFixture],
   },
   getSettings: settingsFixture,

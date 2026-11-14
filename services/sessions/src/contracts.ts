@@ -1,4 +1,3 @@
-import { Category } from '@deskpulse/shared/common';
 import { WindowSample } from '@deskpulse/shared/ingest';
 import { LIMITS } from '@deskpulse/shared/limits';
 import { Session } from '@deskpulse/shared/sessions';
@@ -16,19 +15,12 @@ export const SampleBatch = z.strictObject({
 });
 export type SampleBatch = z.infer<typeof SampleBatch>;
 
-/** A session closed by a batch, with the category reports total it under. */
-export const ClosedSession = z.strictObject({
-  session: Session,
-  category: Category.nullable(),
-});
-export type ClosedSession = z.infer<typeof ClosedSession>;
-
 /** `POST /samples` reply. `closed` goes on to reports (SPEC §3, ingest flow). */
 export const SampleResult = z.strictObject({
   accepted: z.int().min(0).max(LIMITS.ingestSamples),
   /** Samples already covered by the stored open session, so dropped. */
   late: z.int().min(0).max(LIMITS.ingestSamples),
-  closed: z.array(ClosedSession).max(LIMITS.ingestSamples),
+  closed: z.array(Session).max(LIMITS.ingestSamples),
 });
 export type SampleResult = z.infer<typeof SampleResult>;
 

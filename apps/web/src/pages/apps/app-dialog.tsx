@@ -8,22 +8,13 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Stack from '@mui/material/Stack';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
+import type { z } from 'zod';
 
 import { Button } from '../../components/button.js';
 import { TextField } from './form-controls.js';
 
-/** The form edits the category as text; an empty field means "no category". */
-const AppForm = z.object({
-  name: AppUpdate.shape.name,
-  category: z
-    .string()
-    .trim()
-    .transform((value) => (value === '' ? null : value))
-    .pipe(AppUpdate.shape.category),
-});
-type AppFormInput = z.input<typeof AppForm>;
-type AppFormOutput = z.output<typeof AppForm>;
+type AppFormInput = z.input<typeof AppUpdate>;
+type AppFormOutput = z.output<typeof AppUpdate>;
 
 interface AppDialogProps {
   readonly app: App;
@@ -32,7 +23,7 @@ interface AppDialogProps {
   readonly onClose: () => void;
 }
 
-/** Renames an app or changes its category. The name is untrusted text and is only ever rendered as text. */
+/** Renames an app. The name is untrusted text and is only ever rendered as text. */
 export function AppDialog({ app, saving, onSave, onClose }: AppDialogProps): React.JSX.Element {
   const { t } = useTranslation('apps');
   const {
@@ -40,8 +31,8 @@ export function AppDialog({ app, saving, onSave, onClose }: AppDialogProps): Rea
     handleSubmit,
     formState: { errors },
   } = useForm<AppFormInput, unknown, AppFormOutput>({
-    resolver: zodResolver(AppForm),
-    defaultValues: { name: app.name, category: app.category ?? '' },
+    resolver: zodResolver(AppUpdate),
+    defaultValues: { name: app.name },
   });
 
   return (
@@ -54,12 +45,6 @@ export function AppDialog({ app, saving, onSave, onClose }: AppDialogProps): Rea
               label={t('columns.name')}
               register={register('name')}
               error={errors.name === undefined ? undefined : t('form.invalidName')}
-            />
-            <TextField
-              label={t('columns.category')}
-              register={register('category')}
-              placeholder={t('form.categoryPlaceholder')}
-              error={errors.category === undefined ? undefined : t('form.invalidCategory')}
             />
           </Stack>
         </DialogContent>

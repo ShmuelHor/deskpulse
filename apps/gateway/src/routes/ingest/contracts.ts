@@ -1,5 +1,4 @@
 import { Alert } from '@deskpulse/shared/alerts';
-import { Category } from '@deskpulse/shared/common';
 import { KnownApp, Profile } from '@deskpulse/shared/focus';
 import { LIMITS } from '@deskpulse/shared/limits';
 import { Session } from '@deskpulse/shared/sessions';
@@ -17,7 +16,7 @@ const SampleCount = z.int().min(0).max(LIMITS.ingestSamples);
 const AlertList = z.array(Alert).max(LIMITS.listSize);
 
 /** A session the sessions service closed, forwarded to reports as it is. */
-export const ClosedSession = z.strictObject({ session: Session, category: Category.nullable() });
+export const ClosedSession = Session;
 export type ClosedSession = z.infer<typeof ClosedSession>;
 
 /** `sessions POST /samples` reply. */

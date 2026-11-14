@@ -18,7 +18,7 @@ function appPath(id: AppId): `/apps/${string}` {
   return `/apps/${id}`;
 }
 
-/** The apps the sessions service has seen, and the user's name and category for each. */
+/** The apps the sessions service has seen, and the user's name for each. */
 export const appHandlers = defineHandlers({
   listApps: ({ services }) =>
     services.call('sessions', { method: 'GET', path: '/apps', response: AppList }),

@@ -16,7 +16,7 @@ import {
 import { DashboardToday, ExportBundle, ExportQuery, WebSession } from './gateway.js';
 import { IngestBatch, IngestResult } from './ingest.js';
 import { WeekQuery, WeekReport } from './reports.js';
-import { App, AppList, AppUpdate, Rule, RuleInput, RuleList } from './sessions.js';
+import { App, AppList, AppUpdate } from './sessions.js';
 import { Settings } from './settings.js';
 import { CulpritList, CulpritsQuery, IncidentList, SystemTimeline } from './system.js';
 
@@ -91,33 +91,6 @@ export const routes = {
     params: AppIdParams,
     body: AppUpdate,
     response: App,
-  },
-
-  listRules: { method: 'GET', path: '/v1/rules', auth: 'session', status: 200, response: RuleList },
-  createRule: {
-    method: 'POST',
-    path: '/v1/rules',
-    auth: 'session',
-    status: 201,
-    body: RuleInput,
-    response: Rule,
-  },
-  updateRule: {
-    method: 'PUT',
-    path: '/v1/rules/:id',
-    auth: 'session',
-    status: 200,
-    params: IdParams,
-    body: RuleInput,
-    response: Rule,
-  },
-  deleteRule: {
-    method: 'DELETE',
-    path: '/v1/rules/:id',
-    auth: 'session',
-    status: 204,
-    params: IdParams,
-    response: null,
   },
 
   batteryNow: {

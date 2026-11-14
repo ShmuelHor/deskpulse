@@ -182,31 +182,31 @@ describe('buildGateway', () => {
     });
 
     it('answers with the contract status and the parsed body', async () => {
-      const createRule = vi.fn().mockResolvedValue(responseFixtures.createRule);
-      app = await testGateway({ handlers: toHandlerMap(defineHandlers({ createRule })) });
+      const createProfile = vi.fn().mockResolvedValue(responseFixtures.createProfile);
+      app = await testGateway({ handlers: toHandlerMap(defineHandlers({ createProfile })) });
       const web = await webSession(app);
 
       const response = await app.inject({
         method: 'POST',
-        url: '/v1/rules',
+        url: '/v1/focus/profiles',
         headers: { ...web.headers, ...JSON_HEADERS },
-        payload: JSON.stringify(requestFixtures.createRule.body),
+        payload: JSON.stringify(requestFixtures.createProfile.body),
       });
 
       expect(response.statusCode).toBe(STATUS.CREATED);
-      expect(createRule).toHaveBeenCalledWith(
-        expect.objectContaining({ body: requestFixtures.createRule.body }),
+      expect(createProfile).toHaveBeenCalledWith(
+        expect.objectContaining({ body: requestFixtures.createProfile.body }),
       );
     });
 
     it('answers 204 with no body for a route without a response', async () => {
-      const deleteRule = vi.fn().mockResolvedValue(undefined);
-      app = await testGateway({ handlers: toHandlerMap(defineHandlers({ deleteRule })) });
+      const deleteProfile = vi.fn().mockResolvedValue(undefined);
+      app = await testGateway({ handlers: toHandlerMap(defineHandlers({ deleteProfile })) });
       const web = await webSession(app);
 
       const response = await app.inject({
         method: 'DELETE',
-        url: `/v1/rules/${FIXTURE_IDS.rule}`,
+        url: `/v1/focus/profiles/${FIXTURE_IDS.profile}`,
         headers: web.headers,
       });
 
@@ -410,7 +410,7 @@ describe('buildGateway', () => {
 
     const response = await app.inject({
       method: 'OPTIONS',
-      url: '/v1/rules',
+      url: '/v1/focus/profiles',
       headers: {
         host: GATEWAY_HOST,
         origin: WEB_ORIGIN,

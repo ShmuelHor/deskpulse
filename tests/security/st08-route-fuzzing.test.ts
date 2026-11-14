@@ -35,16 +35,7 @@ const ROUTES_DIR = fileURLToPath(new URL('../../apps/gateway/src/routes/', impor
 const T27_ROUTES: readonly HandledRouteName[] = ['ingest'];
 
 /** The routes each route task implements, fuzzed again with their real handlers in place. */
-const T28_ROUTES: readonly HandledRouteName[] = [
-  'dashboardToday',
-  'week',
-  'listApps',
-  'updateApp',
-  'listRules',
-  'createRule',
-  'updateRule',
-  'deleteRule',
-];
+const T28_ROUTES: readonly HandledRouteName[] = ['dashboardToday', 'week', 'listApps', 'updateApp'];
 
 const T29_ROUTES: readonly HandledRouteName[] = [
   'batteryNow',

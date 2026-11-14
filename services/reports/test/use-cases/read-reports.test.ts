@@ -15,13 +15,13 @@ const HOUR_SECONDS = 3_600;
 /** Doubled: two hours against one the week before. */
 const DOUBLED_PCT = 100;
 
-function hourOn(date: string, appId: string, category: string | null): RollupEntry {
-  return { date, appId, category, ms: HOUR_MS };
+function hourOn(date: string, appId: string): RollupEntry {
+  return { date, appId, ms: HOUR_MS };
 }
 
 describe('read reports', () => {
   it("reports today as the local day, which can be ahead of UTC's", async () => {
-    const store = createMemoryStore({ rollups: [hourOn('2026-11-09', 'code', 'work')] });
+    const store = createMemoryStore({ rollups: [hourOn('2026-11-09', 'code')] });
     // 23:30 UTC on the 8th is 01:30 on the 9th in Jerusalem.
     const now = new Date('2026-11-08T23:30:00.000Z');
 
@@ -33,10 +33,10 @@ describe('read reports', () => {
   it('summarizes the last complete week, Sunday to Saturday', async () => {
     const store = createMemoryStore({
       rollups: [
-        hourOn('2026-11-01', 'code', 'work'),
-        hourOn('2026-11-08', 'code', 'work'),
-        hourOn('2026-11-14', 'slack', 'chat'),
-        hourOn('2026-11-15', 'code', 'work'),
+        hourOn('2026-11-01', 'code'),
+        hourOn('2026-11-08', 'code'),
+        hourOn('2026-11-14', 'slack'),
+        hourOn('2026-11-15', 'code'),
       ],
     });
     // Wednesday 2026-11-18: last week is 2026-11-08 to 2026-11-14.
@@ -47,13 +47,12 @@ describe('read reports', () => {
     expect(summary).toEqual({
       totalSeconds: 2 * HOUR_SECONDS,
       changePct: DOUBLED_PCT,
-      topCategory: 'chat',
     });
   });
 
   it('builds the week from its start and lists top apps over a range', async () => {
     const store = createMemoryStore({
-      rollups: [hourOn('2026-11-08', 'code', 'work'), hourOn('2026-11-20', 'vlc', null)],
+      rollups: [hourOn('2026-11-08', 'code'), hourOn('2026-11-20', 'vlc')],
     });
 
     const week = await weekReport(store, '2026-11-08', JERUSALEM);

@@ -25,22 +25,22 @@ function seconds(hoursAndMinutes: string): number {
   return duration(hoursAndMinutes) / MS_PER_SECOND;
 }
 
-function entry(date: string, appId: string, category: string | null, time: string): RollupEntry {
-  return { date, appId, category, ms: duration(time) };
+function entry(date: string, appId: string, time: string): RollupEntry {
+  return { date, appId, ms: duration(time) };
 }
 
 function streak(start: string, time: string): Streak {
   const startMs = Date.parse(start);
-  return { id: null, category: 'work', startMs, endMs: startMs + duration(time) };
+  return { id: null, startMs, endMs: startMs + duration(time) };
 }
 
 describe('buildDayReport', () => {
-  it('totals the day by category and app, valid against the shared contract', () => {
+  it('totals the day by app, valid against the shared contract', () => {
     const entries = [
-      entry('2026-11-08', 'code', 'work', '01:30'),
-      entry('2026-11-08', 'terminal', 'work', '00:30'),
-      entry('2026-11-08', 'firefox', null, '00:45'),
-      entry('2026-11-09', 'code', 'work', '10:00'),
+      entry('2026-11-08', 'code', '01:30'),
+      entry('2026-11-08', 'terminal', '00:30'),
+      entry('2026-11-08', 'firefox', '00:45'),
+      entry('2026-11-09', 'code', '10:00'),
     ];
 
     const report = DayReport.parse(buildDayReport('2026-11-08', entries, [], JERUSALEM));
@@ -48,10 +48,6 @@ describe('buildDayReport', () => {
     expect(report).toEqual({
       date: '2026-11-08',
       totalSeconds: seconds('02:45'),
-      byCategory: [
-        { category: 'work', seconds: seconds('02:00') },
-        { category: null, seconds: seconds('00:45') },
-      ],
       topApps: [
         { appId: 'code', seconds: seconds('01:30') },
         { appId: 'firefox', seconds: seconds('00:45') },
@@ -77,7 +73,6 @@ describe('buildDayReport', () => {
     expect(buildDayReport('2026-11-08', [], [], JERUSALEM)).toEqual({
       date: '2026-11-08',
       totalSeconds: 0,
-      byCategory: [],
       topApps: [],
       longestFocusStreakSeconds: 0,
     });
@@ -86,29 +81,26 @@ describe('buildDayReport', () => {
 
 describe('topApps', () => {
   it('rounds to whole seconds', () => {
-    const almostTwoSeconds = { date: '2026-11-08', appId: 'code', category: null, ms: 1_500 };
+    const almostTwoSeconds = { date: '2026-11-08', appId: 'code', ms: 1_500 };
 
     expect(topApps([almostTwoSeconds])).toEqual([{ appId: 'code', seconds: 2 }]);
   });
 
   it('orders equal totals by app, so row order never changes the report', () => {
-    const entries = [
-      entry('2026-11-08', 'slack', null, '00:10'),
-      entry('2026-11-08', 'code', null, '00:10'),
-    ];
+    const entries = [entry('2026-11-08', 'slack', '00:10'), entry('2026-11-08', 'code', '00:10')];
 
     expect(topApps(entries).map((total) => total.appId)).toEqual(['code', 'slack']);
   });
 });
 
 describe('buildWeeklySummary', () => {
-  it('compares the week with the one before and names the top category', () => {
+  it('compares the week with the one before', () => {
     const entries = [
-      entry('2026-11-01', 'code', 'work', '01:40'),
-      entry('2026-11-08', 'code', 'work', '01:00'),
-      entry('2026-11-10', 'slack', 'chat', '00:30'),
-      entry('2026-11-11', 'firefox', null, '01:30'),
-      entry('2026-11-15', 'code', 'work', '09:00'),
+      entry('2026-11-01', 'code', '01:40'),
+      entry('2026-11-08', 'code', '01:00'),
+      entry('2026-11-10', 'slack', '00:30'),
+      entry('2026-11-11', 'firefox', '01:30'),
+      entry('2026-11-15', 'code', '09:00'),
     ];
 
     const summary = WeeklySummary.parse(buildWeeklySummary('2026-11-08', entries));
@@ -116,23 +108,22 @@ describe('buildWeeklySummary', () => {
     expect(summary).toEqual({
       totalSeconds: seconds('03:00'),
       changePct: GROWTH_PCT,
-      topCategory: 'work',
     });
   });
 
-  it('has no change when the week before is empty, and no top category without one', () => {
-    const summary = buildWeeklySummary('2026-11-08', [entry('2026-11-09', 'code', null, '00:10')]);
+  it('has no change when the week before is empty', () => {
+    const summary = buildWeeklySummary('2026-11-08', [entry('2026-11-09', 'code', '00:10')]);
 
-    expect(summary).toEqual({ totalSeconds: seconds('00:10'), changePct: null, topCategory: null });
+    expect(summary).toEqual({ totalSeconds: seconds('00:10'), changePct: null });
   });
 });
 
 describe('buildWeekReport', () => {
   it('has seven days from the start, valid against the shared contract', () => {
     const entries = [
-      entry('2026-11-07', 'code', 'work', '05:00'),
-      entry('2026-11-09', 'code', 'work', '01:00'),
-      entry('2026-11-14', 'vlc', null, '00:30'),
+      entry('2026-11-07', 'code', '05:00'),
+      entry('2026-11-09', 'code', '01:00'),
+      entry('2026-11-14', 'vlc', '00:30'),
     ];
 
     const report = WeekReport.parse(buildWeekReport('2026-11-08', entries, [], JERUSALEM));

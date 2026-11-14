@@ -3,13 +3,12 @@ import type { BatteryNow } from '../battery.js';
 import type { FocusState, Profile } from '../focus.js';
 import type { WindowSample } from '../ingest.js';
 import type { DayReport } from '../reports.js';
-import type { App, Rule, Session } from '../sessions.js';
+import type { App, Session } from '../sessions.js';
 import type { Settings } from '../settings.js';
 import type { Incident } from '../system.js';
 
 /** Realistic, contract-valid sample data for tests, MSW and the web's demo mode. */
 export const FIXTURE_IDS = {
-  rule: '6f1c2a9e-1b3d-4c5e-8f70-9a1b2c3d4e5f',
   profile: '8b3e4c1a-3d5f-4e70-a192-bc3d4e5f6071',
   incident: '9c4f5d2b-4e60-4f81-b2a3-cd4e5f607182',
   session: 'ad506e3c-5f71-4092-83b4-de5f60718293',
@@ -22,16 +21,6 @@ export const appFixture: App = {
   id: 'code',
   name: 'Visual Studio Code',
   icon: 'vscode',
-  category: 'work',
-};
-
-export const ruleFixture: Rule = {
-  id: FIXTURE_IDS.rule,
-  field: 'wmClass',
-  match: 'exact',
-  pattern: 'code',
-  category: 'work',
-  priority: 10,
 };
 
 export const profileFixture: Profile = {
@@ -59,11 +48,6 @@ export const sessionFixture: Session = {
 export const dayReportFixture: DayReport = {
   date: FIXTURE_DATE,
   totalSeconds: 16_200,
-  byCategory: [
-    { category: 'work', seconds: 12_600 },
-    { category: 'social', seconds: 2_700 },
-    { category: null, seconds: 900 },
-  ],
   topApps: [
     { appId: 'code', seconds: 9_000 },
     { appId: 'firefox', seconds: 4_500 },

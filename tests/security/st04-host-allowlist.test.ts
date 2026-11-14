@@ -69,7 +69,7 @@ describe('ST04 host allowlist', () => {
   it('refuses a foreign Host before answering a CORS preflight', async () => {
     const response = await app.inject({
       method: 'OPTIONS',
-      url: '/v1/rules',
+      url: '/v1/focus/profiles',
       headers: {
         host: 'evil.example:4711',
         origin: 'http://127.0.0.1:4710',

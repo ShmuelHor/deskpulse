@@ -12,14 +12,12 @@ type Db = Kysely<ReportsDatabase>;
 const RollupRow = z.object({
   day: z.iso.date(),
   app_id: z.string(),
-  category: z.string().nullable(),
   active_ms: z.number().int().min(0),
 });
 
 interface RollupBatchRow {
   readonly day: string;
   readonly app_id: string;
-  readonly category: string | null;
   readonly active_ms: number;
 }
 
@@ -30,7 +28,7 @@ interface RollupBatchRow {
 export async function addToRollups(db: Db, entries: readonly RollupEntry[]): Promise<void> {
   await db
     .insertInto('daily_rollups')
-    .columns(['day', 'app_id', 'category', 'active_ms'])
+    .columns(['day', 'app_id', 'active_ms'])
     .expression((eb) =>
       eb
         .selectFrom(
@@ -43,10 +41,6 @@ export async function addToRollups(db: Db, entries: readonly RollupEntry[]): Pro
               'text',
               entries.map((entry) => entry.appId),
             ),
-            category: pgArray(
-              'text',
-              entries.map((entry) => entry.category),
-            ),
             active_ms: pgArray(
               'bigint',
               entries.map((entry) => entry.ms),
@@ -56,7 +50,7 @@ export async function addToRollups(db: Db, entries: readonly RollupEntry[]): Pro
         .selectAll(),
     )
     .onConflict((conflict) =>
-      conflict.columns(['day', 'app_id', 'category']).doUpdateSet({
+      conflict.columns(['day', 'app_id']).doUpdateSet({
         active_ms: sql<number>`daily_rollups.active_ms + excluded.active_ms`,
       }),
     )
@@ -72,23 +66,16 @@ export async function rollups(
     RollupRow,
     await db
       .selectFrom('daily_rollups')
-      .select([
-        asText('day', 'day'),
-        'app_id',
-        'category',
-        sql<number>`active_ms::float8`.as('active_ms'),
-      ])
+      .select([asText('day', 'day'), 'app_id', sql<number>`active_ms::float8`.as('active_ms')])
       .where('day', '>=', from)
       .where('day', '<', to)
       .orderBy('day')
       .orderBy('app_id')
-      .orderBy('category', (order) => order.nullsFirst())
       .execute(),
   );
   return rows.map((row) => ({
     date: row.day,
     appId: row.app_id,
-    category: row.category,
     ms: row.active_ms,
   }));
 }

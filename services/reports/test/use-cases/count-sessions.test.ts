@@ -11,13 +11,10 @@ const UUID_NODE_LENGTH = 12;
 
 function closed(id: string, appId: string, start: string, end: string): ClosedSession {
   return {
-    session: {
-      id: `00000000-0000-4000-8000-${id.padStart(UUID_NODE_LENGTH, '0')}`,
-      appId,
-      start,
-      end,
-    },
-    category: appId === 'code' ? 'work' : null,
+    id: `00000000-0000-4000-8000-${id.padStart(UUID_NODE_LENGTH, '0')}`,
+    appId,
+    start,
+    end,
   };
 }
 
@@ -75,13 +72,13 @@ describe('countSessions', () => {
     );
   });
 
-  it('stores no streak for uncategorized time', async () => {
+  it('stores one streak for a single session', async () => {
     const store = createMemoryStore();
     const browsing = closed('1', 'firefox', '2026-11-08T08:00:00.000Z', '2026-11-08T09:00:00.000Z');
 
     await countSessions(store, [browsing], JERUSALEM);
 
     expect(store.state().rollups).toHaveLength(1);
-    expect(store.state().streaks).toEqual([]);
+    expect(store.state().streaks).toHaveLength(1);
   });
 });
