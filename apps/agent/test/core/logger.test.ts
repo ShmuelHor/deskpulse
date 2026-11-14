@@ -35,7 +35,7 @@ describe('createLogger', () => {
     const sink = capture();
     createLogger({ level: 'info', destination: sink }).info({ wmClass: 'firefox' }, 'sample');
     const entry: unknown = JSON.parse(sink.lines[0] ?? '');
-    expect(entry).toMatchObject({ wmClass: 'firefox', msg: 'sample', name: 'yoman-agent' });
+    expect(entry).toMatchObject({ wmClass: 'firefox', msg: 'sample', name: 'deskpulse-agent' });
   });
 
   it('honors the configured level', () => {

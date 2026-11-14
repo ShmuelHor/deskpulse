@@ -1,8 +1,8 @@
+import type { Settings } from '@deskpulse/shared/settings';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import type { Settings } from '@yoman/shared/settings';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { z } from 'zod';

@@ -57,7 +57,7 @@ function stdout(): DestinationStream {
 export function createLogger(options: LoggerOptions): AgentLogger {
   return pino(
     {
-      name: 'yoman-agent',
+      name: 'deskpulse-agent',
       level: options.level,
       redact: { paths: redactPaths(), censor: CENSOR },
     },

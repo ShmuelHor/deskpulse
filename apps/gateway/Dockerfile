@@ -1,6 +1,6 @@
 # The gateway image (SECURITY A10). Build from the repository root:
 #
-#   docker build -f apps/gateway/Dockerfile -t yoman-gateway .
+#   docker build -f apps/gateway/Dockerfile -t deskpulse-gateway .
 #
 # docker/Dockerfile.service is not reused: it is keyed on services/<name>, runs
 # dist/main.js and probes with service-kit, while the gateway lives under apps/

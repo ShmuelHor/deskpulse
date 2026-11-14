@@ -1,4 +1,4 @@
-import { WebSession } from '@yoman/shared/gateway';
+import { WebSession } from '@deskpulse/shared/gateway';
 
 const UNAUTHORIZED = 401;
 const SESSION_PATH = '/v1/session';

@@ -1,4 +1,4 @@
-import { Alert } from '@yoman/shared/alerts';
+import { Alert } from '@deskpulse/shared/alerts';
 import { describe, expect, it } from 'vitest';
 
 import type { SampleBatch } from '../../src/contracts.js';
@@ -85,7 +85,7 @@ describe('recordSamples', () => {
       processes('08:59:00', [process(1, { cpuPct: RUNAWAY_CPU_PCT })]),
       ...pressureRun('09:00:00', '09:00:30', HIGH_CPU),
       processes('09:00:10', [
-        process(2, { cpuPct: BUSY_CPU_PCT, container: 'yoman-web-1' }),
+        process(2, { cpuPct: BUSY_CPU_PCT, container: 'deskpulse-web-1' }),
         process(QUIET_PID),
       ]),
       pressure('09:00:35', LOW_CPU),
@@ -96,7 +96,7 @@ describe('recordSamples', () => {
     const [incident] = store.state().incidents;
     expect(incident?.endMs).toBe(Date.parse(at('09:00:35')));
     expect(incident?.culprits.map((culprit) => [culprit.pid, culprit.container])).toEqual([
-      [2, 'yoman-web-1'],
+      [2, 'deskpulse-web-1'],
       [QUIET_PID, null],
     ]);
   });

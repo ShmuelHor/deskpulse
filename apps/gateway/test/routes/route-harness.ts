@@ -1,4 +1,4 @@
-import type { ServiceName } from '@yoman/shared/common';
+import type { ServiceName } from '@deskpulse/shared/common';
 import type { FastifyInstance } from 'fastify';
 
 import { type RouteHandlers, toHandlerMap } from '../../src/core/route-handler.js';

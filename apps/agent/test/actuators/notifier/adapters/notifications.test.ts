@@ -8,7 +8,7 @@ import type { Notification } from '../../../../src/actuators/notifier/domain/not
 import { FakeNotificationServer } from '../fake-notification-server.js';
 
 const NOTIFICATION: Notification = {
-  appName: 'Yoman',
+  appName: 'DeskPulse',
   summary: 'Battery low',
   body: '14% left.',
   urgency: 2,
@@ -43,7 +43,7 @@ describe('sendNotification', () => {
 
     // Assert
     expect(bus.calls[0]?.body).toEqual([
-      'Yoman',
+      'DeskPulse',
       0,
       '',
       'Battery low',

@@ -1,5 +1,5 @@
-import { LIMITS } from '@yoman/shared/limits';
-import type { CulpritSummary } from '@yoman/shared/system';
+import { LIMITS } from '@deskpulse/shared/limits';
+import type { CulpritSummary } from '@deskpulse/shared/system';
 
 import type { SystemStore } from './store.js';
 

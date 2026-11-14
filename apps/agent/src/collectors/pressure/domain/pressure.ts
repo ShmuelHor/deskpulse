@@ -1,5 +1,5 @@
-import { Percent } from '@yoman/shared/common';
-import type { PressureValues } from '@yoman/shared/ingest';
+import { Percent } from '@deskpulse/shared/common';
+import type { PressureValues } from '@deskpulse/shared/ingest';
 import { z } from 'zod';
 
 /** The three resources `/proc/pressure` reports on. */

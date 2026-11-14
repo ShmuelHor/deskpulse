@@ -1,6 +1,6 @@
-import { ConflictError, NotFoundError } from '@yoman/service-kit/errors';
-import { LIMITS } from '@yoman/shared/limits';
-import type { Rule, RuleInput } from '@yoman/shared/sessions';
+import { ConflictError, NotFoundError } from '@deskpulse/service-kit/errors';
+import { LIMITS } from '@deskpulse/shared/limits';
+import type { Rule, RuleInput } from '@deskpulse/shared/sessions';
 
 import { reapplyCategories } from './reapply-categories.js';
 import type { SessionsStore } from './store.js';

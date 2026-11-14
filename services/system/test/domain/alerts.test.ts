@@ -1,4 +1,4 @@
-import { Alert } from '@yoman/shared/alerts';
+import { Alert } from '@deskpulse/shared/alerts';
 import { describe, expect, it } from 'vitest';
 
 import { incidentAlert, uniqueAlerts } from '../../src/domain/alerts.js';

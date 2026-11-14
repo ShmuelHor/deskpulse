@@ -1,4 +1,4 @@
-import type { BatteryDay } from '@yoman/shared/battery';
+import type { BatteryDay } from '@deskpulse/shared/battery';
 
 export interface MonthlyCycles {
   /** `YYYY-MM`. */

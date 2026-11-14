@@ -1,4 +1,4 @@
-import type { PressureSample, ThermalSample } from '@yoman/shared/ingest';
+import type { PressureSample, ThermalSample } from '@deskpulse/shared/ingest';
 import { describe, expect, it } from 'vitest';
 
 import { conditionPoints } from '../../src/domain/conditions.js';

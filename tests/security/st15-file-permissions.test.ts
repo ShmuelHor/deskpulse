@@ -16,7 +16,7 @@ describe('ST15 file permissions', () => {
   it.todo('[T02] npm run setup creates .env with mode 0600');
 
   it('[T12] agent state files are 0600 in a 0700 directory', async () => {
-    const home = await mkdtemp(join(tmpdir(), 'yoman-st15-'));
+    const home = await mkdtemp(join(tmpdir(), 'deskpulse-st15-'));
     // A permissive umask must not loosen anything the agent creates.
     const previousUmask = process.umask(PERMISSIVE_UMASK);
     try {

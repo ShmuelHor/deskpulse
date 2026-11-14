@@ -30,7 +30,7 @@ const MAX_OUTPUT_BYTES = 16_777_216;
  * report is an error here.
  */
 async function runSuite(): Promise<unknown> {
-  const dir = await mkdtemp(join(tmpdir(), 'yoman-security-'));
+  const dir = await mkdtemp(join(tmpdir(), 'deskpulse-security-'));
   const outputFile = join(dir, 'report.json');
   try {
     const stderr = await new Promise<string>((resolve) => {

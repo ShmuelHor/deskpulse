@@ -3,9 +3,9 @@ import {
   focusActiveFixture,
   profileFixture,
   sessionFixture,
-} from '@yoman/shared/fixtures/data';
-import { type IngestBatch, IngestResult } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
+} from '@deskpulse/shared/fixtures/data';
+import { type IngestBatch, IngestResult } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
 import type { FastifyInstance, LightMyRequestResponse } from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ServiceUnavailableError } from '../../../src/core/errors.js';

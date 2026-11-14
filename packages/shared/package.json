@@ -1,8 +1,8 @@
 {
-  "name": "@yoman/shared",
+  "name": "@deskpulse/shared",
   "version": "0.0.0",
   "private": true,
-  "description": "Zod contracts, route map, fixtures and MSW handlers shared by every Yoman package.",
+  "description": "Zod contracts, route map, fixtures and MSW handlers shared by every DeskPulse package.",
   "license": "UNLICENSED",
   "type": "module",
   "exports": {

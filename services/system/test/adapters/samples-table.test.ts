@@ -43,14 +43,14 @@ describe('samples table', () => {
     const { db, queries } = fakeDb();
 
     await insertProcesses(db, [
-      processes('09:00:00', [process(1), process(2, { container: 'yoman-web-1' })]),
+      processes('09:00:00', [process(1), process(2, { container: 'deskpulse-web-1' })]),
     ]);
 
     expect(queries[0]?.values.slice(0, IDENTITY_COLUMNS)).toEqual([
       [at('09:00:00'), at('09:00:00')],
       [1, 2],
       ['proc1', 'proc2'],
-      [null, 'yoman-web-1'],
+      [null, 'deskpulse-web-1'],
     ]);
   });
 

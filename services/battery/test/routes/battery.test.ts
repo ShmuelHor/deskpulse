@@ -1,5 +1,5 @@
-import { BatteryNow, HealthTrend, PowerByApp } from '@yoman/shared/battery';
-import type { BatterySample } from '@yoman/shared/ingest';
+import { BatteryNow, HealthTrend, PowerByApp } from '@deskpulse/shared/battery';
+import type { BatterySample } from '@deskpulse/shared/ingest';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { healthPct } from '../../src/domain/health.js';

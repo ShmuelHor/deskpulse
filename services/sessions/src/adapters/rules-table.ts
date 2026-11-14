@@ -1,5 +1,5 @@
-import { parseRow, parseRows, toPgText } from '@yoman/service-kit/sql';
-import { Rule, type RuleInput } from '@yoman/shared/sessions';
+import { parseRow, parseRows, toPgText } from '@deskpulse/service-kit/sql';
+import { Rule, type RuleInput } from '@deskpulse/shared/sessions';
 import type { Kysely } from 'kysely';
 import { z } from 'zod';
 

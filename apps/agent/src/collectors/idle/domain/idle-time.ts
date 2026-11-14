@@ -1,4 +1,4 @@
-import { LIMITS } from '@yoman/shared/limits';
+import { LIMITS } from '@deskpulse/shared/limits';
 import { z } from 'zod';
 
 /** `GetIdletime` replies with one `t` (uint64) of milliseconds, which dbus-next decodes as a bigint. */

@@ -1,10 +1,10 @@
+import type { BatteryNow } from '@deskpulse/shared/battery';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
-import type { BatteryNow } from '@yoman/shared/battery';
 import { useTranslation } from 'react-i18next';
 
 import type { GatewayClient } from '../../api/gateway.js';

@@ -1,6 +1,6 @@
-import type { AppId } from '@yoman/shared/common';
-import type { FocusState, MuteDirective, Profile } from '@yoman/shared/focus';
-import { LIMITS } from '@yoman/shared/limits';
+import type { AppId } from '@deskpulse/shared/common';
+import type { FocusState, MuteDirective, Profile } from '@deskpulse/shared/focus';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 import { isNeverMuted } from '../../core/never-muted.js';
 

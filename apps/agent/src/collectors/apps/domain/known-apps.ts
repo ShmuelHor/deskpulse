@@ -1,4 +1,4 @@
-import { KnownApp } from '@yoman/shared/focus';
+import { KnownApp } from '@deskpulse/shared/focus';
 import type { DesktopEntry } from './desktop-entry.js';
 import { type NotificationId, toNotificationId } from './notification-id.js';
 

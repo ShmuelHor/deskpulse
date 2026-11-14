@@ -56,7 +56,7 @@ describe('readApplicationsDir', () => {
   let dir: string;
 
   beforeEach(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'yoman-apps-'));
+    dir = await mkdtemp(join(tmpdir(), 'deskpulse-apps-'));
   });
 
   afterEach(async () => {
@@ -128,7 +128,7 @@ describe('watchDir', () => {
   let dir: string;
 
   beforeEach(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'yoman-apps-'));
+    dir = await mkdtemp(join(tmpdir(), 'deskpulse-apps-'));
   });
 
   afterEach(async () => {

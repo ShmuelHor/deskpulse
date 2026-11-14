@@ -1,4 +1,4 @@
-import type { BatteryStatus } from '@yoman/shared/ingest';
+import type { BatteryStatus } from '@deskpulse/shared/ingest';
 
 /** One stored sample, as far as the power calculations need it. */
 export interface PowerReading {

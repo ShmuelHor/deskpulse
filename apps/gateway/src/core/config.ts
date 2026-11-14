@@ -1,5 +1,5 @@
-import type { DatabaseConfig } from '@yoman/service-kit/config';
-import type { ServiceName } from '@yoman/shared/common';
+import type { DatabaseConfig } from '@deskpulse/service-kit/config';
+import type { ServiceName } from '@deskpulse/shared/common';
 import { z } from 'zod';
 
 const MAX_PORT = 65_535;

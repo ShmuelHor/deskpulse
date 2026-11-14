@@ -12,7 +12,7 @@ network.
 | `src/use-cases/`   | One function per operation. Runs domain logic inside one transaction of the `ReportsStore` port |
 | `src/adapters/`    | The Postgres `ReportsStore`. Parameterized SQL only, every row parsed with Zod                  |
 | `src/routes/`      | Thin: the schema for each part, a use case call, nothing else                                   |
-| `src/contracts.ts` | Gateway-to-service contracts with no public counterpart, built from `@yoman/shared` schemas     |
+| `src/contracts.ts` | Gateway-to-service contracts with no public counterpart, built from `@deskpulse/shared` schemas |
 | `src/config.ts`    | The service's own environment: `TZ`                                                             |
 | `migrations/`      | SQL migrations, applied by service-kit on start                                                 |
 

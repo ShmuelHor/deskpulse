@@ -1,4 +1,4 @@
-import { IngestBatch, IngestResult } from '@yoman/shared/ingest';
+import { IngestBatch, IngestResult } from '@deskpulse/shared/ingest';
 import { describe, expect, it } from 'vitest';
 
 import { STATUS } from '../../harness.js';
@@ -6,11 +6,11 @@ import { batterySample, windowSample } from './samples.js';
 
 /**
  * Runs against a live compose stack (`docker compose up -d`, gateway rebuilt
- * from this branch): set `YOMAN_GATEWAY_URL` (`http://127.0.0.1:4711`) and
- * `YOMAN_AGENT_TOKEN` (the stack's `AGENT_TOKEN`, from the shell, never a file
+ * from this branch): set `DESKPULSE_GATEWAY_URL` (`http://127.0.0.1:4711`) and
+ * `DESKPULSE_AGENT_TOKEN` (the stack's `AGENT_TOKEN`, from the shell, never a file
  * in the repo). Without them the suite is skipped, as in plain `npm test`.
  */
-const { YOMAN_GATEWAY_URL: GATEWAY_URL, YOMAN_AGENT_TOKEN: AGENT_TOKEN } = process.env;
+const { DESKPULSE_GATEWAY_URL: GATEWAY_URL, DESKPULSE_AGENT_TOKEN: AGENT_TOKEN } = process.env;
 const configured = GATEWAY_URL !== undefined && AGENT_TOKEN !== undefined;
 
 const MS_PER_MINUTE = 60_000;

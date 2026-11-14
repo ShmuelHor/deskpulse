@@ -1,7 +1,7 @@
 import { readdir, readFile, rm, stat, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
-import { Sample } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
+import { Sample } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
 import {
   BUFFER_MAX_BYTES,
   hourFileName,
@@ -18,9 +18,9 @@ import {
 } from './private-fs.js';
 
 export interface BufferOptions {
-  /** `~/.local/state/yoman`, forced to `0700` together with the buffer directory. */
+  /** `~/.local/state/deskpulse`, forced to `0700` together with the buffer directory. */
   readonly stateDir: string;
-  /** `~/.local/state/yoman/buffer`. */
+  /** `~/.local/state/deskpulse/buffer`. */
   readonly bufferDir: string;
   readonly logger: Pick<AgentLogger, 'warn'>;
   readonly maxBytes?: number;

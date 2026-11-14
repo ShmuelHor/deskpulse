@@ -1,5 +1,5 @@
 # The compliant project, found by Compose discovery. Its override file breaks the policy.
-name: yoman-fixture-override
+name: deskpulse-fixture-override
 services:
   web:
     image: nginx@sha256:0000000000000000000000000000000000000000000000000000000000000000

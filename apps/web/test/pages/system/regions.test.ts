@@ -1,5 +1,5 @@
-import { incidentFixture } from '@yoman/shared/fixtures/data';
-import type { Incident } from '@yoman/shared/system';
+import { incidentFixture } from '@deskpulse/shared/fixtures/data';
+import type { Incident } from '@deskpulse/shared/system';
 import { describe, expect, it } from 'vitest';
 
 import { dayBounds } from '../../../src/pages/system/day.js';

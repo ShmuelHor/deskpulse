@@ -1,4 +1,4 @@
-import type { BatteryStatus } from '@yoman/shared/ingest';
+import type { BatteryStatus } from '@deskpulse/shared/ingest';
 import { z } from 'zod';
 
 /** The sysfs attributes of one `power_supply/BAT*` device the collector reads. */

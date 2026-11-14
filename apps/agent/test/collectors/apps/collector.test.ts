@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, rm, unlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { KnownApp } from '@yoman/shared/focus';
+import type { KnownApp } from '@deskpulse/shared/focus';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type {
   CloseWatch,
@@ -165,7 +165,7 @@ describe('apps collector', () => {
   beforeEach(async () => {
     // Only timers are faked: the directories are real, so file IO must run.
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
-    root = await mkdtemp(join(tmpdir(), 'yoman-apps-'));
+    root = await mkdtemp(join(tmpdir(), 'deskpulse-apps-'));
     userDir = join(root, 'user');
     systemDir = join(root, 'system');
     await mkdir(userDir);

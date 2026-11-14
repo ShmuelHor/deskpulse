@@ -1,5 +1,5 @@
+import type { CulpritSummary } from '@deskpulse/shared/system';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import type { CulpritSummary } from '@yoman/shared/system';
 import { useTranslation } from 'react-i18next';
 
 interface CulpritsTableProps {

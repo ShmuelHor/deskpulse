@@ -1,4 +1,4 @@
-import { Rule, type RuleInput, RuleList } from '@yoman/shared/sessions';
+import { Rule, type RuleInput, RuleList } from '@deskpulse/shared/sessions';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { createTestService, type TestService } from '../test-service.js';

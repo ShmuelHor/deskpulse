@@ -1,10 +1,10 @@
+import type { App, Rule } from '@deskpulse/shared/sessions';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
-import type { App, Rule } from '@yoman/shared/sessions';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

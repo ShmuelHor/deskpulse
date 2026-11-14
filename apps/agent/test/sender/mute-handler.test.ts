@@ -1,4 +1,4 @@
-import type { IngestResult } from '@yoman/shared/ingest';
+import type { IngestResult } from '@deskpulse/shared/ingest';
 import { describe, expect, it, vi } from 'vitest';
 import { muteOnReply } from '../../src/sender/mute-handler.js';
 

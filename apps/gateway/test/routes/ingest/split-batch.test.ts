@@ -1,4 +1,4 @@
-import type { IngestBatch } from '@yoman/shared/ingest';
+import type { IngestBatch } from '@deskpulse/shared/ingest';
 import { describe, expect, it } from 'vitest';
 
 import { splitBatch } from '../../../src/routes/ingest/split-batch.js';

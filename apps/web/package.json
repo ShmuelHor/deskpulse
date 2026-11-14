@@ -1,8 +1,8 @@
 {
-  "name": "@yoman/web",
+  "name": "@deskpulse/web",
   "version": "0.0.0",
   "private": true,
-  "description": "Yoman's web UI: a React app served by nginx on 127.0.0.1:4710.",
+  "description": "DeskPulse's web UI: a React app served by nginx on 127.0.0.1:4710.",
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
@@ -26,7 +26,7 @@
     "@mui/x-date-pickers": "9.17.0",
     "@tanstack/react-query": "5.107.1",
     "@tanstack/react-router": "1.170.46",
-    "@yoman/shared": "0.0.0",
+    "@deskpulse/shared": "0.0.0",
     "date-fns": "4.4.0",
     "i18next": "27.0.1",
     "notistack": "3.0.2",

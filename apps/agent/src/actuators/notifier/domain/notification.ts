@@ -1,6 +1,6 @@
-import type { AlertLevel, AlertParams } from '@yoman/shared/alerts';
-import { notificationMessages } from '@yoman/shared/notifications';
-import type { Language } from '@yoman/shared/settings';
+import type { AlertLevel, AlertParams } from '@deskpulse/shared/alerts';
+import { notificationMessages } from '@deskpulse/shared/notifications';
+import type { Language } from '@deskpulse/shared/settings';
 import { translate } from '../../../i18n/catalogs.js';
 import { interpolate } from '../../../i18n/translation-tree.js';
 import { escapeMarkup, plainText } from './markup.js';

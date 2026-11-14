@@ -1,4 +1,4 @@
-import type { Sample } from '@yoman/shared/ingest';
+import type { Sample } from '@deskpulse/shared/ingest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLockCollector } from '../../../src/collectors/lock/collector.js';
 import type { Collector, CollectorContext } from '../../../src/core/plugin.js';

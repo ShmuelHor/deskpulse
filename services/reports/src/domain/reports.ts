@@ -1,11 +1,11 @@
-import { LIMITS } from '@yoman/shared/limits';
+import { LIMITS } from '@deskpulse/shared/limits';
 import type {
   AppTotal,
   CategoryTotal,
   DayReport,
   WeeklySummary,
   WeekReport,
-} from '@yoman/shared/reports';
+} from '@deskpulse/shared/reports';
 
 import { addDays, type LocalDateString, localDateOf, weekdayOf } from './local-time.js';
 import type { RollupEntry } from './rollup.js';
@@ -15,7 +15,7 @@ const MS_PER_SECOND = 1_000;
 /** Weeks start on Sunday, as in Israel, the product's default locale. */
 const WEEK_STARTS_ON = 0;
 const PERCENT = 100;
-/** The bound of `Seconds` in `@yoman/shared/common`. */
+/** The bound of `Seconds` in `@deskpulse/shared/common`. */
 const MAX_SECONDS = LIMITS.secondsPerWeek * LIMITS.rangeDays;
 
 /**

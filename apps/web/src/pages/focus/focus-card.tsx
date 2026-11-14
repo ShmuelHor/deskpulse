@@ -1,7 +1,7 @@
+import type { FocusStart, FocusState, Profile } from '@deskpulse/shared/focus';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import type { FocusStart, FocusState, Profile } from '@yoman/shared/focus';
 import { useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { z } from 'zod';

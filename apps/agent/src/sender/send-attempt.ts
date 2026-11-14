@@ -1,4 +1,4 @@
-import { type IngestBatch, IngestResult } from '@yoman/shared/ingest';
+import { type IngestBatch, IngestResult } from '@deskpulse/shared/ingest';
 import type { BufferBatch, SampleBuffer } from '../core/buffer.js';
 import type { AgentLogger } from '../core/logger.js';
 import { type IngestClient, IngestRequestError } from './adapters/ingest-client.js';

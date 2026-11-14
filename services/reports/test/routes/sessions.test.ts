@@ -1,4 +1,4 @@
-import { sessionFixture } from '@yoman/shared/fixtures/data';
+import { sessionFixture } from '@deskpulse/shared/fixtures/data';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { SessionBatchResult } from '../../src/contracts.js';

@@ -1,4 +1,4 @@
-import { FocusState } from '@yoman/shared/focus';
+import { FocusState } from '@deskpulse/shared/focus';
 import { z } from 'zod';
 
 import { withoutNeverMuted } from '../../core/never-muted.js';

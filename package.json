@@ -1,5 +1,5 @@
 {
-  "name": "yoman",
+  "name": "deskpulse",
   "version": "0.0.0",
   "private": true,
   "description": "Your computer's automatic diary: time, battery, load and focus. Local only.",
@@ -22,7 +22,7 @@
     "check": "npm run lint && npm run typecheck && npm run check:language",
     "lint": "biome check --error-on-warnings .",
     "format": "biome check --write .",
-    "build:packages": "npm run build -w @yoman/shared -w @yoman/service-kit",
+    "build:packages": "npm run build -w @deskpulse/shared -w @deskpulse/service-kit",
     "typecheck": "npm run build:packages && tsc -p tsconfig.json --noEmit && tsx scripts/run-workspaces.ts typecheck",
     "check:language": "tsx scripts/check-language.ts",
     "test": "npm run build:packages && vitest run --coverage",

@@ -1,6 +1,6 @@
-import { requestFixtures } from '@yoman/shared/fixtures/requests';
-import { createHandlers } from '@yoman/shared/msw';
-import { type RouteName, routes } from '@yoman/shared/routes';
+import { requestFixtures } from '@deskpulse/shared/fixtures/requests';
+import { createHandlers } from '@deskpulse/shared/msw';
+import { type RouteName, routes } from '@deskpulse/shared/routes';
 import { setupServer } from 'msw/node';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 

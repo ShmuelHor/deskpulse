@@ -30,7 +30,7 @@ export async function registerApiDocs(app: FastifyInstance): Promise<void> {
   const { default: swaggerUi } = await import('@fastify/swagger-ui');
   await app.register(swagger, {
     openapi: {
-      info: { title: 'Yoman gateway', version: '1' },
+      info: { title: 'DeskPulse gateway', version: '1' },
       components: {
         securitySchemes: {
           agentToken: { type: 'http', scheme: 'bearer' },

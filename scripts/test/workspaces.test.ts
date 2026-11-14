@@ -96,13 +96,13 @@ describe('resolveWorkspaces', () => {
 
 describe('RootManifest', () => {
   it('reads the workspaces and ignores other fields', () => {
-    expect(RootManifest.parse({ name: 'yoman', workspaces: ['apps/*'] })).toEqual({
+    expect(RootManifest.parse({ name: 'deskpulse', workspaces: ['apps/*'] })).toEqual({
       workspaces: ['apps/*'],
     });
   });
 
   it('defaults to no workspaces', () => {
-    expect(RootManifest.parse({ name: 'yoman' })).toEqual({ workspaces: [] });
+    expect(RootManifest.parse({ name: 'deskpulse' })).toEqual({ workspaces: [] });
   });
 
   it.each([{ workspaces: 'apps/*' }, { workspaces: [''] }, { workspaces: [1] }])(

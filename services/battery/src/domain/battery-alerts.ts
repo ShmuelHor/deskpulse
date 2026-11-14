@@ -1,6 +1,6 @@
-import type { Alert, AlertLevel, AlertType } from '@yoman/shared/alerts';
-import type { BatteryStatus } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
+import type { Alert, AlertLevel, AlertType } from '@deskpulse/shared/alerts';
+import type { BatteryStatus } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 const LOW_BELOW_PCT = 15;
 const CRITICAL_BELOW_PCT = 8;

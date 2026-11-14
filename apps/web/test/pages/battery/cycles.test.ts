@@ -1,4 +1,4 @@
-import type { BatteryDay } from '@yoman/shared/battery';
+import type { BatteryDay } from '@deskpulse/shared/battery';
 import { describe, expect, it } from 'vitest';
 
 import { cyclesPerMonth } from '../../../src/pages/battery/cycles.js';

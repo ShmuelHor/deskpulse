@@ -1,6 +1,6 @@
-import type { TimeRangeQuery } from '@yoman/shared/common';
-import { LIMITS } from '@yoman/shared/limits';
-import { Session } from '@yoman/shared/sessions';
+import type { TimeRangeQuery } from '@deskpulse/shared/common';
+import { LIMITS } from '@deskpulse/shared/limits';
+import { Session } from '@deskpulse/shared/sessions';
 import { z } from 'zod';
 
 /** The sessions service's `GET /sessions` reply: every session overlapping the range. */

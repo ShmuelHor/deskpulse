@@ -1,5 +1,5 @@
-import { defineRoute, type Route } from '@yoman/service-kit/route';
-import { DayReport, WeeklySummary, WeekReport } from '@yoman/shared/reports';
+import { defineRoute, type Route } from '@deskpulse/service-kit/route';
+import { DayReport, WeeklySummary, WeekReport } from '@deskpulse/shared/reports';
 
 import { ReportWeekQuery, TopAppList, TopAppsQuery } from '../contracts.js';
 import {

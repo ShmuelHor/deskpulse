@@ -100,7 +100,7 @@ describe('readAttribute', () => {
   let dir: string;
 
   beforeEach(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'yoman-thermal-'));
+    dir = await mkdtemp(join(tmpdir(), 'deskpulse-thermal-'));
   });
 
   afterEach(async () => {

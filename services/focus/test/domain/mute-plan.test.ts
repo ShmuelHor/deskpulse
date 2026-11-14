@@ -1,4 +1,4 @@
-import { LIMITS } from '@yoman/shared/limits';
+import { LIMITS } from '@deskpulse/shared/limits';
 import { describe, expect, it } from 'vitest';
 
 import { appsToMute, switchMutes } from '../../src/domain/mute-plan.js';

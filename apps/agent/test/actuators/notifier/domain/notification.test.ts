@@ -1,4 +1,4 @@
-import type { Alert } from '@yoman/shared/alerts';
+import type { Alert } from '@deskpulse/shared/alerts';
 import { describe, expect, it } from 'vitest';
 import {
   renderNotification,
@@ -34,7 +34,7 @@ describe('renderNotification', () => {
     });
 
     expect(notification).toEqual({
-      appName: 'Yoman',
+      appName: 'DeskPulse',
       summary: 'Battery low',
       body: '14% left. Plug in the charger soon.',
       urgency: 1,
@@ -48,7 +48,7 @@ describe('renderNotification', () => {
 
     expect(notification.body).toContain('14%');
     expect(notification.summary).not.toBe('Battery low');
-    expect(notification.appName).not.toBe('Yoman');
+    expect(notification.appName).not.toBe('DeskPulse');
   });
 
   it('gives a critical alert critical urgency', () => {

@@ -1,5 +1,5 @@
-import { Alert } from '@yoman/shared/alerts';
-import { Language } from '@yoman/shared/settings';
+import { Alert } from '@deskpulse/shared/alerts';
+import { Language } from '@deskpulse/shared/settings';
 import { z } from 'zod';
 
 /**

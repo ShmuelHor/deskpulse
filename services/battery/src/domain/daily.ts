@@ -1,4 +1,4 @@
-import type { BatteryDay } from '@yoman/shared/battery';
+import type { BatteryDay } from '@deskpulse/shared/battery';
 
 import { isDraining, type PowerReading } from './reading.js';
 

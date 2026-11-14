@@ -6,14 +6,14 @@ the `core` network.
 
 ## Layout
 
-| Path               | Role                                                                                        |
-| ------------------ | ------------------------------------------------------------------------------------------- |
-| `src/domain/`      | Pure logic: health, daily summaries, time remaining, power attribution, alert rules. No IO  |
-| `src/use-cases/`   | One function per operation, each inside one transaction of the `BatteryStore` port          |
-| `src/adapters/`    | The Postgres `BatteryStore`. Parameterized SQL only, every row parsed with Zod              |
-| `src/routes/`      | Thin: the schema for each part, a use case call, nothing else                               |
-| `src/contracts.ts` | Gateway-to-service contracts with no public counterpart, built from `@yoman/shared` schemas |
-| `migrations/`      | SQL migrations, applied by service-kit on start                                             |
+| Path               | Role                                                                                            |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| `src/domain/`      | Pure logic: health, daily summaries, time remaining, power attribution, alert rules. No IO      |
+| `src/use-cases/`   | One function per operation, each inside one transaction of the `BatteryStore` port              |
+| `src/adapters/`    | The Postgres `BatteryStore`. Parameterized SQL only, every row parsed with Zod                  |
+| `src/routes/`      | Thin: the schema for each part, a use case call, nothing else                                   |
+| `src/contracts.ts` | Gateway-to-service contracts with no public counterpart, built from `@deskpulse/shared` schemas |
+| `migrations/`      | SQL migrations, applied by service-kit on start                                                 |
 
 ## Calculations
 

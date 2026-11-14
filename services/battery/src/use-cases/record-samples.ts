@@ -1,4 +1,4 @@
-import type { BatterySample } from '@yoman/shared/ingest';
+import type { BatterySample } from '@deskpulse/shared/ingest';
 
 import type { SampleResult } from '../contracts.js';
 import { advanceAlerts } from '../domain/battery-alerts.js';

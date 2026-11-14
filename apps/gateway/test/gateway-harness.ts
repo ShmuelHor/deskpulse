@@ -47,7 +47,7 @@ export async function webSession(app: FastifyInstance): Promise<WebSession> {
     headers: {
       host: GATEWAY_HOST,
       origin: WEB_ORIGIN,
-      cookie: `yoman_session=${cookieValue(response, 'yoman_session')}`,
+      cookie: `deskpulse_session=${cookieValue(response, 'deskpulse_session')}`,
       'x-csrf-token': csrfToken,
     },
   };

@@ -1,6 +1,6 @@
-import type { TimeRangeQuery } from '@yoman/shared/common';
-import type { PressureSample, ProcessSample } from '@yoman/shared/ingest';
-import type { CulpritSummary, Incident, PressurePoint } from '@yoman/shared/system';
+import type { TimeRangeQuery } from '@deskpulse/shared/common';
+import type { PressureSample, ProcessSample } from '@deskpulse/shared/ingest';
+import type { CulpritSummary, Incident, PressurePoint } from '@deskpulse/shared/system';
 
 import type { ConditionTrack } from '../domain/condition-tracker.js';
 import type { ConditionType } from '../domain/conditions.js';

@@ -1,7 +1,7 @@
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { IngestBatch, IngestResult, Sample } from '@yoman/shared/ingest';
+import type { IngestBatch, IngestResult, Sample } from '@deskpulse/shared/ingest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createBuffer, type SampleBuffer } from '../../src/core/buffer.js';
 import type { AgentLogger } from '../../src/core/logger.js';
@@ -114,7 +114,7 @@ describe('sendAttempt', () => {
   }
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'yoman-sender-'));
+    root = await mkdtemp(join(tmpdir(), 'deskpulse-sender-'));
     ({ logger, logs } = recordingLogger());
     buffer = await createBuffer({
       stateDir: join(root, 'state'),

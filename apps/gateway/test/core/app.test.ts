@@ -1,6 +1,6 @@
-import { FIXTURE_IDS } from '@yoman/shared/fixtures/data';
-import { requestFixtures } from '@yoman/shared/fixtures/requests';
-import { responseFixtures } from '@yoman/shared/fixtures/responses';
+import { FIXTURE_IDS } from '@deskpulse/shared/fixtures/data';
+import { requestFixtures } from '@deskpulse/shared/fixtures/requests';
+import { responseFixtures } from '@deskpulse/shared/fixtures/responses';
 import type { FastifyInstance, LightMyRequestResponse } from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -116,7 +116,7 @@ describe('buildGateway', () => {
       expect(body.expiresAt).toBe(new Date(START + SESSION_TTL_MS).toISOString());
       expect(response.cookies).toEqual([
         expect.objectContaining({
-          name: 'yoman_session',
+          name: 'deskpulse_session',
           httpOnly: true,
           sameSite: 'Strict',
           path: '/v1',

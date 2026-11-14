@@ -1,6 +1,6 @@
-import type { Alert } from '@yoman/shared/alerts';
-import type { ProcessSample } from '@yoman/shared/ingest';
-import type { Culprit } from '@yoman/shared/system';
+import type { Alert } from '@deskpulse/shared/alerts';
+import type { ProcessSample } from '@deskpulse/shared/ingest';
+import type { Culprit } from '@deskpulse/shared/system';
 
 import type { SampleBatch, SampleResult } from '../contracts.js';
 import { incidentAlert, uniqueAlerts } from '../domain/alerts.js';

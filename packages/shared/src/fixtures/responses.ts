@@ -71,7 +71,7 @@ export const responseFixtures: ResponseFixtures = {
     ],
   },
   systemIncidents: { items: [incidentFixture] },
-  systemCulprits: { items: [{ comm: 'node', container: 'yoman-web-1', incidents: 3 }] },
+  systemCulprits: { items: [{ comm: 'node', container: 'deskpulse-web-1', incidents: 3 }] },
   systemTimeline: {
     date: FIXTURE_DATE,
     points: [

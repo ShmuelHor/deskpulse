@@ -1,4 +1,4 @@
-import { LIMITS } from '@yoman/shared/limits';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 import { reapplyCutoff, recategorize } from '../domain/categorize.js';
 import type { SessionsTransaction } from './store.js';

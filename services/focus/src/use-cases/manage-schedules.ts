@@ -1,5 +1,5 @@
-import { ConflictError, NotFoundError } from '@yoman/service-kit/errors';
-import { LIMITS } from '@yoman/shared/limits';
+import { ConflictError, NotFoundError } from '@deskpulse/service-kit/errors';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 import type { Schedule, ScheduleInput } from '../contracts.js';
 import type { FocusStore, FocusTransaction } from './store.js';

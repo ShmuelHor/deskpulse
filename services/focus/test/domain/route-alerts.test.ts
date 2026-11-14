@@ -1,4 +1,4 @@
-import type { Alert, AlertLevel, AlertType } from '@yoman/shared/alerts';
+import type { Alert, AlertLevel, AlertType } from '@deskpulse/shared/alerts';
 import { describe, expect, it } from 'vitest';
 
 import {

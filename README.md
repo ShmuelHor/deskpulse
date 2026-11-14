@@ -8,10 +8,9 @@ cleanup, pending updates, startup apps, where your time went, and a focus mode t
 notifications until you're done. Every page is a grid of widgets you can arrange, in Hebrew or
 English, light or dark, with ten color palettes. Nothing ever leaves your computer.
 
-> **Status:** in development. The services, the agent, the gateway and the first web pages exist
-> (waves 0–3, called Yoman then). Wave 4 turns them into DeskPulse: the new design, the control
-> center features and the Tauri desktop app. Until the code rename (T60) lands, package names,
-> paths, units and commands below still say `yoman`. See [docs/TASKS.md](docs/TASKS.md).
+> **Status:** in development. The services, the agent, the gateway and the first web pages exist.
+> Wave 4 builds on them: the new design, the control center features and the Tauri desktop app.
+> See [docs/TASKS.md](docs/TASKS.md).
 
 ## Features (planned)
 
@@ -143,7 +142,7 @@ npm start       # creates .env if missing, builds and starts the stack, waits un
 npm stop        # stops the stack (the data stays in the Docker volume)
 ```
 
-`npm start` needs Docker Engine with Compose v2. Ctrl+C stops the agent, and the stack keeps running until `npm stop`. To run only the agent against a running stack: `npm run agent:dev`. The agent reads `AGENT_TOKEN` from `.env` (that key only) or from its environment, and `~/.config/yoman/agent.json` for optional settings (`gatewayUrl`, `logLevel`, `logFormat`).
+`npm start` needs Docker Engine with Compose v2. Ctrl+C stops the agent, and the stack keeps running until `npm stop`. To run only the agent against a running stack: `npm run agent:dev`. The agent reads `AGENT_TOKEN` from `.env` (that key only) or from its environment, and `~/.config/deskpulse/agent.json` for optional settings (`gatewayUrl`, `logLevel`, `logFormat`).
 
 ## Logs
 
@@ -159,7 +158,7 @@ docker compose logs -f --no-log-prefix gateway | npx pino-pretty --minimumLevel 
 
 Errors only with the default format: `docker compose logs -f | grep -E 'ERROR|WARN'`. A failed API answer carries its id in `error.requestId` and the `x-request-id` header; use it with `grep`.
 
-`npm start` runs the agent in its own terminal for now (or `npm run agent:dev` alone). Once it runs as a systemd user unit, follow it with `journalctl --user -u yoman-agent -f`.
+`npm start` runs the agent in its own terminal for now (or `npm run agent:dev` alone). Once it runs as a systemd user unit, follow it with `journalctl --user -u deskpulse-agent -f`.
 
 ## Roadmap
 

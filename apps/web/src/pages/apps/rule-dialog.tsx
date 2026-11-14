@@ -1,3 +1,4 @@
+import { type App, type Rule, RuleInput } from '@deskpulse/shared/sessions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
 import Dialog from '@mui/material/Dialog';
@@ -6,7 +7,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { type App, type Rule, RuleInput } from '@yoman/shared/sessions';
 import { useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 

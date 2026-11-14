@@ -1,5 +1,5 @@
-import { sessionFixture } from '@yoman/shared/fixtures/data';
-import { responseFixtures } from '@yoman/shared/fixtures/responses';
+import { sessionFixture } from '@deskpulse/shared/fixtures/data';
+import { responseFixtures } from '@deskpulse/shared/fixtures/responses';
 import type { FastifyInstance } from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 

@@ -1,8 +1,7 @@
+import type { AppTotal } from '@deskpulse/shared/reports';
+import type { App } from '@deskpulse/shared/sessions';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import type { AppTotal } from '@yoman/shared/reports';
-
-import type { App } from '@yoman/shared/sessions';
 import { useTranslation } from 'react-i18next';
 import { splitDuration } from './format.js';
 

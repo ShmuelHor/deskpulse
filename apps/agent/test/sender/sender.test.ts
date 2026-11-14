@@ -1,4 +1,4 @@
-import type { IngestResult } from '@yoman/shared/ingest';
+import type { IngestResult } from '@deskpulse/shared/ingest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { BufferBatch, SampleBuffer } from '../../src/core/buffer.js';
 import type { IngestClient, IngestHttpReply } from '../../src/sender/adapters/ingest-client.js';

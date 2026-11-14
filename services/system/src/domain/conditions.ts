@@ -1,5 +1,5 @@
-import type { PressureSample, ThermalSample } from '@yoman/shared/ingest';
-import type { Settings } from '@yoman/shared/settings';
+import type { PressureSample, ThermalSample } from '@deskpulse/shared/ingest';
+import type { Settings } from '@deskpulse/shared/settings';
 
 import type { ConditionPoint, ConditionRule } from './condition-tracker.js';
 

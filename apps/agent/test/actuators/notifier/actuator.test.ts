@@ -1,4 +1,4 @@
-import type { Alert } from '@yoman/shared/alerts';
+import type { Alert } from '@deskpulse/shared/alerts';
 import { describe, expect, it } from 'vitest';
 import { createNotifier, DASHBOARD_URL } from '../../../src/actuators/notifier/actuator.js';
 import type { NotifyRequest } from '../../../src/actuators/notifier/domain/notify-request.js';

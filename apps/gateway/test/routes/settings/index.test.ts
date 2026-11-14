@@ -1,4 +1,4 @@
-import { settingsFixture } from '@yoman/shared/fixtures/data';
+import { settingsFixture } from '@deskpulse/shared/fixtures/data';
 import type { FastifyInstance } from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 import { toHandlerMap } from '../../../src/core/route-handler.js';

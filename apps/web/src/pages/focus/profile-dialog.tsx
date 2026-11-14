@@ -1,3 +1,4 @@
+import type { KnownApp, Profile } from '@deskpulse/shared/focus';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -5,7 +6,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import type { KnownApp, Profile } from '@yoman/shared/focus';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 

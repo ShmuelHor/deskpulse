@@ -1,5 +1,5 @@
+import type { Incident, IncidentType } from '@deskpulse/shared/system';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import type { Incident, IncidentType } from '@yoman/shared/system';
 import { useTranslation } from 'react-i18next';
 
 import { Tag } from '../../components/tag.js';

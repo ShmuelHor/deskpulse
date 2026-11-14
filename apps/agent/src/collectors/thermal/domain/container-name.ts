@@ -1,4 +1,4 @@
-import { Label } from '@yoman/shared/common';
+import { Label } from '@deskpulse/shared/common';
 import { z } from 'zod';
 
 /**

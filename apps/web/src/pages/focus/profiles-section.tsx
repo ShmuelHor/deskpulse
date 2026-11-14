@@ -1,8 +1,8 @@
+import type { KnownApp, Profile, ProfileList } from '@deskpulse/shared/focus';
 import Alert from '@mui/material/Alert';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import type { UseQueryResult } from '@tanstack/react-query';
-import type { KnownApp, Profile, ProfileList } from '@yoman/shared/focus';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

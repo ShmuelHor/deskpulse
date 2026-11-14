@@ -1,7 +1,7 @@
 import { copyFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { LIMITS } from '@yoman/shared/limits';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 /** One fake process; counters are in clock ticks, pages and bytes like the real files. */
 export interface FakeProcess {
@@ -49,7 +49,7 @@ export class ProcTree {
   private constructor(readonly root: string) {}
 
   static async create(): Promise<ProcTree> {
-    return new ProcTree(await mkdtemp(join(tmpdir(), 'yoman-proc-')));
+    return new ProcTree(await mkdtemp(join(tmpdir(), 'deskpulse-proc-')));
   }
 
   async remove(): Promise<void> {

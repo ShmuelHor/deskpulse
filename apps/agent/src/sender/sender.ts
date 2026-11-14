@@ -1,6 +1,6 @@
 import { setImmediate } from 'node:timers/promises';
-import { IngestBatch } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
+import { IngestBatch } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
 import pRetry from 'p-retry';
 import type { AgentLogger } from '../core/logger.js';
 import {

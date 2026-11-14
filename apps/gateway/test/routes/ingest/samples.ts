@@ -1,5 +1,5 @@
-import { FIXTURE_NOW, windowSampleFixture } from '@yoman/shared/fixtures/data';
-import type { BatterySample, PressureSample, ThermalSample } from '@yoman/shared/ingest';
+import { FIXTURE_NOW, windowSampleFixture } from '@deskpulse/shared/fixtures/data';
+import type { BatterySample, PressureSample, ThermalSample } from '@deskpulse/shared/ingest';
 
 export const windowSample = windowSampleFixture;
 

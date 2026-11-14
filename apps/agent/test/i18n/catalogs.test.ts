@@ -1,5 +1,5 @@
-import { notificationKeys, notificationMessages } from '@yoman/shared/notifications';
-import { Language } from '@yoman/shared/settings';
+import { notificationKeys, notificationMessages } from '@deskpulse/shared/notifications';
+import { Language } from '@deskpulse/shared/settings';
 import { describe, expect, it } from 'vitest';
 import { catalogs, translate } from '../../src/i18n/catalogs.js';
 import { lookupMessage, type TranslationTree } from '../../src/i18n/translation-tree.js';

@@ -1,6 +1,6 @@
-import type { WindowSample } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
-import type { Rule } from '@yoman/shared/sessions';
+import type { WindowSample } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
+import type { Rule } from '@deskpulse/shared/sessions';
 import { describe, expect, it } from 'vitest';
 
 import { SampleResult } from '../../src/contracts.js';

@@ -1,5 +1,5 @@
-import { asText, parseRow, parseRows, pgArray, unnest } from '@yoman/service-kit/sql';
-import { BatteryStatus } from '@yoman/shared/ingest';
+import { asText, parseRow, parseRows, pgArray, unnest } from '@deskpulse/service-kit/sql';
+import { BatteryStatus } from '@deskpulse/shared/ingest';
 import type { Kysely } from 'kysely';
 import { z } from 'zod';
 

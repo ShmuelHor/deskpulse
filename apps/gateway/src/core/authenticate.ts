@@ -1,4 +1,4 @@
-import type { RouteAuth } from '@yoman/shared/routes';
+import type { RouteAuth } from '@deskpulse/shared/routes';
 
 import { parseBearer, type TokenVerifier } from './agent-token.js';
 import { ForbiddenError, UnauthorizedError } from './errors.js';
@@ -15,7 +15,7 @@ export type Principal =
   | { readonly kind: 'web-origin' };
 
 /** The web's session cookie: `HttpOnly; SameSite=Strict` (SECURITY A3). */
-export const SESSION_COOKIE = 'yoman_session';
+export const SESSION_COOKIE = 'deskpulse_session';
 /** The header the web echoes its CSRF token in, on every state-changing request. */
 export const CSRF_HEADER = 'x-csrf-token';
 

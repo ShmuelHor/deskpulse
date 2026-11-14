@@ -1,9 +1,9 @@
+import type { QueuedAlert } from '@deskpulse/shared/alerts';
+import { notificationMessages } from '@deskpulse/shared/notifications';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
-import type { QueuedAlert } from '@yoman/shared/alerts';
-import { notificationMessages } from '@yoman/shared/notifications';
 import { useTranslation } from 'react-i18next';
 
 import { Tag } from '../../components/tag.js';

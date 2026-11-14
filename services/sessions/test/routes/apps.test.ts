@@ -1,4 +1,4 @@
-import { App, AppList } from '@yoman/shared/sessions';
+import { App, AppList } from '@deskpulse/shared/sessions';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { createMemoryStore } from '../memory-store.js';

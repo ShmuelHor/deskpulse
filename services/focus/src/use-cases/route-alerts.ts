@@ -1,5 +1,5 @@
-import type { QueuedAlert } from '@yoman/shared/alerts';
-import { LIMITS } from '@yoman/shared/limits';
+import type { QueuedAlert } from '@deskpulse/shared/alerts';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 import type { RouteRequest, RouteResult } from '../contracts.js';
 import { isRunning } from '../domain/focus-session.js';

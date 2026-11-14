@@ -1,5 +1,5 @@
-import type { Alert } from '@yoman/shared/alerts';
-import type { Profile } from '@yoman/shared/focus';
+import type { Alert } from '@deskpulse/shared/alerts';
+import type { Profile } from '@deskpulse/shared/focus';
 import { describe, expect, it } from 'vitest';
 
 import { RouteResult } from '../../src/contracts.js';

@@ -1,5 +1,5 @@
-import { defineRoute, HTTP_NO_CONTENT, type Route } from '@yoman/service-kit/route';
-import { IdParams } from '@yoman/shared/common';
+import { defineRoute, HTTP_NO_CONTENT, type Route } from '@deskpulse/service-kit/route';
+import { IdParams } from '@deskpulse/shared/common';
 import { z } from 'zod';
 
 import { Schedule, ScheduleInput, ScheduleList } from '../contracts.js';

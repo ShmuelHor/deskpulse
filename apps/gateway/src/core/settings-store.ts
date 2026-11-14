@@ -1,5 +1,5 @@
-import { createQueryBuilder } from '@yoman/service-kit/sql';
-import { Settings } from '@yoman/shared/settings';
+import { createQueryBuilder } from '@deskpulse/service-kit/sql';
+import { Settings } from '@deskpulse/shared/settings';
 import type { FastifyBaseLogger } from 'fastify';
 import type { ColumnType } from 'kysely';
 import type { Pool } from 'pg';

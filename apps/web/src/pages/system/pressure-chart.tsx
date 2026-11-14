@@ -1,7 +1,7 @@
+import type { PressurePoint } from '@deskpulse/shared/system';
 import { useTheme } from '@mui/material/styles';
 import { useDrawingArea, useXScale } from '@mui/x-charts/hooks';
 import { LineChart } from '@mui/x-charts/LineChart';
-import type { PressurePoint } from '@yoman/shared/system';
 import { useTranslation } from 'react-i18next';
 
 import type { Region } from './regions.js';

@@ -1,11 +1,11 @@
-import { Alert, QueuedAlert } from '@yoman/shared/alerts';
-import { ClockTime, EntityId, Timestamp } from '@yoman/shared/common';
-import { FocusChange } from '@yoman/shared/focus';
-import { LIMITS } from '@yoman/shared/limits';
+import { Alert, QueuedAlert } from '@deskpulse/shared/alerts';
+import { ClockTime, EntityId, Timestamp } from '@deskpulse/shared/common';
+import { FocusChange } from '@deskpulse/shared/focus';
+import { LIMITS } from '@deskpulse/shared/limits';
 import { z } from 'zod';
 
 /**
- * The gateway-to-focus contracts that `@yoman/shared` has no public
+ * The gateway-to-focus contracts that `@deskpulse/shared` has no public
  * counterpart for. They are built only from shared schemas, so every item
  * still validates against the shared contract.
  */

@@ -25,7 +25,7 @@ function peak(pid: number, overrides: Partial<ProcessPeak> = {}): ProcessPeak {
 
 describe('rankCulprits', () => {
   const busy = peak(BUSY, { cpuPct: 90, rssBytes: GIB });
-  const large = peak(LARGE, { cpuPct: 10, rssBytes: LARGE_RSS, container: 'yoman-web-1' });
+  const large = peak(LARGE, { cpuPct: 10, rssBytes: LARGE_RSS, container: 'deskpulse-web-1' });
   const disk = peak(DISK, { ioBytesPerSec: 5_000_000 });
   const peaks = [busy, large, disk];
 
@@ -38,7 +38,7 @@ describe('rankCulprits', () => {
       {
         pid: LARGE,
         comm: large.comm,
-        container: 'yoman-web-1',
+        container: 'deskpulse-web-1',
         cpuPct: large.cpuPct,
         rssBytes: large.rssBytes,
       },

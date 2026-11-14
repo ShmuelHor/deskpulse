@@ -6,7 +6,7 @@ import { loadAgentToken } from '../../src/core/agent-token.js';
 import { ConfigError } from '../../src/core/config.js';
 
 async function envFile(text: string): Promise<string> {
-  const path = join(await mkdtemp(join(tmpdir(), 'yoman-token-')), '.env');
+  const path = join(await mkdtemp(join(tmpdir(), 'deskpulse-token-')), '.env');
   await writeFile(path, text);
   return path;
 }
@@ -27,7 +27,7 @@ describe('loadAgentToken', () => {
   });
 
   it('fails with a setup hint when there is no token', async () => {
-    const missing = join(await mkdtemp(join(tmpdir(), 'yoman-token-')), '.env');
+    const missing = join(await mkdtemp(join(tmpdir(), 'deskpulse-token-')), '.env');
 
     await expect(loadAgentToken({ env: {}, envFile: missing })).rejects.toThrow(ConfigError);
     await expect(loadAgentToken({ env: {}, envFile: await envFile('X=1\n') })).rejects.toThrow(

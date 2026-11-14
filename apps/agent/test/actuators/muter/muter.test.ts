@@ -50,7 +50,7 @@ describe('muter', () => {
   beforeEach(async () => {
     vi.useFakeTimers({ now: START });
     clock = START;
-    stateDir = await mkdtemp(join(tmpdir(), 'yoman-muter-'));
+    stateDir = await mkdtemp(join(tmpdir(), 'deskpulse-muter-'));
   });
 
   afterEach(async () => {

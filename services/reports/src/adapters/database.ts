@@ -1,4 +1,4 @@
-import type { LocalDate, Timestamp } from '@yoman/service-kit/sql';
+import type { LocalDate, Timestamp } from '@deskpulse/service-kit/sql';
 import type { ColumnType, Generated } from 'kysely';
 
 export interface CountedSessionsTable {

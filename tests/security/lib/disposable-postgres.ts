@@ -78,8 +78,8 @@ export async function startPostgres(): Promise<DisposablePostgres> {
   const passwords = Passwords.parse(
     Object.fromEntries(ROLES.map((role) => [role, randomBytes(PASSWORD_BYTES).toString('hex')])),
   );
-  const project = `yoman-pg-${randomBytes(PROJECT_SUFFIX_BYTES).toString('hex')}`;
-  const dir = await mkdtemp(join(tmpdir(), 'yoman-pg-'));
+  const project = `deskpulse-pg-${randomBytes(PROJECT_SUFFIX_BYTES).toString('hex')}`;
+  const dir = await mkdtemp(join(tmpdir(), 'deskpulse-pg-'));
   const file = join(dir, 'compose.json');
   const compose = (...args: string[]): Promise<{ stdout: string }> =>
     run('docker', ['compose', '-p', project, '-f', file, ...args], {

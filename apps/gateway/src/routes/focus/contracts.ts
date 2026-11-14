@@ -6,7 +6,7 @@ import {
   KnownAppsResult,
   Profile,
   ProfileList,
-} from '@yoman/shared/focus';
+} from '@deskpulse/shared/focus';
 import { z } from 'zod';
 
 /**

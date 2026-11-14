@@ -1,5 +1,5 @@
 # valid.yml with an extra published port (4712:4712), which ST01 must reject.
-name: yoman-fixture
+name: deskpulse-fixture
 services:
   web:
     image: nginx@sha256:0000000000000000000000000000000000000000000000000000000000000000

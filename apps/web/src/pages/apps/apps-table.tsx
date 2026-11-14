@@ -1,5 +1,5 @@
+import type { App } from '@deskpulse/shared/sessions';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import type { App } from '@yoman/shared/sessions';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../../components/button.js';

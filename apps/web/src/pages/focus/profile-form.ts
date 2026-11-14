@@ -1,4 +1,4 @@
-import { type Profile, ProfileInput } from '@yoman/shared/focus';
+import { type Profile, ProfileInput } from '@deskpulse/shared/focus';
 
 /** The profile as the form edits it: the same fields as the contract, validated by its schema. */
 export const ProfileForm = ProfileInput;

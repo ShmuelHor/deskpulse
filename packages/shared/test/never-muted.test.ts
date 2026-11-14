@@ -19,12 +19,15 @@ describe('isBuiltInNeverMuted', () => {
     expect(isBuiltInNeverMuted(app)).toBe(true);
   });
 
-  it.each([...USER_APP_IDS, 'org.telegram.desktop', 'gnomeish', 'org-gnomeish-app', 'yoman-notes'])(
-    'allows %s',
-    (app) => {
-      expect(isBuiltInNeverMuted(app)).toBe(false);
-    },
-  );
+  it.each([
+    ...USER_APP_IDS,
+    'org.telegram.desktop',
+    'gnomeish',
+    'org-gnomeish-app',
+    'deskpulse-notes',
+  ])('allows %s', (app) => {
+    expect(isBuiltInNeverMuted(app)).toBe(false);
+  });
 });
 
 describe('isSameApp', () => {

@@ -1,6 +1,6 @@
-import { NotFoundError } from '@yoman/service-kit/errors';
-import { LIMITS } from '@yoman/shared/limits';
-import type { App, AppUpdate } from '@yoman/shared/sessions';
+import { NotFoundError } from '@deskpulse/service-kit/errors';
+import { LIMITS } from '@deskpulse/shared/limits';
+import type { App, AppUpdate } from '@deskpulse/shared/sessions';
 
 import { reapplyCategories } from './reapply-categories.js';
 import type { SessionsStore } from './store.js';

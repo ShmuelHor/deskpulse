@@ -21,7 +21,7 @@ describe('production build', { timeout: BUILD_TIMEOUT_MS }, () => {
   let scripts: string[];
 
   beforeAll(async () => {
-    outDir = await mkdtemp(join(tmpdir(), 'yoman-web-build-'));
+    outDir = await mkdtemp(join(tmpdir(), 'deskpulse-web-build-'));
     // Vitest sets NODE_ENV=test, which Vite would treat as a dev build (DEV true,
     // mocks included). The image builds with NODE_ENV unset, so test that build.
     vi.stubEnv('NODE_ENV', undefined);

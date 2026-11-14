@@ -1,4 +1,4 @@
-import { Rule, RuleList } from '@yoman/shared/sessions';
+import { Rule, RuleList } from '@deskpulse/shared/sessions';
 import { z } from 'zod';
 
 import { defineHandlers } from '../../core/route-handler.js';

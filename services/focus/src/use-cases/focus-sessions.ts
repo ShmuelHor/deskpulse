@@ -1,7 +1,7 @@
-import { NotFoundError } from '@yoman/service-kit/errors';
-import type { FocusStart, FocusState, Profile } from '@yoman/shared/focus';
-import { appsFirstSeenAfterFirstSync } from '@yoman/shared/known-apps';
-import { LIMITS } from '@yoman/shared/limits';
+import { NotFoundError } from '@deskpulse/service-kit/errors';
+import type { FocusStart, FocusState, Profile } from '@deskpulse/shared/focus';
+import { appsFirstSeenAfterFirstSync } from '@deskpulse/shared/known-apps';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 import type { FocusSummary, FocusTransition } from '../contracts.js';
 import {

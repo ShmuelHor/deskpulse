@@ -1,11 +1,11 @@
+import type { App } from '@deskpulse/shared/sessions';
+import { AppUpdate } from '@deskpulse/shared/sessions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Stack from '@mui/material/Stack';
-import type { App } from '@yoman/shared/sessions';
-import { AppUpdate } from '@yoman/shared/sessions';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';

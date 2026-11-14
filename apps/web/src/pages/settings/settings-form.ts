@@ -1,4 +1,4 @@
-import { type Settings, Settings as SettingsSchema } from '@yoman/shared/settings';
+import { type Settings, Settings as SettingsSchema } from '@deskpulse/shared/settings';
 import { format, isValid, parse } from 'date-fns';
 import { z } from 'zod';
 

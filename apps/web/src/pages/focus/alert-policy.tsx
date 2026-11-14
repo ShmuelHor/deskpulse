@@ -1,10 +1,10 @@
+import { AlertLevel, AlertType } from '@deskpulse/shared/alerts';
+import type { AlertPolicy as AlertPolicyData } from '@deskpulse/shared/focus';
+import { notificationMessages } from '@deskpulse/shared/notifications';
 import NativeSelect from '@mui/material/NativeSelect';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { AlertLevel, AlertType } from '@yoman/shared/alerts';
-import type { AlertPolicy as AlertPolicyData } from '@yoman/shared/focus';
-import { notificationMessages } from '@yoman/shared/notifications';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

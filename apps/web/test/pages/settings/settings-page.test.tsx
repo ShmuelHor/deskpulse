@@ -1,9 +1,9 @@
 // @vitest-environment happy-dom
 
+import { settingsFixture } from '@deskpulse/shared/fixtures/data';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { settingsFixture } from '@yoman/shared/fixtures/data';
 import { I18nextProvider } from 'react-i18next';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 

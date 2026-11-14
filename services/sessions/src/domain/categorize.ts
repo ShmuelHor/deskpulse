@@ -1,4 +1,4 @@
-import type { Rule, RuleMatch } from '@yoman/shared/sessions';
+import type { Rule, RuleMatch } from '@deskpulse/shared/sessions';
 
 /** What a rule is matched against: the app's `wm_class` and the session's title. */
 export interface CategorySubject {

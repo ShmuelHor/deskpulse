@@ -1,4 +1,4 @@
-import { DayReport, WeeklySummary, WeekReport } from '@yoman/shared/reports';
+import { DayReport, WeeklySummary, WeekReport } from '@deskpulse/shared/reports';
 import { describe, expect, it } from 'vitest';
 
 import {

@@ -1,5 +1,5 @@
-import { parseRow, parseRows, toPgText } from '@yoman/service-kit/sql';
-import { Profile, type ProfileInput } from '@yoman/shared/focus';
+import { parseRow, parseRows, toPgText } from '@deskpulse/service-kit/sql';
+import { Profile, type ProfileInput } from '@deskpulse/shared/focus';
 import type { Kysely } from 'kysely';
 import { z } from 'zod';
 

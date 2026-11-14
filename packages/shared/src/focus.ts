@@ -35,7 +35,7 @@ export const FocusState = z.discriminatedUnion('active', [
 ]);
 export type FocusState = z.infer<typeof FocusState>;
 
-/** `POST /v1/focus/start`: a duration or an end time, as in `yoman focus <dur|until HH:MM>`. */
+/** `POST /v1/focus/start`: a duration or an end time, as in `deskpulse focus <dur|until HH:MM>`. */
 export const FocusStart = z.union([
   z.strictObject({
     profileId: EntityId.optional(),

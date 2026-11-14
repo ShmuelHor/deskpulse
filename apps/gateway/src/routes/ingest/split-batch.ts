@@ -5,7 +5,7 @@ import type {
   ProcessSample,
   ThermalSample,
   WindowSample,
-} from '@yoman/shared/ingest';
+} from '@deskpulse/shared/ingest';
 
 export type SystemSample = PressureSample | ProcessSample | ThermalSample;
 

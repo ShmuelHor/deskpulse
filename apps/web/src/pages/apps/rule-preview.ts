@@ -1,4 +1,4 @@
-import type { App, RuleInput } from '@yoman/shared/sessions';
+import type { App, RuleInput } from '@deskpulse/shared/sessions';
 
 /**
  * What a rule would apply to, among the apps the user already has. Only

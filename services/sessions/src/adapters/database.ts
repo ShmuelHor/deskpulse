@@ -1,4 +1,4 @@
-import type { Timestamp } from '@yoman/service-kit/sql';
+import type { Timestamp } from '@deskpulse/service-kit/sql';
 import type { Generated } from 'kysely';
 
 export interface AppsTable {

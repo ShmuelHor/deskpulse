@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import type { PressureSample } from '@yoman/shared/ingest';
-import type { CulpritSummary, Incident } from '@yoman/shared/system';
+import type { PressureSample } from '@deskpulse/shared/ingest';
+import type { CulpritSummary, Incident } from '@deskpulse/shared/system';
 
 import type { ConditionTrack } from '../src/domain/condition-tracker.js';
 import type { ConditionType } from '../src/domain/conditions.js';

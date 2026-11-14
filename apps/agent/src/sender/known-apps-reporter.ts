@@ -1,5 +1,5 @@
-import { type KnownApp, KnownAppsReport, KnownAppsResult } from '@yoman/shared/focus';
-import { LIMITS } from '@yoman/shared/limits';
+import { type KnownApp, KnownAppsReport, KnownAppsResult } from '@deskpulse/shared/focus';
+import { LIMITS } from '@deskpulse/shared/limits';
 import type { AgentLogger } from '../core/logger.js';
 import type { KnownAppsClient } from './adapters/known-apps-client.js';
 import { BACKOFF_FACTOR, MAX_BACKOFF_MS } from './domain/schedule.js';

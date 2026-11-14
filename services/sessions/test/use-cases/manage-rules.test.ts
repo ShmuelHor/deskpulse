@@ -1,5 +1,5 @@
-import { ConflictError, NotFoundError } from '@yoman/service-kit/errors';
-import type { RuleInput } from '@yoman/shared/sessions';
+import { ConflictError, NotFoundError } from '@deskpulse/service-kit/errors';
+import type { RuleInput } from '@deskpulse/shared/sessions';
 import { describe, expect, it } from 'vitest';
 import { updateApp } from '../../src/use-cases/manage-apps.js';
 import { createRule, deleteRule, MAX_RULES, updateRule } from '../../src/use-cases/manage-rules.js';

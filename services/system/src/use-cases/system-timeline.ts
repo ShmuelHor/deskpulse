@@ -1,5 +1,5 @@
-import { LIMITS } from '@yoman/shared/limits';
-import type { SystemTimeline } from '@yoman/shared/system';
+import { LIMITS } from '@deskpulse/shared/limits';
+import type { SystemTimeline } from '@deskpulse/shared/system';
 
 import { localDaySpan } from '../domain/local-time.js';
 import type { SystemStore } from './store.js';

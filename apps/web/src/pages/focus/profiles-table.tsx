@@ -1,5 +1,5 @@
+import type { KnownApp, Profile } from '@deskpulse/shared/focus';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
-import type { KnownApp, Profile } from '@yoman/shared/focus';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../../components/button.js';

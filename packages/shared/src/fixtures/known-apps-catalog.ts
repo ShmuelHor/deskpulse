@@ -17,7 +17,7 @@ export const SYSTEM_APP_IDS = [
   'io-snapcraft-snapstore',
   'nm-connection-editor',
   'im-config',
-  'yoman',
+  'deskpulse',
 ] as const;
 
 export const USER_APP_IDS = ['telegram-desktop-telegram-desktop', 'slack'] as const;

@@ -1,7 +1,12 @@
-import { parseRow, parseRows } from '@yoman/service-kit/sql';
-import type { TimeRangeQuery } from '@yoman/shared/common';
-import { LIMITS } from '@yoman/shared/limits';
-import { Culprit, type CulpritSummary, type Incident, IncidentType } from '@yoman/shared/system';
+import { parseRow, parseRows } from '@deskpulse/service-kit/sql';
+import type { TimeRangeQuery } from '@deskpulse/shared/common';
+import { LIMITS } from '@deskpulse/shared/limits';
+import {
+  Culprit,
+  type CulpritSummary,
+  type Incident,
+  IncidentType,
+} from '@deskpulse/shared/system';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 

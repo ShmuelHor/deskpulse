@@ -1,4 +1,4 @@
-import type { Sample } from '@yoman/shared/ingest';
+import type { Sample } from '@deskpulse/shared/ingest';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   createPressureCollector,

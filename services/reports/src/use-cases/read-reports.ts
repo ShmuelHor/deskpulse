@@ -1,5 +1,5 @@
-import { LIMITS } from '@yoman/shared/limits';
-import type { AppTotal, DayReport, WeeklySummary, WeekReport } from '@yoman/shared/reports';
+import { LIMITS } from '@deskpulse/shared/limits';
+import type { AppTotal, DayReport, WeeklySummary, WeekReport } from '@deskpulse/shared/reports';
 
 import {
   addDays,

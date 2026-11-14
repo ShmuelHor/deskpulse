@@ -1,4 +1,4 @@
-import type { Culprit } from '@yoman/shared/system';
+import type { Culprit } from '@deskpulse/shared/system';
 
 import type { IncidentChange, IncidentState } from './incident.js';
 

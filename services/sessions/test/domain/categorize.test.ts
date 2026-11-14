@@ -1,4 +1,4 @@
-import type { Rule } from '@yoman/shared/sessions';
+import type { Rule } from '@deskpulse/shared/sessions';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -26,7 +26,7 @@ function rule(id: string, overrides: Partial<Rule> = {}): Rule {
   };
 }
 
-const code = { wmClass: 'code', title: 'merge.ts - yoman' };
+const code = { wmClass: 'code', title: 'merge.ts - deskpulse' };
 
 describe('matchesRule', () => {
   it.each([
@@ -58,7 +58,12 @@ describe('matchesRule', () => {
 describe('pickRule', () => {
   it('picks the matching rule with the highest priority', () => {
     const low = rule('1', { category: 'work', priority: LOW });
-    const high = rule('2', { field: 'title', match: 'contains', pattern: 'yoman', priority: HIGH });
+    const high = rule('2', {
+      field: 'title',
+      match: 'contains',
+      pattern: 'deskpulse',
+      priority: HIGH,
+    });
 
     expect(pickRule([low, high], code)).toBe(high);
   });

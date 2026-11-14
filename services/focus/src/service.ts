@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
-import { createService, type Service, type ServiceOptions } from '@yoman/service-kit';
-import type { Route } from '@yoman/service-kit/route';
+import { createService, type Service, type ServiceOptions } from '@deskpulse/service-kit';
+import type { Route } from '@deskpulse/service-kit/route';
 
 import { createPgStore } from './adapters/pg-store.js';
 import { FocusConfig } from './config.js';

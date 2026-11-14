@@ -1,4 +1,4 @@
-import type { ServiceName } from '@yoman/shared/common';
+import type { ServiceName } from '@deskpulse/shared/common';
 import { pino } from 'pino';
 import { describe, expect, it, type MockInstance, vi } from 'vitest';
 import { z } from 'zod';

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Apply Yoman's GitHub repository protections (docs/REPO-SETTINGS.md).
+# Apply DeskPulse's GitHub repository protections (docs/REPO-SETTINGS.md).
 # Idempotent: every call is a PUT/PATCH of the desired state, so re-running is safe.
-# Usage: scripts/github-protect.sh [--dry-run] [owner/repo]   (default: ShmuelHor/yoman)
+# Usage: scripts/github-protect.sh [--dry-run] [owner/repo]   (default: ShmuelHor/deskpulse)
 # Needs `gh` authenticated with admin rights on the repo. Run only after the repo
 # owner approves.
 set -euo pipefail
 
 DRY_RUN=0
-REPO="ShmuelHor/yoman"
+REPO="ShmuelHor/deskpulse"
 for arg in "$@"; do
   case "$arg" in
     --dry-run) DRY_RUN=1 ;;

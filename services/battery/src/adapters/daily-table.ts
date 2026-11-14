@@ -1,5 +1,5 @@
-import { asText, parseRows, pgArray, unnest } from '@yoman/service-kit/sql';
-import { BatteryDay } from '@yoman/shared/battery';
+import { asText, parseRows, pgArray, unnest } from '@deskpulse/service-kit/sql';
+import { BatteryDay } from '@deskpulse/shared/battery';
 import type { Kysely } from 'kysely';
 
 import type { BatteryDailyTable, BatteryDatabase } from './database.js';

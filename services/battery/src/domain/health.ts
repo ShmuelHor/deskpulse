@@ -1,4 +1,4 @@
-import { LIMITS } from '@yoman/shared/limits';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 /** One decimal place: finer than sysfs energy readings are accurate. */
 const HEALTH_PRECISION = 10;

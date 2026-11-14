@@ -1,6 +1,6 @@
+import type { BatteryDay } from '@deskpulse/shared/battery';
 import { useTheme } from '@mui/material/styles';
 import { LineChart } from '@mui/x-charts/LineChart';
-import type { BatteryDay } from '@yoman/shared/battery';
 import { useTranslation } from 'react-i18next';
 
 import { localDay } from './format.js';

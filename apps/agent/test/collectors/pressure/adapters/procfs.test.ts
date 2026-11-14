@@ -14,7 +14,7 @@ describe('procfs adapter', () => {
   let root: string;
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'yoman-procfs-'));
+    root = await mkdtemp(join(tmpdir(), 'deskpulse-procfs-'));
   });
 
   afterEach(async () => {

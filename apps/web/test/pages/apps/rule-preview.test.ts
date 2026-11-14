@@ -1,4 +1,4 @@
-import type { App } from '@yoman/shared/sessions';
+import type { App } from '@deskpulse/shared/sessions';
 import { describe, expect, it } from 'vitest';
 
 import { appsMatching } from '../../../src/pages/apps/rule-preview.js';

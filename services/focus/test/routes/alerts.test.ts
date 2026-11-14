@@ -1,4 +1,4 @@
-import { AlertPolicy, AlertQueue } from '@yoman/shared/focus';
+import { AlertPolicy, AlertQueue } from '@deskpulse/shared/focus';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { RouteResult } from '../../src/contracts.js';

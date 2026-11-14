@@ -1,5 +1,5 @@
-import type { BatteryStatus } from '@yoman/shared/ingest';
-import { LIMITS } from '@yoman/shared/limits';
+import type { BatteryStatus } from '@deskpulse/shared/ingest';
+import { LIMITS } from '@deskpulse/shared/limits';
 
 import { isDraining, type PowerReading } from './reading.js';
 

@@ -4,7 +4,7 @@ import {
   FIXTURE_NOW,
   focusActiveFixture,
   incidentFixture,
-} from '@yoman/shared/fixtures/data';
+} from '@deskpulse/shared/fixtures/data';
 import type { FastifyInstance, LightMyRequestResponse } from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 

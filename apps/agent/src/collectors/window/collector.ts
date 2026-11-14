@@ -1,4 +1,4 @@
-import { WindowSample } from '@yoman/shared/ingest';
+import { WindowSample } from '@deskpulse/shared/ingest';
 import type { Collector, CollectorContext } from '../../core/plugin.js';
 import { SessionBusError } from '../../core/session-bus.js';
 import { requestWindowList } from './adapters/window-calls.js';

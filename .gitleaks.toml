@@ -1,6 +1,6 @@
 # gitleaks configuration, read by the pre-commit hook and by CI.
 # Uses gitleaks' default rules unchanged; nothing is disabled.
-title = "Yoman"
+title = "DeskPulse"
 
 [extend]
 useDefault = true

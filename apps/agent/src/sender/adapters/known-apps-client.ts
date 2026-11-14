@@ -1,5 +1,5 @@
-import type { KnownAppsReport } from '@yoman/shared/focus';
-import { routes } from '@yoman/shared/routes';
+import type { KnownAppsReport } from '@deskpulse/shared/focus';
+import { routes } from '@deskpulse/shared/routes';
 import {
   AgentToken,
   type FetchFn,

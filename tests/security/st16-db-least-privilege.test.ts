@@ -17,7 +17,7 @@ const QUERY_TIMEOUT_MS = 30_000;
 /** Random bytes in the project name and each password; hex doubles the length. */
 const PROJECT_SUFFIX_BYTES = 4;
 const PASSWORD_BYTES = 18;
-const PROJECT = `yoman-st16-${randomBytes(PROJECT_SUFFIX_BYTES).toString('hex')}`;
+const PROJECT = `deskpulse-st16-${randomBytes(PROJECT_SUFFIX_BYTES).toString('hex')}`;
 
 /** Same minimal environment the ST01 helper gives Compose: no ambient COMPOSE_* variables. */
 const env = Object.fromEntries(
@@ -84,7 +84,7 @@ async function sql(role: string, statement: string): Promise<{ ok: boolean; outp
 
 describe.skipIf(!available)('ST16 database least privilege', () => {
   beforeAll(async () => {
-    envDir = await mkdtemp(join(tmpdir(), 'yoman-st16-'));
+    envDir = await mkdtemp(join(tmpdir(), 'deskpulse-st16-'));
     envFile = join(envDir, 'env');
     const lines = [
       // Compose interpolates the whole model, so the gateway's required token must exist.

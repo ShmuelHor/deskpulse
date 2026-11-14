@@ -8,15 +8,15 @@ export interface PathEnv {
 }
 
 export interface AgentPaths {
-  /** `~/.config/yoman/agent.json` */
+  /** `~/.config/deskpulse/agent.json` */
   readonly configFile: string;
-  /** `~/.local/state/yoman`: everything the agent writes lives here. */
+  /** `~/.local/state/deskpulse`: everything the agent writes lives here. */
   readonly stateDir: string;
-  /** `~/.local/state/yoman/buffer`: one JSONL file per hour (SPEC §4.3). */
+  /** `~/.local/state/deskpulse/buffer`: one JSONL file per hour (SPEC §4.3). */
   readonly bufferDir: string;
 }
 
-const APP_DIR = 'yoman';
+const APP_DIR = 'deskpulse';
 
 /** XDG says a relative base directory is invalid and must be ignored. */
 function xdgBase(value: string | undefined, fallback: string): string {

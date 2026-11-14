@@ -1,7 +1,7 @@
 import { cp, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { Sample } from '@yoman/shared/ingest';
+import type { Sample } from '@deskpulse/shared/ingest';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   createThermalCollector,
@@ -120,7 +120,7 @@ describe('thermal collector', () => {
     let root: string;
 
     beforeEach(async () => {
-      root = await mkdtemp(join(tmpdir(), 'yoman-thermal-'));
+      root = await mkdtemp(join(tmpdir(), 'deskpulse-thermal-'));
       await cp(join(FIXTURES, 'intel-laptop'), root, { recursive: true });
     });
 

@@ -1,5 +1,5 @@
 # CodeQL configuration for .github/workflows/security.yml.
-name: yoman-codeql
+name: deskpulse-codeql
 
 # security-extended adds lower-precision security queries on top of the default
 # suite (SECURITY.md §4).

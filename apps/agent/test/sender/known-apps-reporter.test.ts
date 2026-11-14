@@ -1,5 +1,5 @@
-import type { KnownApp } from '@yoman/shared/focus';
-import { LIMITS } from '@yoman/shared/limits';
+import type { KnownApp } from '@deskpulse/shared/focus';
+import { LIMITS } from '@deskpulse/shared/limits';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { IngestRequestError } from '../../src/sender/adapters/ingest-client.js';
 import type {

@@ -1,5 +1,5 @@
-import { LIMITS } from '@yoman/shared/limits';
-import type { Culprit, IncidentType } from '@yoman/shared/system';
+import { LIMITS } from '@deskpulse/shared/limits';
+import type { Culprit, IncidentType } from '@deskpulse/shared/system';
 
 /** One process at its worst over a span of time: the maximum of each measure. */
 export interface ProcessPeak {

@@ -1,6 +1,6 @@
-import { AppId, Timestamp } from '@yoman/shared/common';
-import { MuteCommands } from '@yoman/shared/focus';
-import { LIMITS } from '@yoman/shared/limits';
+import { AppId, Timestamp } from '@deskpulse/shared/common';
+import { MuteCommands } from '@deskpulse/shared/focus';
+import { LIMITS } from '@deskpulse/shared/limits';
 import { z } from 'zod';
 
 /** The gateway's mute commands, plus what the muter needs to keep them safe. */
