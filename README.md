@@ -186,7 +186,7 @@ same files:
 1. Contracts and infrastructure
 2. Independent units: services, collectors and UI components
 3. Integration: gateway flows, notifications, muting and pages
-4. Polish: Pomodoro, tray, CLI, export and retention
+4. DeskPulse: trim, design system and pages, control center, desktop app
 5. Release: end-to-end tests, DAST, battery budget and security review
 
 ## License
