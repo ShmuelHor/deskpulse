@@ -17,13 +17,5 @@
       "unknown": "Unknown"
     }
   },
-  "timeline": { "label": "Where the time went" },
-  "topApps": { "label": "Top apps" },
-  "category": {
-    "work": "Work",
-    "social": "Social",
-    "comms": "Communication",
-    "fun": "Entertainment",
-    "idle": "Other"
-  }
+  "topApps": { "label": "Top apps" }
 }

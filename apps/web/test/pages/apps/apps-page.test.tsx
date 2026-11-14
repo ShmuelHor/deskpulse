@@ -21,7 +21,6 @@ type Answer = unknown;
 const RETRY_TIMEOUT_MS = 5000;
 /** Dialogs with a data grid behind them are slow to drive in happy-dom, more so when the whole suite runs. */
 const DIALOG_TIMEOUT_MS = 30_000;
-const RULE_ID = responseFixtures.listRules.items[0]?.id ?? '';
 
 function clientAnswering(overrides: Record<string, Answer> = {}): {
   client: GatewayClient;
@@ -29,11 +28,7 @@ function clientAnswering(overrides: Record<string, Answer> = {}): {
 } {
   const answers: Record<string, Answer> = {
     listApps: structuredClone(responseFixtures.listApps),
-    listRules: structuredClone(responseFixtures.listRules),
     updateApp: structuredClone(responseFixtures.updateApp),
-    createRule: structuredClone(responseFixtures.createRule),
-    updateRule: structuredClone(responseFixtures.updateRule),
-    deleteRule: undefined,
     ...overrides,
   };
   const request = vi.fn((name: string) => {
@@ -66,26 +61,20 @@ describe('Apps page', { timeout: DIALOG_TIMEOUT_MS }, () => {
     expect(document.querySelector('[aria-busy]')).not.toBeNull();
   });
 
-  it('lists the apps and the rules, with how many apps each rule applies to', async () => {
+  it('lists the apps', async () => {
     const { client } = clientAnswering();
     renderPage(client);
 
     const apps = await screen.findByRole('grid', { name: 'Your apps' });
     expect(within(apps).getByText('Firefox')).toBeTruthy();
-    const rules = await screen.findByRole('grid', { name: 'Category rules' });
-    const rule = responseFixtures.listRules.items[0];
-    expect(within(rules).getByText(rule?.pattern ?? '')).toBeTruthy();
   });
 
   it('shows an error when the gateway cannot be reached', async () => {
-    const { client } = clientAnswering({
-      listApps: new Error('down'),
-      listRules: new Error('down'),
-    });
+    const { client } = clientAnswering({ listApps: new Error('down') });
     renderPage(client);
 
     expect(
-      await screen.findByText('Apps and rules could not be loaded.', undefined, {
+      await screen.findByText('Apps could not be loaded.', undefined, {
         timeout: RETRY_TIMEOUT_MS,
       }),
     ).toBeTruthy();
@@ -94,73 +83,13 @@ describe('Apps page', { timeout: DIALOG_TIMEOUT_MS }, () => {
   it('renders an app name with markup in it as plain text', async () => {
     const name = '<img src=x onerror="alert(1)">';
     const { client } = clientAnswering({
-      listApps: { items: [{ id: 'evil', name, icon: null, category: null }] },
+      listApps: { items: [{ id: 'evil', name, icon: null }] },
     });
     renderPage(client);
 
     const apps = await screen.findByRole('grid', { name: 'Your apps' });
     expect(within(apps).getByText(name)).toBeTruthy();
     expect(document.querySelector('img')).toBeNull();
-  });
-
-  it('previews the apps a rule applies to while it is typed', async () => {
-    const user = userEvent.setup();
-    const { client } = clientAnswering();
-    renderPage(client);
-
-    await user.click(await screen.findByRole('button', { name: 'Add rule' }));
-    await user.type(screen.getByLabelText('Pattern'), 'fire');
-
-    expect(await screen.findByText('Applies to 1 app')).toBeTruthy();
-    expect(within(screen.getByRole('dialog')).getByText('Firefox')).toBeTruthy();
-  });
-
-  it('says a title rule cannot be previewed', async () => {
-    const user = userEvent.setup();
-    const { client } = clientAnswering();
-    renderPage(client);
-
-    await user.click(await screen.findByRole('button', { name: 'Add rule' }));
-    await user.selectOptions(screen.getByLabelText('Applies to'), 'title');
-
-    expect(screen.getByText(/cannot be previewed/u)).toBeTruthy();
-  });
-
-  it('creates a rule and announces it with a toast', async () => {
-    const user = userEvent.setup();
-    const { client, request } = clientAnswering();
-    const notifier = renderPage(client);
-
-    await user.click(await screen.findByRole('button', { name: 'Add rule' }));
-    await user.type(screen.getByLabelText('Pattern'), 'fire');
-    await user.type(screen.getByLabelText('Category'), 'browsing');
-    await user.click(screen.getByRole('button', { name: 'Save' }));
-
-    await waitFor(() => expect(notifier.success).toHaveBeenCalledWith('apps:toast.ruleCreated'));
-    expect(request).toHaveBeenCalledWith('createRule', {
-      body: {
-        field: 'wmClass',
-        match: 'contains',
-        pattern: 'fire',
-        category: 'browsing',
-        priority: 0,
-      },
-    });
-    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
-  });
-
-  it('does not send a rule whose category is invalid', async () => {
-    const user = userEvent.setup();
-    const { client, request } = clientAnswering();
-    renderPage(client);
-
-    await user.click(await screen.findByRole('button', { name: 'Add rule' }));
-    await user.type(screen.getByLabelText('Pattern'), 'fire');
-    await user.type(screen.getByLabelText('Category'), 'Not A Slug');
-    await user.click(screen.getByRole('button', { name: 'Save' }));
-
-    expect(await screen.findByText(/lowercase letters/u)).toBeTruthy();
-    expect(request).not.toHaveBeenCalledWith('createRule', expect.anything());
   });
 
   it('saves an edited app and announces it with a toast', async () => {
@@ -184,34 +113,5 @@ describe('Apps page', { timeout: DIALOG_TIMEOUT_MS }, () => {
       'updateApp',
       expect.objectContaining({ body: expect.objectContaining({ name: 'Renamed' }) }),
     );
-  });
-
-  it('edits a rule and announces it with a toast', async () => {
-    const user = userEvent.setup();
-    const { client, request } = clientAnswering();
-    const notifier = renderPage(client);
-
-    const rules = await screen.findByRole('grid', { name: 'Category rules' });
-    await user.click(within(rules).getByRole('button', { name: 'Edit' }));
-    await user.click(screen.getByRole('button', { name: 'Save' }));
-
-    await waitFor(() => expect(notifier.success).toHaveBeenCalledWith('apps:toast.ruleSaved'));
-    expect(request).toHaveBeenCalledWith(
-      'updateRule',
-      expect.objectContaining({ params: { id: RULE_ID } }),
-    );
-  });
-
-  it('deletes a rule after confirmation and announces it with a toast', async () => {
-    const user = userEvent.setup();
-    const { client, request } = clientAnswering();
-    const notifier = renderPage(client);
-
-    const rules = await screen.findByRole('grid', { name: 'Category rules' });
-    await user.click(within(rules).getByRole('button', { name: 'Delete' }));
-    await user.click(screen.getByRole('button', { name: 'Delete rule' }));
-
-    await waitFor(() => expect(notifier.success).toHaveBeenCalledWith('apps:toast.ruleDeleted'));
-    expect(request).toHaveBeenCalledWith('deleteRule', { params: { id: RULE_ID } });
   });
 });

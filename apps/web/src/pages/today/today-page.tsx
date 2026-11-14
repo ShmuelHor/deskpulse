@@ -11,7 +11,6 @@ import type { GatewayClient } from '../../api/gateway.js';
 import { Card } from '../../components/card.js';
 import { splitDuration } from './format.js';
 import { appsQuery, todayQuery } from './queries.js';
-import { Timeline } from './timeline.js';
 import { TopApps } from './top-apps.js';
 
 interface TodayPageProps {
@@ -34,7 +33,7 @@ function Loading(): React.JSX.Element {
   );
 }
 
-/** The Today dashboard: active time, focus streak, battery, timeline and top apps. */
+/** The Today dashboard: active time, focus streak, battery and top apps. */
 export function TodayPage({ client }: TodayPageProps): React.JSX.Element {
   const { t } = useTranslation('today');
   const today = useQuery(todayQuery(client));
@@ -107,7 +106,6 @@ function Dashboard({ today, apps }: DashboardProps): React.JSX.Element {
       </Box>
       {reports === null ? null : (
         <>
-          <Card label={t('timeline.label')} value={<Timeline byCategory={reports.byCategory} />} />
           <Card
             label={t('topApps.label')}
             value={<TopApps topApps={reports.topApps} apps={apps} />}

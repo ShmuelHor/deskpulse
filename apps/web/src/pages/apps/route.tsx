@@ -4,7 +4,7 @@ import type { PageRoute } from '../../router/page-route.js';
 import { prefetch } from '../../router/prefetch.js';
 import { rootRoute } from '../../router/root-route.js';
 import { AppsPage } from './apps-page.js';
-import { appsQuery, rulesQuery } from './queries.js';
+import { appsQuery } from './queries.js';
 
 function AppsRoute(): React.JSX.Element {
   const { client } = route.useRouteContext();
@@ -16,7 +16,6 @@ const route = createRoute({
   path: '/apps',
   loader: ({ context: { queryClient, client } }): void => {
     prefetch(queryClient, appsQuery(client));
-    prefetch(queryClient, rulesQuery(client));
   },
   component: AppsRoute,
 });

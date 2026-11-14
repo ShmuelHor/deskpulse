@@ -3,7 +3,6 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../../components/button.js';
-import { Tag } from '../../components/tag.js';
 
 interface AppsTableProps {
   readonly apps: readonly App[];
@@ -16,14 +15,6 @@ export function AppsTable({ apps, onEdit }: AppsTableProps): React.JSX.Element {
   const columns: GridColDef<App>[] = [
     { field: 'name', headerName: t('columns.name'), flex: 1, minWidth: 160 },
     { field: 'id', headerName: t('columns.id'), flex: 1, minWidth: 160 },
-    {
-      field: 'category',
-      headerName: t('columns.category'),
-      flex: 1,
-      minWidth: 140,
-      renderCell: ({ row }): React.JSX.Element =>
-        row.category === null ? <span>{t('uncategorized')}</span> : <Tag>{row.category}</Tag>,
-    },
     {
       field: 'actions',
       headerName: t('columns.actions'),

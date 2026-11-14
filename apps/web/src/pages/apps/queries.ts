@@ -14,13 +14,3 @@ export function appsQuery(
     queryFn: ({ signal }) => client.request('listApps', undefined, signal),
   });
 }
-
-/** The category rules, as the sessions service stores them. */
-export function rulesQuery(
-  client: GatewayClient,
-): UseQueryOptions<Output<'listRules'>, Error, Output<'listRules'>, string[]> {
-  return queryOptions({
-    queryKey: ['listRules'],
-    queryFn: ({ signal }) => client.request('listRules', undefined, signal),
-  });
-}
