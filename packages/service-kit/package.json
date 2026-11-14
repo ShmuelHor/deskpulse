@@ -30,6 +30,14 @@
       "types": "./dist/database.d.ts",
       "default": "./dist/database.js"
     },
+    "./job": {
+      "types": "./dist/job.d.ts",
+      "default": "./dist/job.js"
+    },
+    "./retention": {
+      "types": "./dist/retention.d.ts",
+      "default": "./dist/retention.js"
+    },
     "./migrations": {
       "types": "./dist/migrations.d.ts",
       "default": "./dist/migrations.js"

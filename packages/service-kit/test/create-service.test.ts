@@ -77,3 +77,30 @@ describe('createService', () => {
     );
   });
 });
+
+describe('createService jobs', () => {
+  it('stops its jobs when it stops, and never starts one before listening', async () => {
+    const events: string[] = [];
+    const service = createService({
+      name: 'demo',
+      migrationsDir: '/nonexistent',
+      env,
+      logStream: sink().stream,
+      routes: [],
+      jobs: () => [
+        {
+          start: (): void => {
+            events.push('start');
+          },
+          stop: async (): Promise<void> => {
+            events.push('stop');
+          },
+        },
+      ],
+    });
+
+    await service.stop();
+
+    expect(events).toEqual(['stop']);
+  });
+});
