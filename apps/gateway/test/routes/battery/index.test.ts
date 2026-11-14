@@ -65,9 +65,9 @@ describe('battery routes', () => {
     expect(harness.calls).toEqual([{ key: 'battery GET /health-trend', query: { days: '30' } }]);
   });
 
-  it('passes the range sessions to battery without their titles', async () => {
+  it('passes the range sessions to battery', async () => {
     const harness = await routeHarness(handlers, {
-      'sessions GET /sessions': { items: [{ ...sessionFixture, title: 'secret title' }] },
+      'sessions GET /sessions': { items: [sessionFixture] },
       'battery POST /power-by-app': responseFixtures.batteryPowerByApp,
     });
     app = harness.app;

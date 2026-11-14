@@ -1,4 +1,4 @@
-import { parseRow, parseRows, toPgText } from '@deskpulse/service-kit/sql';
+import { parseRow, parseRows } from '@deskpulse/service-kit/sql';
 import type { TimeRangeQuery } from '@deskpulse/shared/common';
 import type { Session } from '@deskpulse/shared/sessions';
 import { type Kysely, sql } from 'kysely';
@@ -15,12 +15,11 @@ const SessionRow = z.object({
   app_id: z.string(),
   start_at: z.date(),
   end_at: z.date(),
-  title: z.string().nullable(),
 });
 type SessionRow = z.infer<typeof SessionRow>;
 
 const IdRow = z.object({ id: z.string() });
-const SESSION_COLUMNS = ['id', 'app_id', 'start_at', 'end_at', 'title'] as const;
+const SESSION_COLUMNS = ['id', 'app_id', 'start_at', 'end_at'] as const;
 const WatermarkRow = z.object({ recorded_until: z.date() });
 
 function toSession(row: SessionRow): Session {
@@ -29,7 +28,6 @@ function toSession(row: SessionRow): Session {
     appId: row.app_id,
     start: row.start_at.toISOString(),
     end: row.end_at.toISOString(),
-    ...(row.title === null ? {} : { title: row.title }),
   };
 }
 
@@ -55,7 +53,6 @@ export async function lockOpenSession(db: Db): Promise<Span | null> {
     appId: row.app_id,
     startMs: row.start_at.getTime(),
     endMs: row.end_at.getTime(),
-    title: row.title,
     closed: false,
   };
 }
@@ -89,7 +86,6 @@ async function insertSpan(db: Db, span: Span): Promise<string> {
         app_id: span.appId,
         start_at: new Date(span.startMs),
         end_at: new Date(span.endMs),
-        title: span.title,
         closed: span.closed,
       })
       .returning('id')
@@ -106,7 +102,6 @@ async function updateSpan(db: Db, id: string, span: Span): Promise<void> {
     .updateTable('sessions')
     .set({
       end_at: new Date(span.endMs),
-      title: span.title,
       closed: span.closed,
     })
     .where('id', '=', id)
@@ -115,12 +110,11 @@ async function updateSpan(db: Db, id: string, span: Span): Promise<void> {
 
 /**
  * In order: a closed span must be written before the next one opens (one open
- * at most). The result holds the title as stored, so the reply matches the row.
+ * at most).
  */
 export async function saveSpans(db: Db, spans: readonly Span[]): Promise<StoredSpan[]> {
   const saved: StoredSpan[] = [];
-  for (const original of spans) {
-    const span = { ...original, title: toPgText(original.title) };
+  for (const span of spans) {
     if (span.id === null) {
       saved.push({ ...span, id: await insertSpan(db, span) });
     } else {
@@ -177,7 +171,6 @@ export async function closedSpansOverlapping(
     appId: row.app_id,
     startMs: row.start_at.getTime(),
     endMs: row.end_at.getTime(),
-    title: row.title,
     closed: true,
   }));
 }

@@ -6,7 +6,6 @@
 export const LIMITS = {
   appIdLength: 128,
   nameLength: 128,
-  titleLength: 512,
   /** Linux `comm` is at most 15 bytes plus NUL; 64 leaves room for multibyte UTF-8. */
   commLength: 64,
   paramKeyLength: 32,

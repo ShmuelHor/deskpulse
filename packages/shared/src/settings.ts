@@ -13,7 +13,6 @@ export const Settings = z.strictObject({
   language: Language,
   theme: Theme,
   privacy: z.strictObject({
-    storeTitles: z.boolean(),
     /** Apps that are not tracked at all. */
     excludedApps: z.array(AppId).max(LIMITS.listSize),
   }),

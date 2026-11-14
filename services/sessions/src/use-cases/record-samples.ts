@@ -10,7 +10,6 @@ function toActivity(sample: WindowSample): ActivitySample {
   return {
     tsMs: Date.parse(sample.ts),
     appId: sample.wmClass,
-    title: sample.title ?? null,
     locked: sample.locked,
   };
 }
@@ -21,7 +20,6 @@ function toClosedSession(span: StoredSpan): Session {
     appId: span.appId,
     start: new Date(span.startMs).toISOString(),
     end: new Date(span.endMs).toISOString(),
-    ...(span.title === null ? {} : { title: span.title }),
   };
 }
 

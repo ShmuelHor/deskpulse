@@ -25,9 +25,9 @@ describe('apps', () => {
 });
 
 describe('Session', () => {
-  it('accepts a session with or without a title', () => {
+  it('accepts a session and rejects one that carries a title', () => {
     expect(Session.safeParse(session).success).toBe(true);
-    expect(Session.safeParse({ ...session, title: 'Inbox' }).success).toBe(true);
+    expect(Session.safeParse({ ...session, title: 'Inbox' }).success).toBe(false);
   });
 
   it('rejects a session that ends before it starts', () => {

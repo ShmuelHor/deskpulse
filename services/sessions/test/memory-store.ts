@@ -21,7 +21,6 @@ function toSession(span: StoredSpan): Session {
     appId: span.appId,
     start: new Date(span.startMs).toISOString(),
     end: new Date(span.endMs).toISOString(),
-    ...(span.title === null ? {} : { title: span.title }),
   };
 }
 

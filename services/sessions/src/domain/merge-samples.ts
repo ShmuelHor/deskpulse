@@ -5,7 +5,6 @@ export const MAX_GAP_MS = 15_000;
 export interface ActivitySample {
   readonly tsMs: number;
   readonly appId: string;
-  readonly title: string | null;
   readonly locked: boolean;
 }
 
@@ -18,7 +17,6 @@ export interface Span {
   readonly appId: string;
   readonly startMs: number;
   readonly endMs: number;
-  readonly title: string | null;
   readonly closed: boolean;
 }
 
@@ -60,7 +58,7 @@ function closeOnSwitch(span: Span, sample: ActivitySample): Span {
 }
 
 function extend(span: Span, sample: ActivitySample): Span {
-  return { ...span, endMs: sample.tsMs, title: sample.title ?? span.title };
+  return { ...span, endMs: sample.tsMs };
 }
 
 function open(sample: ActivitySample): Span {
@@ -69,7 +67,6 @@ function open(sample: ActivitySample): Span {
     appId: sample.appId,
     startMs: sample.tsMs,
     endMs: sample.tsMs,
-    title: sample.title,
     closed: false,
   };
 }

@@ -21,7 +21,7 @@ import { FocusTransition, RouteResult } from '../../services/focus/src/contracts
 import { createFocusService } from '../../services/focus/src/service.js';
 import { SessionBatchResult, TopAppList } from '../../services/reports/src/contracts.js';
 import { createReportsService } from '../../services/reports/src/service.js';
-import { SampleResult, SessionList } from '../../services/sessions/src/contracts.js';
+import { SessionList } from '../../services/sessions/src/contracts.js';
 import { createSessionsService } from '../../services/sessions/src/service.js';
 import { SampleResult as SystemSampleResult } from '../../services/system/src/contracts.js';
 import { createSystemService } from '../../services/system/src/service.js';
@@ -164,27 +164,19 @@ describe('ST12 SQL injection', () => {
       return { status: response.statusCode, json };
     }
 
-    it('stores injected titles verbatim and rejects injection in every other sample field', {
+    it('rejects a title and injection in every other sample field', {
       timeout: REQUEST_TIMEOUT_MS,
     }, async () => {
-      const closedTitles: (string | undefined)[] = [];
       for (const [minute, payload] of PAYLOADS.entries()) {
-        const batch = { samples: [window(minute, { title: payload })] };
-        const result = SampleResult.parse((await send('POST', '/samples', batch)).json);
-        closedTitles.push(...result.closed.map((closed) => closed.title));
-
-        for (const field of ['kind', 'ts', 'wmClass', 'pid', 'locked']) {
+        for (const field of ['title', 'kind', 'ts', 'wmClass', 'pid', 'locked']) {
           const bad = { samples: [window(minute, { [field]: payload })] };
           expect((await send('POST', '/samples', bad)).status).toBe(HTTP_BAD_REQUEST);
         }
       }
-      const to = new Date(Date.parse('2026-11-08T10:00:00.000Z')).toISOString();
-      const listed = await send('GET', `/sessions?from=2026-11-08T00:00:00.000Z&to=${to}`);
-
-      // A minute apart, so each sample closes the previous session; the last one stays open.
-      expect(closedTitles).toEqual(PAYLOADS.slice(0, -1).map(stored));
-      const titles = SessionList.parse(listed.json).items.map((session) => session.title);
-      expect(titles).toEqual(PAYLOADS.map(stored));
+      // Nothing was stored by the rejected batches.
+      const range = 'from=2026-11-08T00:00:00.000Z&to=2026-11-09T00:00:00.000Z';
+      const listed = await send('GET', `/sessions?${range}`);
+      expect(SessionList.parse(listed.json).items).toEqual([]);
     });
 
     it('rejects injection in the session range', { timeout: REQUEST_TIMEOUT_MS }, async () => {
@@ -290,15 +282,15 @@ describe('ST12 SQL injection', () => {
       };
     }
 
-    it('counts injected titles as plain sessions and rejects injection in every other field', {
+    it('rejects a title and injection in every session field', {
       timeout: REQUEST_TIMEOUT_MS,
     }, async () => {
       for (const [minute, payload] of PAYLOADS.entries()) {
-        const batch = { sessions: [closed(minute, { title: payload })] };
+        const batch = { sessions: [closed(minute)] };
         const result = SessionBatchResult.parse((await send('POST', '/sessions', batch)).json);
         expect(result).toEqual({ counted: 1, duplicates: 0 });
 
-        for (const field of ['id', 'appId', 'start', 'end']) {
+        for (const field of ['title', 'id', 'appId', 'start', 'end']) {
           const bad = { sessions: [closed(minute, { [field]: payload })] };
           expect((await send('POST', '/sessions', bad)).status).toBe(HTTP_BAD_REQUEST);
         }

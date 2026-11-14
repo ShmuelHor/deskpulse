@@ -13,7 +13,6 @@
   "language": { "label": "שפה", "he": "עברית", "en": "אנגלית" },
   "theme": { "label": "ערכת צבעים", "system": "לפי המערכת", "light": "בהירה", "dark": "כהה" },
   "privacy": {
-    "storeTitles": "שמירת כותרות חלונות",
     "excludedApps": "אפליקציות שאינן נמדדות לעולם"
   },
   "thresholds": {

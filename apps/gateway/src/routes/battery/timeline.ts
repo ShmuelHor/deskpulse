@@ -14,7 +14,7 @@ export interface PowerByAppBody extends TimeRangeQuery {
   readonly sessions: readonly Pick<Session, 'appId' | 'start' | 'end'>[];
 }
 
-/** Keeps the app and its time only: window titles never leave sessions for battery. */
+/** Keeps the app and its time only, which is all battery needs. */
 export function toPowerByAppRequest(
   range: TimeRangeQuery,
   sessions: SessionRange['items'],

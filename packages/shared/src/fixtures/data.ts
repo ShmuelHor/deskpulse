@@ -86,7 +86,7 @@ export const alertFixture: Alert = {
 export const settingsFixture: Settings = {
   language: 'he',
   theme: 'system',
-  privacy: { storeTitles: false, excludedApps: ['keepassxc'] },
+  privacy: { excludedApps: ['keepassxc'] },
   thresholds: { memory: 10, cpu: 40, io: 30 },
   systemApps: ['org.gnome.Settings'],
   quietHours: { enabled: true, start: '22:00', end: '07:00' },
