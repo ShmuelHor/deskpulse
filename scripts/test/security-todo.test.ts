@@ -133,7 +133,7 @@ describe('scanSecurityReport', () => {
   });
 
   it.each([
-    'st20-extra.test.ts',
+    'st25-extra.test.ts',
     'st00-zero.test.ts',
     'auth.test.ts',
     'st1-short.test.ts',
