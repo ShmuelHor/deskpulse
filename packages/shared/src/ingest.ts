@@ -9,8 +9,6 @@ export const WindowSample = z.strictObject({
   kind: z.literal('window'),
   ts: Timestamp,
   wmClass: AppId,
-  /** Untrusted. Sent only when the privacy setting allows storing titles. */
-  title: z.string().max(LIMITS.titleLength).optional(),
   pid: Pid,
   locked: z.boolean(),
 });

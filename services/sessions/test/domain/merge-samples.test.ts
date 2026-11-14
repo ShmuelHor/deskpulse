@@ -20,14 +20,14 @@ function sample(
   appId = 'code',
   extra: Partial<ActivitySample> = {},
 ): ActivitySample {
-  return { tsMs: at(clock), appId, title: null, locked: false, ...extra };
+  return { tsMs: at(clock), appId, locked: false, ...extra };
 }
 
 /** One sample every 5 s, from `from` up to and including `to`. */
 function run(from: string, to: string, appId = 'code'): ActivitySample[] {
   const samples: ActivitySample[] = [];
   for (let tsMs = at(from); tsMs <= at(to); tsMs += SAMPLE_INTERVAL_MS) {
-    samples.push({ tsMs, appId, title: null, locked: false });
+    samples.push({ tsMs, appId, locked: false });
   }
   return samples;
 }
@@ -38,7 +38,6 @@ function span(start: string, end: string, extra: Partial<Span> = {}): Span {
     appId: 'code',
     startMs: at(start),
     endMs: at(end),
-    title: null,
     closed: false,
     ...extra,
   };
@@ -160,18 +159,6 @@ describe('mergeSamples', () => {
     const result = mergeSamples(stored, [sample('09:00:05', 'firefox'), sample('09:00:10')], null);
 
     expect(result).toEqual({ spans: [], accepted: 0, late: 2, recordedUntilMs: null });
-  });
-
-  it('keeps the latest title the session saw', () => {
-    const samples = [
-      sample('09:00:00', 'code', { title: 'a.ts' }),
-      sample('09:00:05', 'code', { title: 'b.ts' }),
-      sample('09:00:10', 'code', { title: null }),
-    ];
-
-    const { spans } = mergeSamples(null, samples, null);
-
-    expect(spans).toEqual([span('09:00:00', '09:00:10', { title: 'b.ts' })]);
   });
 
   it('skips samples at or before the watermark even with no open session', () => {

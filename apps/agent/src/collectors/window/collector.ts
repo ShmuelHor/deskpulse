@@ -19,8 +19,8 @@ type Problem = 'unavailable' | 'malformed';
  * the Window Calls extension it warns once and keeps trying, so enabling the
  * extension later is picked up without a restart.
  *
- * The title is never sent: the agent has no privacy setting to say it may be
- * stored yet, so it fails closed (SPEC §7, SECURITY ST17).
+ * The title is never read into a sample, whatever the extension replies with:
+ * DeskPulse does not collect window titles at all (SPEC §7, SECURITY ST17).
  */
 export function createWindowCollector(options: WindowCollectorOptions = {}): Collector {
   const now = options.now ?? ((): Date => new Date());

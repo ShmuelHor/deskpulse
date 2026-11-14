@@ -8,13 +8,12 @@ import { createTestService, type TestService } from '../test-service.js';
 const HTTP_OK = 200;
 const HTTP_BAD_REQUEST = 400;
 
-function stored(id: string, start: string, end: string, title: string | null): StoredSpan {
+function stored(id: string, start: string, end: string): StoredSpan {
   return {
     id,
     appId: 'code',
     startMs: Date.parse(start),
     endMs: Date.parse(end),
-    title,
     closed: true,
   };
 }
@@ -23,13 +22,11 @@ const morning = stored(
   '00000000-0000-4000-8000-000000000001',
   '2026-11-08T08:00:00.000Z',
   '2026-11-08T09:00:00.000Z',
-  'merge.ts',
 );
 const evening = stored(
   '00000000-0000-4000-8000-000000000002',
   '2026-11-08T18:00:00.000Z',
   '2026-11-08T19:00:00.000Z',
-  null,
 );
 
 describe('GET /sessions', () => {
@@ -55,7 +52,6 @@ describe('GET /sessions', () => {
           appId: 'code',
           start: '2026-11-08T08:00:00.000Z',
           end: '2026-11-08T09:00:00.000Z',
-          title: 'merge.ts',
         },
       ],
     });

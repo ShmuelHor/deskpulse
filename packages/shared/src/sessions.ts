@@ -28,7 +28,6 @@ export const Session = z
     appId: AppId,
     start: Timestamp,
     end: Timestamp,
-    title: z.string().max(LIMITS.titleLength).optional(),
   })
   .refine((s) => Date.parse(s.start) <= Date.parse(s.end), {
     message: 'start must not be after end',

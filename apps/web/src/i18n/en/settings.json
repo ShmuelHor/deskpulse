@@ -18,7 +18,6 @@
     "dark": "Dark"
   },
   "privacy": {
-    "storeTitles": "Store window titles",
     "excludedApps": "Apps that are never tracked"
   },
   "thresholds": {

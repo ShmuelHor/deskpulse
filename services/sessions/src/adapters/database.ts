@@ -13,7 +13,6 @@ export interface SessionsTable {
   readonly app_id: string;
   readonly start_at: Timestamp;
   readonly end_at: Timestamp;
-  readonly title: string | null;
   readonly closed: Generated<boolean>;
 }
 

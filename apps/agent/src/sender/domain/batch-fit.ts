@@ -1,7 +1,7 @@
 /**
  * How many buffered samples fit in one request. The gateway rejects bodies
- * over 1 MiB with a 413 (SECURITY A17), and 2,000 samples with long window
- * titles can exceed that, so a batch is cut by bytes as well as by count.
+ * over 1 MiB with a 413 (SECURITY A17), and 2,000 samples with full process
+ * lists can exceed that, so a batch is cut by bytes as well as by count.
  */
 
 /** Below the gateway's 1 MiB body limit, with room for its own accounting. */

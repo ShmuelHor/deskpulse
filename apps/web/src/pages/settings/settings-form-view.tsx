@@ -96,20 +96,6 @@ export function SettingsFormView({
           <Typography variant="h2" id="settings-privacy">
             {t('sections.privacy')}
           </Typography>
-          <Controller
-            control={control}
-            name="storeTitles"
-            render={({ field }): React.JSX.Element => (
-              <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                <Switch
-                  checked={field.value}
-                  onChange={field.onChange}
-                  label={t('privacy.storeTitles')}
-                />
-                <Typography>{t('privacy.storeTitles')}</Typography>
-              </Stack>
-            )}
-          />
           <TextField
             label={t('privacy.excludedApps')}
             helper={t('listHint')}

@@ -15,7 +15,7 @@ const available = await dockerAvailable();
 const CHANGED: Settings = {
   language: 'en',
   theme: 'dark',
-  privacy: { storeTitles: false, excludedApps: ['keepassxc'] },
+  privacy: { excludedApps: ['keepassxc'] },
   thresholds: { memory: 15, cpu: 50, io: 35 },
   systemApps: ['org.gnome.Settings'],
   quietHours: { enabled: true, start: '22:00', end: '07:00' },

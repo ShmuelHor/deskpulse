@@ -24,17 +24,16 @@ const STATUS_UNAUTHORIZED = 401;
 const STATUS_UNAVAILABLE = 503;
 const RETRY_AFTER_SECONDS = 20;
 const RETRY_AFTER_MS = 20_000;
-const TITLE_LENGTH = 400;
+const APP_ID_LENGTH = 100;
 const NOW = new Date('2026-11-10T08:00:00Z');
 
-function windowSample(pid: number, title?: string): Sample {
+function windowSample(pid: number, wmClass = 'firefox'): Sample {
   return {
     kind: 'window',
     ts: '2026-11-10T08:00:00.000Z',
-    wmClass: 'firefox',
+    wmClass,
     pid,
     locked: false,
-    ...(title === undefined ? {} : { title }),
   };
 }
 
@@ -205,7 +204,7 @@ describe('sendAttempt', () => {
   });
 
   it('cuts the batch to the body budget and acks only what was sent', async () => {
-    const big = PIDS.map((pid) => windowSample(pid, 'x'.repeat(TITLE_LENGTH)));
+    const big = PIDS.map((pid) => windowSample(pid, 'x'.repeat(APP_ID_LENGTH)));
     await buffer.append(big);
     const twoSamples = JSON.stringify({ agentVersion: AGENT_VERSION, samples: big.slice(0, 2) });
 

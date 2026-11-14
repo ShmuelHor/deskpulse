@@ -19,12 +19,12 @@ async function sourceFiles(dir: string): Promise<string[]> {
 }
 
 /**
- * The rendering half of ST13 (a hostile name becomes a text node, never an <img>) runs with the
- * page in `apps/web/test/pages/today/title-xss.test.tsx`, because it needs the web's DOM and JSX
+ * The rendering half of ST13 (a hostile app or process name becomes a text node, never an <img>) runs with the
+ * page in `apps/web/test/pages/today/name-xss.test.tsx`, because it needs the web's DOM and JSX
  * setup. Playwright is not a dependency yet, so it uses happy-dom. This half guards the cause:
  * nothing in the web may reach a raw-HTML sink.
  */
-describe('ST13 window title XSS', () => {
+describe('ST13 app and process name XSS', () => {
   it('no web source reaches a raw HTML sink', async () => {
     const offenders: string[] = [];
     for (const file of await sourceFiles(WEB_SRC)) {

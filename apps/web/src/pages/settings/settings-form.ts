@@ -27,7 +27,6 @@ export const SettingsForm = z
   .object({
     language: SettingsSchema.shape.language,
     theme: SettingsSchema.shape.theme,
-    storeTitles: z.boolean(),
     excludedApps: z.string(),
     memory: z.number(),
     cpu: z.number(),
@@ -41,7 +40,7 @@ export const SettingsForm = z
     const parsed = SettingsSchema.safeParse({
       language: form.language,
       theme: form.theme,
-      privacy: { storeTitles: form.storeTitles, excludedApps: splitList(form.excludedApps) },
+      privacy: { excludedApps: splitList(form.excludedApps) },
       thresholds: { memory: form.memory, cpu: form.cpu, io: form.io },
       systemApps: splitList(form.systemApps),
       quietHours: form.quietEnabled
@@ -78,7 +77,6 @@ export function settingsToForm(settings: Settings): SettingsFormInput {
   return {
     language: settings.language,
     theme: settings.theme,
-    storeTitles: settings.privacy.storeTitles,
     excludedApps: settings.privacy.excludedApps.join('\n'),
     memory: settings.thresholds.memory,
     cpu: settings.thresholds.cpu,

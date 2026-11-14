@@ -9,13 +9,12 @@ const DEFAULT_THRESHOLDS = { memory: 10, cpu: 40, io: 30 };
 
 /**
  * What a fresh install runs with, before the user changes anything. Hebrew is
- * the default language (CLAUDE.md). Titles are stored unless the user opts out
- * (SPEC §7: "a don't store window titles setting").
+ * the default language (CLAUDE.md).
  */
 export const DEFAULT_SETTINGS: Settings = {
   language: 'he',
   theme: 'system',
-  privacy: { storeTitles: true, excludedApps: [] },
+  privacy: { excludedApps: [] },
   thresholds: DEFAULT_THRESHOLDS,
   systemApps: [],
   quietHours: { enabled: false },

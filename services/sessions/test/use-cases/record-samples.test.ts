@@ -8,14 +8,13 @@ import { createMemoryStore } from '../memory-store.js';
 
 const PID = 4242;
 
-function window(clock: string, wmClass: string, title?: string): WindowSample {
+function window(clock: string, wmClass: string): WindowSample {
   return {
     kind: 'window',
     ts: `2026-11-08T${clock}.000Z`,
     wmClass,
     pid: PID,
     locked: false,
-    ...(title === undefined ? {} : { title }),
   };
 }
 
@@ -24,7 +23,7 @@ describe('recordSamples', () => {
     const store = createMemoryStore();
 
     const batch = [
-      window('09:00:00', 'code', 'merge.ts'),
+      window('09:00:00', 'code'),
       window('09:00:05', 'code'),
       window('09:00:10', 'firefox'),
     ];
@@ -38,7 +37,6 @@ describe('recordSamples', () => {
         appId: 'code',
         start: '2026-11-08T09:00:00.000Z',
         end: '2026-11-08T09:00:10.000Z',
-        title: 'merge.ts',
       },
     ]);
   });
@@ -88,7 +86,7 @@ describe('recordSamples', () => {
     await recordSamples(store, batch);
     const before = store.state().sessions;
 
-    const retry = await recordSamples(store, [window('09:00:20', 'firefox', 'x'), ...batch]);
+    const retry = await recordSamples(store, [window('09:00:20', 'firefox'), ...batch]);
     const again = await recordSamples(store, batch);
 
     // A retry hands back the session the first attempt closed (see the next suite).
@@ -142,7 +140,6 @@ describe('recordSamples replay cap', () => {
       appId: 'crowd',
       startMs: Date.parse('2026-11-08T09:00:01.000Z'),
       endMs: Date.parse('2026-11-08T09:00:02.000Z'),
-      title: null,
       closed: true,
     }));
     const crowded = createMemoryStore({ sessions: [...store.state().sessions, ...crowd] });

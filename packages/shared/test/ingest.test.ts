@@ -6,7 +6,6 @@ const ts = '2026-11-08T10:00:00Z';
 const window = { kind: 'window', ts, wmClass: 'firefox', pid: 4242, locked: false };
 const samples = [
   window,
-  { ...window, title: 'DeskPulse – Mozilla Firefox' },
   {
     kind: 'battery',
     ts,
@@ -45,13 +44,11 @@ describe('Sample', () => {
     expect(Sample.safeParse({ ...window, kind: 'keyboard' }).success).toBe(false);
     expect(Sample.safeParse({ ...window, cmdline: 'node --secret' }).success).toBe(false);
     expect(Sample.safeParse({ ...window, wmClass: 'bad class' }).success).toBe(false);
-    expect(Sample.safeParse({ ...window, title: 'x'.repeat(LIMITS.titleLength + 1) }).success).toBe(
-      false,
-    );
+    expect(Sample.safeParse({ ...window, title: 'DeskPulse - Firefox' }).success).toBe(false);
     expect(Sample.safeParse({ ...window, pid: 0 }).success).toBe(false);
     expect(Sample.safeParse({ ...window, idleMs: 0 }).success).toBe(false);
     expect(Sample.safeParse({ ...window, ts: 'yesterday' }).success).toBe(false);
-    expect(Sample.safeParse({ ...samples[2], capacityPct: 101 }).success).toBe(false);
+    expect(Sample.safeParse({ ...samples[1], capacityPct: 101 }).success).toBe(false);
   });
 
   it('rejects a process sample with a cmdline or too many processes', () => {

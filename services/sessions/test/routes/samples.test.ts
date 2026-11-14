@@ -14,7 +14,6 @@ function window(clock: string, wmClass: string): WindowSample {
     kind: 'window',
     ts: `2026-11-08T${clock}.000Z`,
     wmClass,
-    title: `${wmClass} window`,
     pid: PID,
     locked: false,
   };
@@ -25,6 +24,18 @@ describe('POST /samples', () => {
 
   afterEach(async () => {
     await subject.service.stop();
+  });
+
+  it('rejects a sample that carries a window title', async () => {
+    subject = createTestService();
+
+    const response = await subject.service.app.inject({
+      method: 'POST',
+      url: '/samples',
+      payload: { samples: [{ ...window('09:00:00', 'code'), title: 'Inbox' }] },
+    });
+
+    expect(response.statusCode).toBe(HTTP_BAD_REQUEST);
   });
 
   it('answers with the closed sessions, valid against the shared Session contract', async () => {
