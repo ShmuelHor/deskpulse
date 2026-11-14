@@ -52,7 +52,6 @@ function later(minutes: number): Date {
 const importantAlert: Alert = {
   alertKey: 'battery-low:15',
   type: 'battery-low',
-  level: 'important',
   ts: NOW.toISOString(),
   params: { percent: 14 },
 };
@@ -71,7 +70,6 @@ describe('startFocus', () => {
       state: {
         active: true,
         profileId: deepWork.id,
-        source: 'manual',
         startedAt: NOW.toISOString(),
         endsAt: later(FOCUS_MINUTES).toISOString(),
       },

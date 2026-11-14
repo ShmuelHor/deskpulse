@@ -14,7 +14,6 @@ function window(clock: string, wmClass: string, title?: string): WindowSample {
     ts: `2026-11-08T${clock}.000Z`,
     wmClass,
     pid: PID,
-    idleMs: 0,
     locked: false,
     ...(title === undefined ? {} : { title }),
   };
@@ -116,18 +115,6 @@ describe('recordSamples on a retried batch', () => {
     const retry = await recordSamples(store, batch);
 
     expect(retry.accepted).toBe(0);
-    expect(retry.closed).toEqual(first.closed);
-  });
-
-  it('finds a session that an idle sample closed before its own timestamp', async () => {
-    const store = createMemoryStore();
-    const idle: WindowSample = { ...window('09:05:00', 'code'), idleMs: 180_000 };
-    const awayBatch = [window('09:00:00', 'code'), window('09:00:05', 'code'), idle];
-    const first = await recordSamples(store, awayBatch);
-
-    const retry = await recordSamples(store, awayBatch);
-
-    expect(first.closed).toHaveLength(1);
     expect(retry.closed).toEqual(first.closed);
   });
 

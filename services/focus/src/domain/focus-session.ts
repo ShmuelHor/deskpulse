@@ -1,4 +1,4 @@
-import type { FocusSource, FocusStart, FocusState } from '@deskpulse/shared/focus';
+import type { FocusStart, FocusState } from '@deskpulse/shared/focus';
 
 import { nextOccurrence } from './local-time.js';
 
@@ -8,7 +8,6 @@ const MS_PER_MINUTE = 60_000;
 export interface FocusSession {
   readonly id: string;
   readonly profileId: string;
-  readonly source: FocusSource;
   readonly startedAtMs: number;
   readonly endsAtMs: number;
   /** Exactly what the session muted, so closing it restores the same apps. */
@@ -28,7 +27,6 @@ export function toFocusState(session: FocusSession | null, nowMs: number): Focus
   return {
     active: true,
     profileId: session.profileId,
-    source: session.source,
     startedAt: new Date(session.startedAtMs).toISOString(),
     endsAt: new Date(session.endsAtMs).toISOString(),
   };

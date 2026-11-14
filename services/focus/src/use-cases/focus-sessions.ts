@@ -64,7 +64,6 @@ export function startFocus(
     const summary = previous === null ? null : await closeSession(tx, previous, nowMs);
     const session = await tx.startSession({
       profileId: profile.id,
-      source: 'manual',
       startedAtMs: nowMs,
       endsAtMs: resolveEndsAt(request, nowMs, timeZone),
       mutedApps: muted,

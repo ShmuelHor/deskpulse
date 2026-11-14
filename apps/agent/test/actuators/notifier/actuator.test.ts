@@ -15,7 +15,6 @@ const DISMISSED_BY_USER = 2;
 const ALERT: Alert = {
   alertKey: 'battery:low',
   type: 'battery-low',
-  level: 'important',
   ts: '2026-11-10T08:00:00.000Z',
   params: { percent: 14 },
 };
@@ -83,10 +82,10 @@ describe('notifier', () => {
     const registry = new Map([['notifier', notifier]]);
 
     // Act
-    const run = runActuator(registry, 'notifier', { alert: { ...ALERT, level: 'loud' } }, ctx);
+    const run = runActuator(registry, 'notifier', { alert: { ...ALERT, type: 'loud' } }, ctx);
 
     // Assert
-    await expect(run).rejects.toThrow('invalid input for notifier at: alert.level');
+    await expect(run).rejects.toThrow('invalid input for notifier at: alert.type');
     expect(bus.calledMembers()).not.toContain('Notify');
   });
 

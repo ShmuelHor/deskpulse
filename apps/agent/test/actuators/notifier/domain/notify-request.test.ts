@@ -4,7 +4,6 @@ import { NotifyRequest } from '../../../../src/actuators/notifier/domain/notify-
 const ALERT = {
   alertKey: 'battery:low',
   type: 'battery-low',
-  level: 'important',
   ts: '2026-11-10T08:00:00.000Z',
   params: { percent: 14 },
 };

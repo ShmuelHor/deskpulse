@@ -10,7 +10,7 @@ import type {
 export type SystemSample = PressureSample | ProcessSample | ThermalSample;
 
 export interface SplitBatch {
-  /** Window and idle samples, for sessions. */
+  /** Window and lock samples, for sessions. */
   readonly windows: readonly WindowSample[];
   readonly battery: readonly BatterySample[];
   /** Load samples, for system. */

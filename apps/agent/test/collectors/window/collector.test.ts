@@ -14,7 +14,6 @@ import { recordedPresence } from '../../support/collector-context.js';
 import { recordingLogger } from '../../support/logs.js';
 
 const NOW = new Date('2026-11-10T09:30:00.000Z');
-const IDLE_MS = 12_000;
 const SECRET_TITLE = 'Bank statement - Mozilla Firefox';
 const BROWSER = { wm_class: 'firefox', pid: 1717, focus: true, title: SECRET_TITLE };
 const TERMINAL = { wm_class: 'gnome-terminal-server', pid: 4242, focus: false };
@@ -102,9 +101,9 @@ describe('window collector', () => {
     ]);
   });
 
-  it('samples the focused window with the latest idle time and lock state', async () => {
+  it('samples the focused window with the latest lock state', async () => {
     // Arrange
-    const ctx = context(busReplying(windows(TERMINAL, BROWSER)), { idleMs: IDLE_MS });
+    const ctx = context(busReplying(windows(TERMINAL, BROWSER)), { locked: false });
 
     // Act
     const samples = await collect(collector(), ctx);
@@ -116,7 +115,6 @@ describe('window collector', () => {
         ts: NOW.toISOString(),
         wmClass: 'firefox',
         pid: BROWSER.pid,
-        idleMs: IDLE_MS,
         locked: false,
       },
     ]);

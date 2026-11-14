@@ -4,13 +4,7 @@ import type { PageRoute } from '../../router/page-route.js';
 import { prefetch } from '../../router/prefetch.js';
 import { rootRoute } from '../../router/root-route.js';
 import { FocusPage } from './focus-page.js';
-import {
-  alertPolicyQuery,
-  alertQueueQuery,
-  focusStateQuery,
-  knownAppsQuery,
-  profilesQuery,
-} from './queries.js';
+import { alertQueueQuery, focusStateQuery, knownAppsQuery, profilesQuery } from './queries.js';
 
 function FocusRoute(): React.JSX.Element {
   const { client } = route.useRouteContext();
@@ -25,7 +19,6 @@ const route = createRoute({
     prefetch(queryClient, profilesQuery(client));
     prefetch(queryClient, knownAppsQuery(client));
     prefetch(queryClient, alertQueueQuery(client));
-    prefetch(queryClient, alertPolicyQuery(client));
   },
   component: FocusRoute,
 });

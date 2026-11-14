@@ -2,8 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { createPresenceTracker } from '../../src/core/presence.js';
 import type { Scheduler } from '../../src/core/scheduler.js';
 
-const IDLE_MS = 42_000;
-
 /** Records what the tracker asks of the scheduler, in order. */
 function scheduler(): Pick<Scheduler, 'pause' | 'resume'> & { calls: string[] } {
   const calls: string[] = [];
@@ -24,19 +22,7 @@ describe('createPresenceTracker', () => {
     const { presence } = createPresenceTracker(scheduler());
 
     // Assert
-    expect({ ...presence }).toEqual({ idleMs: 0, locked: false });
-  });
-
-  it('keeps the values it was not given', () => {
-    // Arrange
-    const tracker = createPresenceTracker(scheduler());
-    tracker.report({ locked: true });
-
-    // Act
-    tracker.report({ idleMs: IDLE_MS });
-
-    // Assert
-    expect({ ...tracker.presence }).toEqual({ idleMs: IDLE_MS, locked: true });
+    expect({ ...presence }).toEqual({ locked: false });
   });
 
   it('gives collectors a live view of the latest report', () => {
@@ -45,10 +31,10 @@ describe('createPresenceTracker', () => {
     const { presence } = tracker;
 
     // Act
-    tracker.report({ idleMs: IDLE_MS });
+    tracker.report({ locked: true });
 
     // Assert
-    expect(presence.idleMs).toBe(IDLE_MS);
+    expect(presence.locked).toBe(true);
   });
 
   it('pauses the scheduler when the screen locks and resumes it on unlock', () => {
@@ -71,7 +57,7 @@ describe('createPresenceTracker', () => {
 
     // Act
     tracker.report({ locked: false });
-    tracker.report({ idleMs: IDLE_MS });
+    tracker.report({ locked: false });
 
     // Assert
     expect(polling.calls).toEqual([]);

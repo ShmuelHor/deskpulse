@@ -11,7 +11,6 @@ function toActivity(sample: WindowSample): ActivitySample {
     tsMs: Date.parse(sample.ts),
     appId: sample.wmClass,
     title: sample.title ?? null,
-    idleMs: sample.idleMs,
     locked: sample.locked,
   };
 }
@@ -32,9 +31,6 @@ function toClosedSession(span: StoredSpan): Session {
  * sessions to reports if the first attempt failed after this
  * service committed. Reports counts a session id once, so over-returning is
  * harmless; under-returning would lose time.
- *
- * An idle sample ends its session `idleMs` before itself, so the range starts
- * there rather than at the sample.
  */
 async function replayedClosures(
   tx: SessionsTransaction,
@@ -45,7 +41,7 @@ async function replayedClosures(
   if (samples.length === 0) {
     return [];
   }
-  const fromMs = Math.min(...samples.map((sample) => Date.parse(sample.ts) - sample.idleMs));
+  const fromMs = Math.min(...samples.map((sample) => Date.parse(sample.ts)));
   const toMs = Math.max(...samples.map((sample) => Date.parse(sample.ts)));
   const spans = await tx.closedSpansOverlapping(fromMs, toMs, LIMITS.ingestSamples);
   // The reply holds at most `ingestSamples` sessions. Oldest first, so what a wide range

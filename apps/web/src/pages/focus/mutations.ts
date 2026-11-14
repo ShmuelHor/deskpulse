@@ -1,10 +1,4 @@
-import type {
-  AlertPolicy,
-  FocusChange,
-  FocusStart,
-  Profile,
-  ProfileInput,
-} from '@deskpulse/shared/focus';
+import type { FocusChange, FocusStart, Profile, ProfileInput } from '@deskpulse/shared/focus';
 import { type UseMutationResult, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { GatewayClient } from '../../api/gateway.js';
@@ -23,7 +17,6 @@ export interface FocusMutations {
   readonly createProfile: UseMutationResult<Profile, Error, ProfileInput>;
   readonly updateProfile: UseMutationResult<Profile, Error, ProfileUpdate>;
   readonly deleteProfile: UseMutationResult<undefined, Error, string>;
-  readonly updateAlertPolicy: UseMutationResult<AlertPolicy, Error, AlertPolicy>;
 }
 
 /** Every write of the Focus page. Each one announces its success with a toast (`meta.successMessage`). */
@@ -59,17 +52,11 @@ export function useFocusMutations(client: GatewayClient): FocusMutations {
     meta: { successMessage: 'focus:toast.profileDeleted' },
     onSuccess: refresh(['listProfiles', 'focusState']),
   });
-  const updateAlertPolicy = useMutation({
-    mutationFn: (body: AlertPolicy) => client.request('updateAlertPolicy', { body }),
-    meta: { successMessage: 'focus:toast.policySaved' },
-    onSuccess: refresh(['getAlertPolicy']),
-  });
   return {
     startFocus,
     stopFocus,
     createProfile,
     updateProfile,
     deleteProfile,
-    updateAlertPolicy,
   };
 }

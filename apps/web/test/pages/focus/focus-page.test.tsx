@@ -30,12 +30,10 @@ function clientAnswering(overrides: Record<string, unknown> = {}): {
     listProfiles: structuredClone(responseFixtures.listProfiles),
     listKnownApps: structuredClone(responseFixtures.listKnownApps),
     focusQueue: structuredClone(responseFixtures.focusQueue),
-    getAlertPolicy: structuredClone(responseFixtures.getAlertPolicy),
     focusStart: structuredClone(responseFixtures.focusStart),
     focusStop: structuredClone(responseFixtures.focusStop),
     createProfile: structuredClone(responseFixtures.createProfile),
     deleteProfile: undefined,
-    updateAlertPolicy: structuredClone(responseFixtures.updateAlertPolicy),
     ...overrides,
   };
   const request = vi.fn((name: string) => {
@@ -204,22 +202,6 @@ describe('Focus page', { timeout: SLOW_TIMEOUT_MS }, () => {
     renderPage(client);
 
     expect(await screen.findByText('No alerts were held back.')).toBeTruthy();
-  });
-
-  it('saves the chosen alert levels', async () => {
-    const { client, request } = clientAnswering({ getAlertPolicy: { items: [] } });
-    const notifier = renderPage(client);
-
-    await userEvent.selectOptions(await screen.findByLabelText('The CPU is hot'), 'Critical');
-    const save = screen.getAllByRole('button', { name: 'Save' }).at(-1) as HTMLElement;
-    await userEvent.click(save);
-
-    await waitFor(() =>
-      expect(request).toHaveBeenCalledWith('updateAlertPolicy', {
-        body: { items: [{ type: 'thermal', level: 'critical' }] },
-      }),
-    );
-    await waitFor(() => expect(notifier.success).toHaveBeenCalledWith('focus:toast.policySaved'));
   });
 
   it('shows an error when the profiles cannot be loaded', async () => {

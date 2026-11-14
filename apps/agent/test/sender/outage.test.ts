@@ -92,7 +92,6 @@ function windowSample(at: number, pid: number, title: string): Sample {
     wmClass: 'org.gnome.TextEditor',
     title,
     pid,
-    idleMs: 0,
     locked: false,
   };
 }

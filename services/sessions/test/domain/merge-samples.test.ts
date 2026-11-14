@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 
 import {
   type ActivitySample,
-  IDLE_THRESHOLD_MS,
   MAX_GAP_MS,
   mergeSamples,
   type Span,
@@ -21,14 +20,14 @@ function sample(
   appId = 'code',
   extra: Partial<ActivitySample> = {},
 ): ActivitySample {
-  return { tsMs: at(clock), appId, title: null, idleMs: 0, locked: false, ...extra };
+  return { tsMs: at(clock), appId, title: null, locked: false, ...extra };
 }
 
 /** One sample every 5 s, from `from` up to and including `to`. */
 function run(from: string, to: string, appId = 'code'): ActivitySample[] {
   const samples: ActivitySample[] = [];
   for (let tsMs = at(from); tsMs <= at(to); tsMs += SAMPLE_INTERVAL_MS) {
-    samples.push({ tsMs, appId, title: null, idleMs: 0, locked: false });
+    samples.push({ tsMs, appId, title: null, locked: false });
   }
   return samples;
 }
@@ -96,29 +95,6 @@ describe('mergeSamples', () => {
     ]);
   });
 
-  it('ends the session when the user went idle, not at the idle sample', () => {
-    const samples = [
-      ...run('09:00:00', '09:02:25'),
-      sample('09:02:30', 'code', { idleMs: IDLE_THRESHOLD_MS }),
-      ...run('09:02:35', '09:02:45'),
-    ];
-
-    const { spans } = mergeSamples(null, samples, null);
-
-    expect(spans).toEqual([
-      span('09:00:00', '09:00:30', { closed: true }),
-      span('09:02:35', '09:02:45'),
-    ]);
-  });
-
-  it('treats idle just under the threshold as active', () => {
-    const almostIdle = sample('09:00:05', 'code', { idleMs: IDLE_THRESHOLD_MS - 1 });
-
-    const { spans } = mergeSamples(null, [sample('09:00:00'), almostIdle], null);
-
-    expect(spans).toEqual([span('09:00:00', '09:00:05')]);
-  });
-
   it('closes the session on a locked sample', () => {
     const samples = [
       sample('09:00:00'),
@@ -127,22 +103,6 @@ describe('mergeSamples', () => {
     ];
 
     const { spans } = mergeSamples(null, samples, null);
-
-    expect(spans).toEqual([span('09:00:00', '09:00:05', { closed: true })]);
-  });
-
-  it('never ends an idle session before it started', () => {
-    const idle = sample('09:00:05', 'code', { idleMs: IDLE_THRESHOLD_MS });
-
-    const { spans } = mergeSamples(null, [sample('09:00:00'), idle], null);
-
-    expect(spans).toEqual([span('09:00:00', '09:00:00', { closed: true })]);
-  });
-
-  it('closes after a gap even when the next sample is idle', () => {
-    const idle = sample('09:05:00', 'code', { idleMs: IDLE_THRESHOLD_MS });
-
-    const { spans } = mergeSamples(null, [sample('09:00:00'), sample('09:00:05'), idle], null);
 
     expect(spans).toEqual([span('09:00:00', '09:00:05', { closed: true })]);
   });

@@ -1,11 +1,9 @@
 import type { Profile } from '@deskpulse/shared/focus';
 import { describe, expect, it } from 'vitest';
 
-import { readAlertPolicy, replaceAlertPolicy } from '../../src/use-cases/alert-policy.js';
 import { startFocus } from '../../src/use-cases/focus-sessions.js';
 import { MAX_KNOWN_APPS, reportKnownApps } from '../../src/use-cases/known-apps.js';
 import { deleteProfile } from '../../src/use-cases/manage-profiles.js';
-import { createSchedule } from '../../src/use-cases/manage-schedules.js';
 import { createMemoryStore } from '../memory-store.js';
 
 const NOW = new Date('2026-11-08T10:00:00.000Z');
@@ -72,27 +70,6 @@ describe('reportKnownApps', () => {
   });
 });
 
-describe('alert policy', () => {
-  it('replaces the whole policy and reads it back in alert-type order', async () => {
-    const store = createMemoryStore({ policy: [['battery-low', 'normal']] });
-
-    const policy = await replaceAlertPolicy(store, {
-      items: [
-        { type: 'thermal', level: 'critical' },
-        { type: 'battery-critical', level: 'normal' },
-      ],
-    });
-
-    expect(policy).toEqual({
-      items: [
-        { type: 'battery-critical', level: 'normal' },
-        { type: 'thermal', level: 'critical' },
-      ],
-    });
-    expect(await readAlertPolicy(store)).toEqual(policy);
-  });
-});
-
 describe('deleteProfile', () => {
   it('refuses to delete the profile of the open focus', async () => {
     const store = createMemoryStore({ profiles: [profile] });
@@ -100,21 +77,5 @@ describe('deleteProfile', () => {
 
     await expect(deleteProfile(store, profile.id)).rejects.toMatchObject({ code: 'CONFLICT' });
     expect(store.state().profiles).toEqual([profile]);
-  });
-});
-
-describe('createSchedule', () => {
-  it('answers 404 for a schedule of an unknown profile', async () => {
-    const store = createMemoryStore();
-
-    await expect(
-      createSchedule(store, {
-        profileId: profile.id,
-        days: [0],
-        start: '09:00',
-        end: '12:00',
-        enabled: true,
-      }),
-    ).rejects.toMatchObject({ code: 'NOT_FOUND' });
   });
 });

@@ -2,7 +2,6 @@ import type { z } from 'zod';
 import { BatteryNow, HealthTrend, HealthTrendQuery, PowerByApp } from './battery.js';
 import { AppIdParams, DateQuery, IdParams, TimeRangeQuery } from './common.js';
 import {
-  AlertPolicy,
   AlertQueue,
   FocusChange,
   FocusStart,
@@ -219,21 +218,6 @@ export const routes = {
     status: 200,
     body: KnownAppsReport,
     response: KnownAppsResult,
-  },
-  getAlertPolicy: {
-    method: 'GET',
-    path: '/v1/focus/alert-policy',
-    auth: 'session',
-    status: 200,
-    response: AlertPolicy,
-  },
-  updateAlertPolicy: {
-    method: 'PUT',
-    path: '/v1/focus/alert-policy',
-    auth: 'session',
-    status: 200,
-    body: AlertPolicy,
-    response: AlertPolicy,
   },
 
   export: {

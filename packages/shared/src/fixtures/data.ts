@@ -34,7 +34,6 @@ export const profileFixture: Profile = {
 export const focusActiveFixture: FocusState = {
   active: true,
   profileId: FIXTURE_IDS.profile,
-  source: 'manual',
   startedAt: FIXTURE_NOW,
   endsAt: '2026-11-08T11:00:00.000Z',
 };
@@ -80,7 +79,6 @@ export const incidentFixture: Incident = {
 export const alertFixture: Alert = {
   alertKey: 'battery:low',
   type: 'battery-low',
-  level: 'important',
   ts: FIXTURE_NOW,
   params: { percent: 14 },
 };
@@ -99,6 +97,5 @@ export const windowSampleFixture: WindowSample = {
   ts: FIXTURE_NOW,
   wmClass: 'code',
   pid: 4_242,
-  idleMs: 0,
   locked: false,
 };

@@ -33,7 +33,6 @@ function windowSample(pid: number, title?: string): Sample {
     ts: '2026-11-10T08:00:00.000Z',
     wmClass: 'firefox',
     pid,
-    idleMs: 0,
     locked: false,
     ...(title === undefined ? {} : { title }),
   };
@@ -51,7 +50,6 @@ const OK_REPLY: IngestResult = {
     {
       alertKey: 'battery:low',
       type: 'battery-low',
-      level: 'important',
       ts: '2026-11-10T08:00:00.000Z',
       params: { percent: 15 },
     },

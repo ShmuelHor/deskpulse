@@ -15,7 +15,6 @@ import {
 import { recordedPresence } from '../../support/collector-context.js';
 import { recordingLogger } from '../../support/logs.js';
 
-const IDLE_MS = 300_000;
 const INTERVAL_MS = 5_000;
 const AN_HOUR_MS = 3_600_000;
 const SAMPLE: Sample = {
@@ -113,10 +112,10 @@ describe('lock collector', () => {
     expect(presence.reports).toEqual([{ locked: true }]);
   });
 
-  it('reports each lock and unlock, and resets idle time on unlock', async () => {
+  it('reports each lock and unlock', async () => {
     // Arrange
     const saver = screenSaver(false);
-    const presence = recordedPresence({ idleMs: IDLE_MS });
+    const presence = recordedPresence();
     await start(createLockCollector(), context(saver, presence));
 
     // Act
@@ -124,11 +123,7 @@ describe('lock collector', () => {
     saver.signal([false]);
 
     // Assert
-    expect(presence.reports).toEqual([
-      { locked: false, idleMs: 0 },
-      { locked: true },
-      { locked: false, idleMs: 0 },
-    ]);
+    expect(presence.reports).toEqual([{ locked: false }, { locked: true }, { locked: false }]);
   });
 
   it('ignores a malformed signal and warns', async () => {
@@ -142,7 +137,7 @@ describe('lock collector', () => {
     saver.signal(['locked']);
 
     // Assert
-    expect(presence.reports).toEqual([{ locked: false, idleMs: 0 }]);
+    expect(presence.reports).toEqual([{ locked: false }]);
     expect(ctx.logs).toEqual([
       expect.objectContaining({
         collector: 'lock',

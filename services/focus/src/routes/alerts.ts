@@ -1,8 +1,7 @@
 import { defineRoute, type Route } from '@deskpulse/service-kit/route';
-import { AlertPolicy, AlertQueue } from '@deskpulse/shared/focus';
+import { AlertQueue } from '@deskpulse/shared/focus';
 
 import { RouteRequest, RouteResult } from '../contracts.js';
-import { readAlertPolicy, replaceAlertPolicy } from '../use-cases/alert-policy.js';
 import { listQueue, routeIncoming } from '../use-cases/route-alerts.js';
 import type { RouteDeps } from './route-deps.js';
 
@@ -19,18 +18,6 @@ export function alertRoutes({ store, now }: RouteDeps): Route[] {
       url: '/queue',
       schema: { response: AlertQueue },
       handler: async () => ({ items: await listQueue(store) }),
-    }),
-    defineRoute({
-      method: 'GET',
-      url: '/alert-policy',
-      schema: { response: AlertPolicy },
-      handler: () => readAlertPolicy(store),
-    }),
-    defineRoute({
-      method: 'PUT',
-      url: '/alert-policy',
-      schema: { body: AlertPolicy, response: AlertPolicy },
-      handler: ({ body }) => replaceAlertPolicy(store, body),
     }),
   ];
 }

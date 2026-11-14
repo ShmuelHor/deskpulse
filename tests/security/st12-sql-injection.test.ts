@@ -3,7 +3,6 @@ import { Writable } from 'node:stream';
 
 import { BatteryNow, HealthTrend, PowerByApp } from '@deskpulse/shared/battery';
 import {
-  AlertPolicy,
   AlertQueue,
   FocusState,
   KnownAppList,
@@ -18,7 +17,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { SampleResult as BatterySampleResult } from '../../services/battery/src/contracts.js';
 import { createBatteryService } from '../../services/battery/src/service.js';
-import { FocusTransition, RouteResult, Schedule } from '../../services/focus/src/contracts.js';
+import { FocusTransition, RouteResult } from '../../services/focus/src/contracts.js';
 import { createFocusService } from '../../services/focus/src/service.js';
 import { SessionBatchResult, TopAppList } from '../../services/reports/src/contracts.js';
 import { createReportsService } from '../../services/reports/src/service.js';
@@ -106,7 +105,6 @@ function window(minute: number, overrides: Record<string, unknown> = {}): object
     ts: new Date(Date.parse('2026-11-08T09:00:00.000Z') + minute * MINUTE_MS).toISOString(),
     wmClass: 'firefox',
     pid: PID,
-    idleMs: 0,
     locked: false,
     ...overrides,
   };
@@ -175,7 +173,7 @@ describe('ST12 SQL injection', () => {
         const result = SampleResult.parse((await send('POST', '/samples', batch)).json);
         closedTitles.push(...result.closed.map((closed) => closed.title));
 
-        for (const field of ['kind', 'ts', 'wmClass', 'pid', 'idleMs', 'locked']) {
+        for (const field of ['kind', 'ts', 'wmClass', 'pid', 'locked']) {
           const bad = { samples: [window(minute, { [field]: payload })] };
           expect((await send('POST', '/samples', bad)).status).toBe(HTTP_BAD_REQUEST);
         }
@@ -654,7 +652,6 @@ describe('ST12 SQL injection', () => {
     const alert = {
       alertKey: 'thermal:0',
       type: 'thermal',
-      level: 'normal',
       ts: '2026-11-08T09:00:00.000Z',
       params: { celsius: 95 },
     };
@@ -768,7 +765,7 @@ describe('ST12 SQL injection', () => {
         expect(result.queued).toBe(1);
 
         const bad = [
-          ...['alertKey', 'type', 'level', 'ts'].map((field) => ({ ...alert, [field]: payload })),
+          ...['alertKey', 'type', 'ts'].map((field) => ({ ...alert, [field]: payload })),
           { ...alert, params: { [payload]: 1 } },
           { ...alert, params: payload },
         ];
@@ -785,7 +782,7 @@ describe('ST12 SQL injection', () => {
       expect(stopped.summary?.alerts).toEqual(queue);
     });
 
-    it('rejects injection in the focus start and the alert policy', {
+    it('rejects injection in the focus start', {
       timeout: REQUEST_TIMEOUT_MS,
     }, async () => {
       for (const payload of PAYLOADS) {
@@ -797,58 +794,19 @@ describe('ST12 SQL injection', () => {
         for (const body of starts) {
           expect((await send('POST', '/start', body)).status).toBe(HTTP_BAD_REQUEST);
         }
-        const policies = [
-          { type: payload, level: 'normal' },
-          { type: 'thermal', level: payload },
-        ];
-        for (const entry of policies) {
-          const body = { items: [entry] };
-          expect((await send('PUT', '/alert-policy', body)).status).toBe(HTTP_BAD_REQUEST);
-        }
-      }
-    });
-
-    it('rejects injection in every schedule field and id', {
-      timeout: REQUEST_TIMEOUT_MS,
-    }, async () => {
-      const [profile] = ProfileList.parse((await send('GET', '/profiles')).json).items;
-      if (profile === undefined) {
-        throw new Error('The seeded profile is missing');
-      }
-      const schedule = {
-        profileId: profile.id,
-        days: [0],
-        start: '09:00',
-        end: '12:00',
-        enabled: true,
-      };
-      const created = Schedule.parse((await send('POST', '/schedules', schedule)).json);
-      for (const payload of PAYLOADS) {
-        for (const field of Object.keys(schedule)) {
-          const bad = { ...schedule, [field]: payload };
-          expect((await send('POST', '/schedules', bad)).status).toBe(HTTP_BAD_REQUEST);
-          const update = await send('PUT', `/schedules/${created.id}`, bad);
-          expect(update.status).toBe(HTTP_BAD_REQUEST);
-        }
-        const badId = `/schedules/${encodeURIComponent(payload)}`;
-        expect((await send('PUT', badId, schedule)).status).toBe(HTTP_BAD_REQUEST);
-        expect((await send('DELETE', badId)).status).toBe(HTTP_BAD_REQUEST);
       }
     });
 
     it('still answers every route and logs no database error', {
       timeout: REQUEST_TIMEOUT_MS,
     }, async () => {
-      const policy = { items: [{ type: 'thermal', level: 'critical' }] };
       const profiles = ProfileList.parse((await send('GET', '/profiles')).json).items;
       const state = FocusState.parse((await send('GET', '/state')).json);
-      const replaced = AlertPolicy.parse((await send('PUT', '/alert-policy', policy)).json);
       const apps = KnownAppList.parse((await send('GET', '/known-apps')).json).items;
 
       // Only the seeded profile is left: every injected one was deleted again.
       expect(profiles.map((profile) => profile.name)).toEqual(['Default']);
       expect(state).toEqual({ active: false });
-      expect(replaced).toEqual(policy);
       expect(apps).toHaveLength(PAYLOADS.length);
       expect(AlertQueue.parse((await send('GET', '/queue')).json).items).toEqual([]);
       expect(logs.output()).not.toContain('DatabaseError');

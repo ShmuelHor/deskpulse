@@ -18,8 +18,8 @@ Internal only: the gateway is its one caller, on the `core` network.
 
 - Consecutive samples of one app form a session. A gap of **more than 15 s** closes it at its last
   sample.
-- An idle (`idleMs` ≥ 120 s) or locked sample closes the session at the moment the user went away,
-  `ts - idleMs`, so away time is never counted.
+- A locked sample closes the session at its last sample, so locked time is never counted. There is
+  no idle detection.
 - On a switch to another app, the previous session ends at the new app's first sample, unless there
   was a gap.
 - A batch continues the one stored open session. Samples at or before the newest sample any batch

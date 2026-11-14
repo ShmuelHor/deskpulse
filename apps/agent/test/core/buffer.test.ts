@@ -19,7 +19,6 @@ function sample(pid: number, title?: string): Sample {
     ts: '2026-11-08T09:15:00Z',
     wmClass: 'firefox',
     pid,
-    idleMs: 0,
     locked: false,
     ...(title === undefined ? {} : { title }),
   };
