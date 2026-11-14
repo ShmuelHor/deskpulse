@@ -31,7 +31,7 @@ const available = await dockerAvailable();
  * The upgrade of a live install (T68): its stored settings have no `palette`, which the strict
  * Settings schema requires. Runs on a throwaway Postgres container that is removed afterwards.
  */
-describe.skipIf(!available)('gateway migration for palette and layouts', () => {
+describe.skipIf(!available)('gateway migration for the palette', () => {
   let postgres: DisposablePostgres | undefined;
   let before: string | undefined;
 

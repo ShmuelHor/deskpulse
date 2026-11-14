@@ -1,8 +1,9 @@
-import { layoutFixture } from '@deskpulse/shared/fixtures/data';
+import { layoutFixture, settingsFixture } from '@deskpulse/shared/fixtures/data';
 import type { FastifyInstance } from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 import { toHandlerMap } from '../../../src/core/route-handler.js';
 import { handlers } from '../../../src/routes/layouts/index.js';
+import { handlers as settingsHandlers } from '../../../src/routes/settings/index.js';
 import { testGateway, webSession } from '../../gateway-harness.js';
 import { GATEWAY_HOST, STATUS } from '../../harness.js';
 import { memorySettings } from '../../memory-settings.js';
@@ -21,7 +22,10 @@ describe('layout routes', () => {
   async function start(
     settings = memorySettings(),
   ): Promise<{ gateway: FastifyInstance; headers: Record<string, string> }> {
-    app = await testGateway({ handlers: toHandlerMap(handlers), settings });
+    app = await testGateway({
+      handlers: toHandlerMap({ ...handlers, ...settingsHandlers }),
+      settings,
+    });
     const { headers } = await webSession(app);
     return { gateway: app, headers: { ...headers } };
   }
@@ -121,5 +125,33 @@ describe('layout routes', () => {
     });
 
     expect(response.statusCode).toBe(STATUS.UNAUTHORIZED);
+  });
+
+  it('cannot be written or erased through PUT /v1/settings', async () => {
+    const { gateway, headers } = await start();
+    await gateway.inject({
+      method: 'PUT',
+      url: URL,
+      headers: { ...headers, ...JSON_HEADERS },
+      payload: layoutFixture,
+    });
+
+    const smuggle = await gateway.inject({
+      method: 'PUT',
+      url: '/v1/settings',
+      headers: { ...headers, ...JSON_HEADERS },
+      payload: { ...settingsFixture, layouts: { control: { version: 1, widgets: [] } } },
+    });
+    const replace = await gateway.inject({
+      method: 'PUT',
+      url: '/v1/settings',
+      headers: { ...headers, ...JSON_HEADERS },
+      payload: settingsFixture,
+    });
+    const read = await gateway.inject({ method: 'GET', url: URL, headers });
+
+    expect(smuggle.statusCode).toBe(STATUS.BAD_REQUEST);
+    expect(replace.statusCode).toBe(STATUS.OK);
+    expect(read.json()).toEqual(layoutFixture);
   });
 });

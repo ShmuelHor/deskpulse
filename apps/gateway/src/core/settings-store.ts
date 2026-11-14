@@ -1,10 +1,11 @@
 import { createQueryBuilder } from '@deskpulse/service-kit/sql';
 import { StoredLayout } from '@deskpulse/shared/layouts/layout';
-import type { LayoutPage } from '@deskpulse/shared/layouts/widget-catalog';
+import { LayoutPage } from '@deskpulse/shared/layouts/widget-catalog';
 import { DEFAULT_PALETTE, Settings } from '@deskpulse/shared/settings';
 import type { FastifyBaseLogger } from 'fastify';
-import type { ColumnType } from 'kysely';
+import { type ColumnType, sql } from 'kysely';
 import type { Pool } from 'pg';
+import { z } from 'zod';
 
 /** SPEC §4.1 load thresholds: `some avg10` percent that opens a memory, cpu or io incident. */
 const DEFAULT_THRESHOLDS = { memory: 10, cpu: 40, io: 30 };
@@ -45,52 +46,79 @@ type Json = ColumnType<unknown, string, string>;
 
 interface GatewayTables {
   settings: { id: boolean; value: Json };
-  layouts: { page: string; value: Json };
 }
+
+/**
+ * What the settings row holds: the public settings plus `layouts`, one entry per page. Layouts
+ * stay out of the public `Settings` schema, so `PUT /v1/settings` can neither send nor erase them.
+ */
+const StoredSettings = Settings.extend({
+  layouts: z.partialRecord(LayoutPage, StoredLayout).optional(),
+});
 
 /**
  * The settings in the gateway's own schema. A value that no longer matches
  * the shared schema fails the read rather than reaching a caller as typed data.
+ * Page layouts live in the same row under `layouts`, one key per page (SPEC §5 gateway).
  */
 export function createSettingsStore(pool: Pool): SettingsStore {
   const db = createQueryBuilder<GatewayTables>(pool);
-  const read = async (): Promise<Settings> => {
+  const readStored = async (): Promise<z.infer<typeof StoredSettings> | undefined> => {
     const row = await db
       .selectFrom('settings')
       .select('value')
       .where('id', '=', true)
       .executeTakeFirst();
-    return row === undefined ? DEFAULT_SETTINGS : Settings.parse(row.value);
+    return row === undefined ? undefined : StoredSettings.parse(row.value);
+  };
+  const read = async (): Promise<Settings> => {
+    const stored = await readStored();
+    if (stored === undefined) {
+      return DEFAULT_SETTINGS;
+    }
+    const { layouts: _layouts, ...settings } = stored;
+    return settings;
   };
   return {
     read,
     async write(settings): Promise<Settings> {
       const value = JSON.stringify(Settings.parse(settings));
+      // The saved layouts are carried over from the existing row, in the same statement.
       await db
         .insertInto('settings')
         .values({ id: true, value })
-        .onConflict((conflict) => conflict.column('id').doUpdateSet({ value }))
+        .onConflict((conflict) =>
+          conflict.column('id').doUpdateSet({
+            value: sql`${value}::jsonb || CASE WHEN settings.value ? 'layouts'
+              THEN jsonb_build_object('layouts', settings.value -> 'layouts') ELSE '{}'::jsonb END`,
+          }),
+        )
         .execute();
       return read();
     },
     async readLayout(page): Promise<StoredLayout | null> {
-      const row = await db
-        .selectFrom('layouts')
-        .select('value')
-        .where('page', '=', page)
-        .executeTakeFirst();
-      return row === undefined ? null : StoredLayout.parse(row.value);
+      return (await readStored())?.layouts?.[page] ?? null;
     },
     async writeLayout(page, layout): Promise<void> {
-      const value = JSON.stringify(StoredLayout.parse(layout));
+      const layouts = JSON.stringify({ [page]: StoredLayout.parse(layout) });
+      const fresh = JSON.stringify({ ...DEFAULT_SETTINGS, layouts: JSON.parse(layouts) });
       await db
-        .insertInto('layouts')
-        .values({ page, value })
-        .onConflict((conflict) => conflict.column('page').doUpdateSet({ value }))
+        .insertInto('settings')
+        .values({ id: true, value: fresh })
+        .onConflict((conflict) =>
+          conflict.column('id').doUpdateSet({
+            value: sql`jsonb_set(settings.value, '{layouts}',
+              coalesce(settings.value -> 'layouts', '{}'::jsonb) || ${layouts}::jsonb)`,
+          }),
+        )
         .execute();
     },
     async deleteLayout(page): Promise<void> {
-      await db.deleteFrom('layouts').where('page', '=', page).execute();
+      await db
+        .updateTable('settings')
+        .set({ value: sql`value #- ARRAY['layouts', ${page}]` })
+        .where('id', '=', true)
+        .execute();
     },
   };
 }

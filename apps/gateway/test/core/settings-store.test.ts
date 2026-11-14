@@ -103,4 +103,27 @@ describe.skipIf(!available)('createSettingsStore', () => {
 
     expect(await settings.readLayout('focus')).toBeNull();
   });
+
+  it('keeps the layouts when the settings are replaced, and the settings when a layout changes', async () => {
+    const settings = store();
+    const layout = { version: 1 as const, widgets: [{ id: 'cpu', w: 1, h: 1 }] };
+    await settings.write(CHANGED);
+
+    await settings.writeLayout('control', layout);
+    await settings.write(DEFAULT_SETTINGS);
+
+    expect(await settings.readLayout('control')).toEqual(layout);
+    expect(await settings.read()).toEqual(DEFAULT_SETTINGS);
+
+    await settings.deleteLayout('control');
+
+    expect(await settings.read()).toEqual(DEFAULT_SETTINGS);
+  });
+
+  it('never returns layouts as part of the settings', async () => {
+    const settings = store();
+    await settings.writeLayout('time', { version: 1, widgets: [] });
+
+    expect(Object.keys(await settings.read())).not.toContain('layouts');
+  });
 });
