@@ -7,13 +7,18 @@
  */
 import { execFile } from 'node:child_process';
 
-import { type DockerRunner, migrateVolume, VolumeMigrationError } from './lib/volume-migration.js';
+import {
+  ALREADY_MIGRATED_NOTICE,
+  type DockerRunner,
+  migrateVolume,
+  VolumeMigrationError,
+} from './lib/volume-migration.js';
 
 const EXIT_FAILURE = 1;
 const MAX_OUTPUT_BYTES = 1_048_576;
 const MESSAGES = {
   'nothing-to-migrate': 'No pre-DeskPulse data volume found. Nothing to migrate.',
-  'already-migrated': 'The DeskPulse data volume already exists. Nothing to migrate.',
+  'already-migrated': ALREADY_MIGRATED_NOTICE,
   migrated:
     'Data copied to the DeskPulse volume. The old volume is untouched; remove it with `docker volume rm yoman_pgdata` once you are sure.',
 } as const;

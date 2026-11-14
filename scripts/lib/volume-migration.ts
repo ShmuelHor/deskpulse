@@ -20,6 +20,13 @@ export const COPY_IMAGE =
 /** Present in every initialized Postgres data directory. */
 export const DATA_MARKER = 'PG_VERSION';
 
+/** Shown when both volumes exist: the new one may be empty from an early `compose up`. */
+export const ALREADY_MIGRATED_NOTICE = [
+  'The DeskPulse data volume already exists, so nothing was copied.',
+  'If the app looks empty, the new volume was probably created by an early `docker compose up`.',
+  'To recover: `docker compose down -v`, then `npm run migrate:yoman`.',
+].join('\n');
+
 export type MigrationOutcome = 'nothing-to-migrate' | 'already-migrated' | 'migrated';
 
 /** What `docker` answered, reduced to what the plan needs. */
@@ -31,7 +38,11 @@ export interface DockerRunner {
 }
 
 export class VolumeMigrationError extends Error {
-  public readonly code: 'LEGACY_STACK_RUNNING' | 'COPY_FAILED' | 'VERIFY_FAILED';
+  public readonly code:
+    | 'LEGACY_STACK_RUNNING'
+    | 'STACK_CHECK_FAILED'
+    | 'COPY_FAILED'
+    | 'VERIFY_FAILED';
 
   public constructor(code: VolumeMigrationError['code'], message: string) {
     super(message);
@@ -99,6 +110,13 @@ export async function migrateVolume(docker: DockerRunner): Promise<MigrationOutc
     return 'already-migrated';
   }
   const users = await docker.run(['ps', '--quiet', '--filter', `volume=${LEGACY_VOLUME}`]);
+  if (users.code !== 0) {
+    // Fail closed: an unanswered question is not an answer of "nobody uses it".
+    throw new VolumeMigrationError(
+      'STACK_CHECK_FAILED',
+      'Could not tell whether the old stack is running (docker ps failed)',
+    );
+  }
   if (users.stdout !== '') {
     throw new VolumeMigrationError(
       'LEGACY_STACK_RUNNING',

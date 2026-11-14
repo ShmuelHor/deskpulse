@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import {
+  ALREADY_MIGRATED_NOTICE,
   COPY_IMAGE,
   type DockerRunner,
   LEGACY_VOLUME,
@@ -35,7 +36,10 @@ function fakeDocker(options: {
         });
       }
       if (key === 'ps --quiet') {
-        return Promise.resolve({ code: 0, stdout: options.usedBy ?? '' });
+        return Promise.resolve({
+          code: options.fail?.includes(key) ? 1 : 0,
+          stdout: options.usedBy ?? '',
+        });
       }
       const entrypoint = args[args.indexOf('--entrypoint') + 1] ?? key;
       return Promise.resolve({ code: options.fail?.includes(entrypoint) ? 1 : 0, stdout: '' });
@@ -66,6 +70,18 @@ describe('migrateVolume', () => {
 
     await expect(migrateVolume(docker)).rejects.toMatchObject({ code: 'LEGACY_STACK_RUNNING' });
     expect(docker.calls.some((call) => call[0] === 'run')).toBe(false);
+  });
+
+  it('fails closed when docker ps itself fails', async () => {
+    const docker = fakeDocker({ volumes: [LEGACY_VOLUME], fail: ['ps --quiet'] });
+
+    await expect(migrateVolume(docker)).rejects.toMatchObject({ code: 'STACK_CHECK_FAILED' });
+    expect(docker.calls.some((call) => call[0] === 'run')).toBe(false);
+  });
+
+  it('tells the user how to recover when both volumes exist', () => {
+    expect(ALREADY_MIGRATED_NOTICE).toContain('docker compose down -v');
+    expect(ALREADY_MIGRATED_NOTICE).toContain('npm run migrate:yoman');
   });
 
   it('copies with the old volume read-only, offline, then verifies the copy', async () => {
