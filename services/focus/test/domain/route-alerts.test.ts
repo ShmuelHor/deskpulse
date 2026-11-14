@@ -1,23 +1,20 @@
-import type { Alert, AlertLevel, AlertType } from '@deskpulse/shared/alerts';
+import { type Alert, AlertType } from '@deskpulse/shared/alerts';
 import { describe, expect, it } from 'vitest';
 
 import {
   decide,
-  effectiveLevel,
   isRateLimited,
   RATE_LIMIT_MS,
   routeAlerts,
 } from '../../src/domain/route-alerts.js';
 
 const NOW_MS = Date.parse('2026-11-08T10:00:00.000Z');
-const NO_POLICY = new Map<AlertType, AlertLevel>();
 const NOTHING_SENT = new Map<string, number>();
 
 function alert(overrides: Partial<Alert> = {}): Alert {
   return {
     alertKey: 'battery-low:15',
     type: 'battery-low',
-    level: 'important',
     ts: '2026-11-08T09:59:00.000Z',
     params: { percent: 14 },
     ...overrides,
@@ -25,29 +22,15 @@ function alert(overrides: Partial<Alert> = {}): Alert {
 }
 
 describe('decide', () => {
-  it.each([
-    ['critical', true, 'deliver'],
-    ['important', true, 'queue'],
-    ['normal', true, 'queue'],
-    ['critical', false, 'deliver'],
-    ['important', false, 'deliver'],
-    ['normal', false, 'deliver'],
-  ] as const)('a %s alert with inFocus=%s is routed to %s', (level, inFocus, expected) => {
-    expect(decide(level, inFocus)).toBe(expected);
-  });
-});
+  it('queues every alert type during focus except battery-critical', () => {
+    const queued = AlertType.options.filter((type) => decide(type, true) === 'queue');
 
-describe('effectiveLevel', () => {
-  it("uses the policy's level for the alert type over the sender's level", () => {
-    const policy = new Map<AlertType, AlertLevel>([['battery-low', 'critical']]);
-
-    expect(effectiveLevel(alert(), policy)).toBe('critical');
+    expect(queued).toEqual(AlertType.options.filter((type) => type !== 'battery-critical'));
+    expect(decide('battery-critical', true)).toBe('deliver');
   });
 
-  it("keeps the sender's level when the policy has no entry for the type", () => {
-    const policy = new Map<AlertType, AlertLevel>([['thermal', 'normal']]);
-
-    expect(effectiveLevel(alert(), policy)).toBe('important');
+  it.each(AlertType.options)('delivers %s outside focus', (type) => {
+    expect(decide(type, false)).toBe('deliver');
   });
 });
 
@@ -60,56 +43,39 @@ describe('isRateLimited', () => {
 });
 
 describe('routeAlerts', () => {
-  const levels: AlertLevel[] = ['critical', 'important', 'normal'];
+  const types: AlertType[] = ['battery-critical', 'thermal', 'pressure-incident'];
 
-  it('queues everything but critical during focus', () => {
-    const alerts = levels.map((level) => alert({ alertKey: `k-${level}`, level }));
+  it('queues everything but battery-critical during focus', () => {
+    const alerts = types.map((type) => alert({ alertKey: `k-${type}`, type }));
 
     const outcome = routeAlerts({
       alerts,
-      policy: NO_POLICY,
       inFocus: true,
       lastAccepted: NOTHING_SENT,
       nowMs: NOW_MS,
     });
 
-    expect(outcome.deliver.map((a) => a.level)).toEqual(['critical']);
-    expect(outcome.queue.map((a) => a.level)).toEqual(['important', 'normal']);
+    expect(outcome.deliver.map((a) => a.type)).toEqual(['battery-critical']);
+    expect(outcome.queue.map((a) => a.type)).toEqual(['thermal', 'pressure-incident']);
   });
 
-  it('delivers every level outside focus', () => {
-    const alerts = levels.map((level) => alert({ alertKey: `k-${level}`, level }));
+  it('delivers every type outside focus', () => {
+    const alerts = types.map((type) => alert({ alertKey: `k-${type}`, type }));
 
     const outcome = routeAlerts({
       alerts,
-      policy: NO_POLICY,
       inFocus: false,
       lastAccepted: NOTHING_SENT,
       nowMs: NOW_MS,
     });
 
-    expect(outcome.deliver.map((a) => a.level)).toEqual(levels);
+    expect(outcome.deliver.map((a) => a.type)).toEqual(types);
     expect(outcome.queue).toEqual([]);
   });
 
-  it('routes by the policy level and passes that level on to the notifier', () => {
-    const policy = new Map<AlertType, AlertLevel>([['battery-low', 'critical']]);
-
+  it('drops an alert whose key was let through in the last 10 min, even an empty battery', () => {
     const outcome = routeAlerts({
-      alerts: [alert()],
-      policy,
-      inFocus: true,
-      lastAccepted: NOTHING_SENT,
-      nowMs: NOW_MS,
-    });
-
-    expect(outcome.deliver).toEqual([alert({ level: 'critical' })]);
-  });
-
-  it('drops an alert whose key was let through in the last 10 min, even a critical one', () => {
-    const outcome = routeAlerts({
-      alerts: [alert({ level: 'critical' })],
-      policy: NO_POLICY,
+      alerts: [alert({ type: 'battery-critical' })],
       inFocus: false,
       lastAccepted: new Map([['battery-low:15', NOW_MS - RATE_LIMIT_MS + 1]]),
       nowMs: NOW_MS,
@@ -121,7 +87,6 @@ describe('routeAlerts', () => {
   it('counts a queued alert against the rate limit, so a repeat in the same batch is dropped', () => {
     const outcome = routeAlerts({
       alerts: [alert(), alert({ ts: '2026-11-08T09:59:30.000Z' }), alert({ alertKey: 'other' })],
-      policy: NO_POLICY,
       inFocus: true,
       lastAccepted: NOTHING_SENT,
       nowMs: NOW_MS,
@@ -135,7 +100,6 @@ describe('routeAlerts', () => {
   it('lets a key through again once its window has passed', () => {
     const outcome = routeAlerts({
       alerts: [alert()],
-      policy: NO_POLICY,
       inFocus: false,
       lastAccepted: new Map([['battery-low:15', NOW_MS - RATE_LIMIT_MS]]),
       nowMs: NOW_MS,

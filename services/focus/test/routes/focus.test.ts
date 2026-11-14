@@ -22,7 +22,6 @@ const profile: Profile = {
 const important = {
   alertKey: 'thermal:x:2026-11-08',
   type: 'thermal',
-  level: 'important',
   ts: NOW.toISOString(),
   params: { celsius: 95 },
 } as const;

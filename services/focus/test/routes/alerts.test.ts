@@ -1,4 +1,4 @@
-import { AlertPolicy, AlertQueue } from '@deskpulse/shared/focus';
+import { AlertQueue } from '@deskpulse/shared/focus';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { RouteResult } from '../../src/contracts.js';
@@ -10,7 +10,6 @@ const HTTP_BAD_REQUEST = 400;
 const alert = {
   alertKey: 'battery-low:15',
   type: 'battery-low',
-  level: 'important',
   ts: NOW.toISOString(),
   params: { percent: 14 },
 };
@@ -63,18 +62,6 @@ describe('alert routes', () => {
     expect(AlertQueue.parse(response.json())).toEqual({ items: [] });
   });
 
-  it('replaces and reads the alert policy against the shared contract', async () => {
-    subject = createTestService();
-    const { app } = subject.service;
-    const policy = { items: [{ type: 'thermal', level: 'critical' }] };
-
-    const replaced = await app.inject({ method: 'PUT', url: '/alert-policy', payload: policy });
-    const read = await app.inject({ method: 'GET', url: '/alert-policy' });
-
-    expect(AlertPolicy.parse(replaced.json())).toEqual(policy);
-    expect(AlertPolicy.parse(read.json())).toEqual(policy);
-  });
-
   it.each([
     ['an unknown alert type', { alerts: [{ ...alert, type: 'rm -rf' }] }],
     ['an alert key with a quote', { alerts: [{ ...alert, alertKey: "a'b" }] }],
@@ -83,23 +70,6 @@ describe('alert routes', () => {
     subject = createTestService();
 
     const response = await subject.service.app.inject({ method: 'POST', url: '/route', payload });
-
-    expect(response.statusCode).toBe(HTTP_BAD_REQUEST);
-  });
-
-  it('rejects a policy that names a type twice with 400', async () => {
-    subject = createTestService();
-
-    const response = await subject.service.app.inject({
-      method: 'PUT',
-      url: '/alert-policy',
-      payload: {
-        items: [
-          { type: 'thermal', level: 'critical' },
-          { type: 'thermal', level: 'normal' },
-        ],
-      },
-    });
 
     expect(response.statusCode).toBe(HTTP_BAD_REQUEST);
   });

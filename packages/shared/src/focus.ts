@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AlertLevel, AlertType, QueuedAlert } from './alerts.js';
+import { QueuedAlert } from './alerts.js';
 import { AppId, ClockTime, EntityId, Label, Timestamp } from './common.js';
 import { LIMITS } from './limits.js';
 
@@ -20,15 +20,11 @@ export type Profile = z.infer<typeof Profile>;
 export const ProfileList = z.strictObject({ items: z.array(Profile).max(LIMITS.listSize) });
 export type ProfileList = z.infer<typeof ProfileList>;
 
-export const FocusSource = z.enum(['manual', 'schedule', 'pomodoro', 'auto']);
-export type FocusSource = z.infer<typeof FocusSource>;
-
 export const FocusState = z.discriminatedUnion('active', [
   z.strictObject({ active: z.literal(false) }),
   z.strictObject({
     active: z.literal(true),
     profileId: EntityId,
-    source: FocusSource,
     startedAt: Timestamp,
     endsAt: Timestamp,
   }),
@@ -91,16 +87,3 @@ export type KnownAppsReport = z.infer<typeof KnownAppsReport>;
 
 export const KnownAppsResult = z.strictObject({ added: z.int().min(0).max(LIMITS.listSize) });
 export type KnownAppsResult = z.infer<typeof KnownAppsResult>;
-
-export const AlertPolicyEntry = z.strictObject({ type: AlertType, level: AlertLevel });
-export type AlertPolicyEntry = z.infer<typeof AlertPolicyEntry>;
-
-export const AlertPolicy = z.strictObject({
-  items: z
-    .array(AlertPolicyEntry)
-    .max(AlertType.options.length)
-    .refine((items) => new Set(items.map((i) => i.type)).size === items.length, {
-      message: 'each alert type appears once',
-    }),
-});
-export type AlertPolicy = z.infer<typeof AlertPolicy>;

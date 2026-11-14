@@ -7,19 +7,12 @@ import { useTranslation } from 'react-i18next';
 
 import type { GatewayClient } from '../../api/gateway.js';
 import { AlertCenter } from './alert-center.js';
-import { AlertPolicy } from './alert-policy.js';
 import { FocusCard } from './focus-card.js';
 import { KnownApps } from './known-apps.js';
 import { useFocusMutations } from './mutations.js';
 import { newAppIds } from './profile-form.js';
 import { ProfilesSection } from './profiles-section.js';
-import {
-  alertPolicyQuery,
-  alertQueueQuery,
-  focusStateQuery,
-  knownAppsQuery,
-  profilesQuery,
-} from './queries.js';
+import { alertQueueQuery, focusStateQuery, knownAppsQuery, profilesQuery } from './queries.js';
 import { Section } from './section.js';
 
 interface FocusPageProps {
@@ -38,7 +31,6 @@ export function FocusPage({ client, now }: FocusPageProps): React.JSX.Element {
   const profiles = useQuery(profilesQuery(client));
   const knownApps = useQuery(knownAppsQuery(client));
   const queue = useQuery(alertQueueQuery(client));
-  const policy = useQuery(alertPolicyQuery(client));
   const mutations = useFocusMutations(client);
 
   const profileItems = profiles.data?.items ?? [];
@@ -73,17 +65,6 @@ export function FocusPage({ client, now }: FocusPageProps): React.JSX.Element {
       <Section title={t('queue.title')}>
         {queue.isError ? <Alert severity="error">{t('errors.queue')}</Alert> : null}
         {queue.data === undefined ? null : <AlertCenter items={queue.data.items} />}
-      </Section>
-
-      <Section title={t('policy.title')}>
-        {policy.isError ? <Alert severity="error">{t('errors.policy')}</Alert> : null}
-        {policy.data === undefined ? null : (
-          <AlertPolicy
-            policy={policy.data}
-            saving={mutations.updateAlertPolicy.isPending}
-            onSave={(body): void => mutations.updateAlertPolicy.mutate(body)}
-          />
-        )}
       </Section>
     </Stack>
   );

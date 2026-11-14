@@ -11,8 +11,8 @@ import type { FocusStore } from './store.js';
 export const QUEUE_CAPACITY = LIMITS.listSize;
 
 /**
- * Decides an ingest batch's alerts: deliver now, queue, or drop by the rate
- * limit. A session that ran out since the last call is closed first, so its
+ * Decides an ingest batch's alerts: deliver now, queue, or drop as a duplicate.
+ * A session that ran out since the last call is closed first, so its
  * summary rides back on this reply and new alerts are routed as outside focus.
  */
 export function routeIncoming(
@@ -30,7 +30,6 @@ export function routeIncoming(
     await tx.forgetAcceptedBefore(nowMs - RATE_LIMIT_MS);
     const outcome = routeAlerts({
       alerts: request.alerts,
-      policy: await tx.alertPolicy(),
       inFocus,
       lastAccepted: await tx.lastAccepted(request.alerts.map((alert) => alert.alertKey)),
       nowMs,

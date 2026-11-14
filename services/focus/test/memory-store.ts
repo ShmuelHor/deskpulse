@@ -1,8 +1,7 @@
 import { randomUUID } from 'node:crypto';
-import type { AlertLevel, AlertType, QueuedAlert } from '@deskpulse/shared/alerts';
+import type { QueuedAlert } from '@deskpulse/shared/alerts';
 import type { KnownApp, Profile } from '@deskpulse/shared/focus';
 
-import type { Schedule } from '../src/contracts.js';
 import type { FocusSession } from '../src/domain/focus-session.js';
 import type { FocusStore, FocusTransaction } from '../src/use-cases/store.js';
 
@@ -14,10 +13,8 @@ interface State {
   profiles: Profile[];
   sessions: StoredSession[];
   knownApps: KnownApp[];
-  policy: [AlertType, AlertLevel][];
   accepted: [string, number][];
   queue: QueuedAlert[];
-  schedules: Schedule[];
 }
 
 export interface MemoryStore extends FocusStore {
@@ -65,7 +62,6 @@ function bind(state: State): FocusTransaction {
     deleteProfile: async (id): Promise<boolean> => {
       const [kept, removed] = removeById(state.profiles, id);
       state.profiles = kept;
-      state.schedules = state.schedules.filter((s) => s.profileId !== id);
       return removed;
     },
     listKnownApps: async (limit) =>
@@ -97,10 +93,6 @@ function bind(state: State): FocusTransaction {
       }
       return added;
     },
-    alertPolicy: async () => new Map(state.policy),
-    replaceAlertPolicy: async (entries): Promise<void> => {
-      state.policy = entries.map((entry) => [entry.type, entry.level]);
-    },
     lastAccepted: async (keys) => new Map(state.accepted.filter(([key]) => keys.includes(key))),
     recordAccepted: async (keys, atMs): Promise<void> => {
       state.accepted = [
@@ -123,26 +115,6 @@ function bind(state: State): FocusTransaction {
       state.queue = [];
       return drained;
     },
-    listSchedules: async (limit) => state.schedules.slice(0, limit),
-    countSchedules: async () => state.schedules.length,
-    createSchedule: async (input): Promise<Schedule> => {
-      const schedule = { id: randomUUID(), ...input };
-      state.schedules.push(schedule);
-      return schedule;
-    },
-    updateSchedule: async (id, input): Promise<Schedule | null> => {
-      if (!state.schedules.some((s) => s.id === id)) {
-        return null;
-      }
-      const updated = { id, ...input };
-      state.schedules = state.schedules.map((s) => (s.id === id ? updated : s));
-      return updated;
-    },
-    deleteSchedule: async (id): Promise<boolean> => {
-      const [kept, removed] = removeById(state.schedules, id);
-      state.schedules = kept;
-      return removed;
-    },
   };
 }
 
@@ -152,10 +124,8 @@ export function createMemoryStore(initial: Partial<State> = {}): MemoryStore {
     profiles: [],
     sessions: [],
     knownApps: [],
-    policy: [],
     accepted: [],
     queue: [],
-    schedules: [],
     ...initial,
   };
   return {

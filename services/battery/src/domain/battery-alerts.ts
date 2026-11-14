@@ -1,4 +1,4 @@
-import type { Alert, AlertLevel, AlertType } from '@deskpulse/shared/alerts';
+import type { Alert, AlertType } from '@deskpulse/shared/alerts';
 import type { BatteryStatus } from '@deskpulse/shared/ingest';
 import { LIMITS } from '@deskpulse/shared/limits';
 
@@ -14,13 +14,6 @@ export const DRAIN_LEVELS = ['none', 'low', 'critical'] as const;
 export type DrainLevel = (typeof DRAIN_LEVELS)[number];
 
 type BatteryAlertType = Extract<AlertType, `battery-${string}`>;
-
-/** The alert levels SPEC §5 battery assigns; focus's `alert_policy` may override them. */
-const LEVELS: Readonly<Record<BatteryAlertType, AlertLevel>> = {
-  'battery-low': 'important',
-  'battery-critical': 'critical',
-  'battery-plugged-full': 'normal',
-};
 
 /**
  * What the alert rules remember between batches, so each alert fires once when
@@ -76,7 +69,7 @@ function isPluggedFull(reading: AlertReading): boolean {
 
 /** The type is the key, so focus's rate limit also damps a charger plugged in and out. */
 function alert(type: BatteryAlertType, reading: AlertReading, params: Alert['params']): Alert {
-  return { alertKey: type, type, level: LEVELS[type], ts: reading.ts, params };
+  return { alertKey: type, type, ts: reading.ts, params };
 }
 
 function step(state: AlertState, reading: AlertReading): AlertOutcome {

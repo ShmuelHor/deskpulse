@@ -43,15 +43,6 @@
     "label": "Alerts held back during focus",
     "empty": "No alerts were held back."
   },
-  "policy": {
-    "title": "Alert levels",
-    "default": "Default"
-  },
-  "levels": {
-    "critical": "Critical",
-    "important": "Important",
-    "normal": "Normal"
-  },
   "dialog": {
     "create": "Add profile",
     "edit": "Edit profile"
@@ -72,16 +63,14 @@
     "state": "Focus state could not be loaded.",
     "profiles": "Profiles could not be loaded.",
     "apps": "Apps could not be loaded.",
-    "queue": "Held alerts could not be loaded.",
-    "policy": "Alert levels could not be loaded."
+    "queue": "Held alerts could not be loaded."
   },
   "toast": {
     "started": "Focus mode started",
     "stopped": "Focus mode stopped",
     "profileCreated": "Profile created",
     "profileSaved": "Profile saved",
-    "profileDeleted": "Profile deleted",
-    "policySaved": "Alert levels saved"
+    "profileDeleted": "Profile deleted"
   },
   "notifications": {
     "batteryLow": {

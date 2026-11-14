@@ -1,30 +1,23 @@
-import type { Alert, AlertLevel, AlertType } from '@deskpulse/shared/alerts';
+import type { Alert, AlertType } from '@deskpulse/shared/alerts';
 
 const MS_PER_MINUTE = 60_000;
-const RATE_LIMIT_MINUTES = 10;
+const DEDUPE_MINUTES = 10;
 
-/** At most one alert per `alertKey` in this window (SPEC §5 focus). */
-export const RATE_LIMIT_MS = RATE_LIMIT_MINUTES * MS_PER_MINUTE;
+/** The same `alertKey` is let through at most once in this window (SPEC §5 focus). */
+export const RATE_LIMIT_MS = DEDUPE_MINUTES * MS_PER_MINUTE;
+
+/** The only alert that gets through during focus: the battery is almost empty (SPEC §5 focus). */
+export const ALWAYS_DELIVERED: AlertType = 'battery-critical';
 
 export type Decision = 'deliver' | 'queue';
 
 /**
- * SPEC §5 focus levels: `critical` always gets through; `important` and
- * `normal` get through only outside focus, and are queued during it.
+ * The fixed rule of SPEC §5 focus, with no settings: outside focus everything
+ * is delivered; during focus only {@link ALWAYS_DELIVERED} is, and the rest is
+ * held for the focus-end summary.
  */
-export function decide(level: AlertLevel, inFocus: boolean): Decision {
-  if (!inFocus || level === 'critical') {
-    return 'deliver';
-  }
-  return 'queue';
-}
-
-/** The user's `alert_policy` decides an alert type's level; without an entry, the sender's does. */
-export function effectiveLevel(
-  alert: Alert,
-  policy: ReadonlyMap<AlertType, AlertLevel>,
-): AlertLevel {
-  return policy.get(alert.type) ?? alert.level;
+export function decide(type: AlertType, inFocus: boolean): Decision {
+  return !inFocus || type === ALWAYS_DELIVERED ? 'deliver' : 'queue';
 }
 
 /** True when an alert with this key was let through (delivered or queued) less than 10 min ago. */
@@ -34,7 +27,6 @@ export function isRateLimited(lastAcceptedMs: number | undefined, nowMs: number)
 
 export interface RoutingInput {
   readonly alerts: readonly Alert[];
-  readonly policy: ReadonlyMap<AlertType, AlertLevel>;
   readonly inFocus: boolean;
   /** When each key was last let through, for the keys in `alerts`. */
   readonly lastAccepted: ReadonlyMap<string, number>;
@@ -44,16 +36,15 @@ export interface RoutingInput {
 export interface RoutingOutcome {
   readonly deliver: Alert[];
   readonly queue: Alert[];
-  /** Alerts dropped by the rate limit. */
+  /** Alerts dropped as duplicates inside the 10 min window. */
   readonly limited: number;
-  /** The keys let through now, which restart their rate-limit window. */
+  /** The keys let through now, which restart their window. */
   readonly acceptedKeys: string[];
 }
 
 /**
- * Decides every alert of a batch, in order. An alert carries its effective
- * level onward, so the notifier's urgency matches the decision. A second
- * alert with the same key in one batch falls inside the first one's window.
+ * Decides every alert of a batch, in order. A second alert with the same key
+ * in one batch falls inside the first one's window.
  */
 export function routeAlerts(input: RoutingInput): RoutingOutcome {
   const lastAccepted = new Map(input.lastAccepted);
@@ -67,8 +58,7 @@ export function routeAlerts(input: RoutingInput): RoutingOutcome {
     }
     lastAccepted.set(alert.alertKey, input.nowMs);
     acceptedKeys.push(alert.alertKey);
-    const level = effectiveLevel(alert, input.policy);
-    decided[decide(level, input.inFocus)].push({ ...alert, level });
+    decided[decide(alert.type, input.inFocus)].push(alert);
   }
   return { deliver: decided.deliver, queue: decided.queue, limited, acceptedKeys };
 }

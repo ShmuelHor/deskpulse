@@ -16,7 +16,6 @@ export interface ProfilesTable {
 export interface FocusSessionsTable {
   readonly id: Generated<string>;
   readonly profile_id: string | null;
-  readonly source: string;
   readonly started_at: Timestamp;
   readonly ends_at: Timestamp;
   readonly ended_at: Timestamp | null;
@@ -30,11 +29,6 @@ export interface KnownAppsTable {
   readonly first_seen_at: Generated<Date>;
 }
 
-export interface AlertPolicyTable {
-  readonly type: string;
-  readonly level: string;
-}
-
 export interface AlertRateLimitsTable {
   readonly alert_key: string;
   readonly accepted_at: Timestamp;
@@ -45,20 +39,9 @@ export interface QueuedAlertsTable {
   readonly id: Generated<string>;
   readonly alert_key: string;
   readonly type: string;
-  readonly level: string;
   readonly ts: Timestamp;
   readonly params: Json;
   readonly queued_at: Timestamp;
-}
-
-export interface SchedulesTable {
-  readonly id: Generated<string>;
-  readonly profile_id: string;
-  readonly days: number[];
-  readonly start_at: string;
-  readonly end_at: string;
-  readonly enabled: boolean;
-  readonly created_at: Generated<Date>;
 }
 
 /** The `focus` schema, as its migrations create it. */
@@ -66,8 +49,6 @@ export interface FocusDatabase {
   readonly profiles: ProfilesTable;
   readonly focus_sessions: FocusSessionsTable;
   readonly known_apps: KnownAppsTable;
-  readonly alert_policy: AlertPolicyTable;
   readonly alert_rate_limits: AlertRateLimitsTable;
   readonly queued_alerts: QueuedAlertsTable;
-  readonly schedules: SchedulesTable;
 }

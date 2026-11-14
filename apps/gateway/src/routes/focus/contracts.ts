@@ -1,5 +1,4 @@
 import {
-  AlertPolicy,
   AlertQueue,
   FocusChange,
   KnownAppList,
@@ -28,4 +27,3 @@ export const ProfileListReply = z.object(ProfileList.shape);
 export const AlertQueueReply = z.object(AlertQueue.shape);
 export const KnownAppListReply = z.object(KnownAppList.shape);
 export const KnownAppsResultReply = z.object(KnownAppsResult.shape);
-export const AlertPolicyReply = z.object(AlertPolicy.shape);

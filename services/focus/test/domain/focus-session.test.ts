@@ -18,7 +18,6 @@ const JERUSALEM = 'Asia/Jerusalem';
 const session: FocusSession = {
   id: '00000000-0000-4000-8000-000000000001',
   profileId: '00000000-0000-4000-8000-0000000000aa',
-  source: 'manual',
   startedAtMs: START_MS,
   endsAtMs: END_MS,
   mutedApps: ['slack'],
@@ -29,7 +28,6 @@ describe('toFocusState', () => {
     expect(toFocusState(session, START_MS + MINUTE_MS)).toEqual({
       active: true,
       profileId: session.profileId,
-      source: 'manual',
       startedAt: '2026-11-08T10:00:00.000Z',
       endsAt: '2026-11-08T10:30:00.000Z',
     });

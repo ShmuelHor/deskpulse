@@ -50,7 +50,6 @@ describe('advanceAlerts: low and critical', () => {
       {
         alertKey: 'battery-low',
         type: 'battery-low',
-        level: 'important',
         ts: '2026-11-08T09:01:00.000Z',
         params: { percent: LOW },
       },
@@ -61,12 +60,10 @@ describe('advanceAlerts: low and critical', () => {
     expect(run([at('08 09:00', AT_LOW_THRESHOLD)]).types).toEqual([]);
   });
 
-  it('raises a critical battery-critical alert below 8%', () => {
+  it('raises a battery-critical alert below 8%', () => {
     const { alerts } = advanceAlerts(INITIAL_ALERT_STATE, [at('08 09:00', CRITICAL)]);
 
-    expect(alerts).toMatchObject([
-      { type: 'battery-critical', level: 'critical', params: { percent: CRITICAL } },
-    ]);
+    expect(alerts).toMatchObject([{ type: 'battery-critical', params: { percent: CRITICAL } }]);
   });
 
   it('alerts once per level, not on every sample below it', () => {
@@ -116,7 +113,6 @@ describe('advanceAlerts: plugged in at 100%', () => {
       {
         alertKey: 'battery-plugged-full',
         type: 'battery-plugged-full',
-        level: 'normal',
         ts: '2026-11-08T13:01:00.000Z',
         params: { hours: 4 },
       },

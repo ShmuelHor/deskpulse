@@ -1,12 +1,5 @@
 import { parseRows, pgArray, toPgText, unnest } from '@deskpulse/service-kit/sql';
-import {
-  type Alert,
-  AlertLevel,
-  AlertParams,
-  AlertType,
-  QueuedAlert,
-} from '@deskpulse/shared/alerts';
-import type { AlertPolicyEntry } from '@deskpulse/shared/focus';
+import { type Alert, AlertParams, AlertType, QueuedAlert } from '@deskpulse/shared/alerts';
 import { type Kysely, sql } from 'kysely';
 import { z } from 'zod';
 
@@ -14,26 +7,23 @@ import type { FocusDatabase } from './database.js';
 
 type Db = Kysely<FocusDatabase>;
 
-const PolicyRow = z.object({ type: AlertType, level: AlertLevel });
 const AcceptedRow = z.object({ alert_key: z.string(), accepted_at: z.date() });
 const QueuedRow = z.object({
   alert_key: z.string(),
   type: AlertType,
-  level: AlertLevel,
   ts: z.date(),
   params: AlertParams,
   queued_at: z.date(),
 });
 type QueuedRow = z.infer<typeof QueuedRow>;
 
-const QUEUED_COLUMNS = ['alert_key', 'type', 'level', 'ts', 'params', 'queued_at'] as const;
+const QUEUED_COLUMNS = ['alert_key', 'type', 'ts', 'params', 'queued_at'] as const;
 
 function toQueuedAlert(row: QueuedRow): QueuedAlert {
   return QueuedAlert.parse({
     alert: {
       alertKey: row.alert_key,
       type: row.type,
-      level: row.level,
       ts: row.ts.toISOString(),
       params: row.params,
     },
@@ -48,44 +38,6 @@ function storableParams(params: Alert['params']): string {
     typeof value === 'string' ? toPgText(value) : value,
   ]);
   return JSON.stringify(Object.fromEntries(entries));
-}
-
-export async function alertPolicy(db: Db): Promise<Map<AlertType, AlertLevel>> {
-  const rows = parseRows(
-    PolicyRow,
-    await db.selectFrom('alert_policy').select(['type', 'level']).execute(),
-  );
-  return new Map(rows.map((row) => [row.type, row.level]));
-}
-
-export async function replaceAlertPolicy(
-  db: Db,
-  entries: readonly AlertPolicyEntry[],
-): Promise<void> {
-  await db.deleteFrom('alert_policy').execute();
-  if (entries.length === 0) {
-    return;
-  }
-  await db
-    .insertInto('alert_policy')
-    .columns(['type', 'level'])
-    .expression((eb) =>
-      eb
-        .selectFrom(
-          unnest<{ type: string; level: string }, 't'>('t', {
-            type: pgArray(
-              'text',
-              entries.map((entry) => entry.type),
-            ),
-            level: pgArray(
-              'text',
-              entries.map((entry) => entry.level),
-            ),
-          }),
-        )
-        .selectAll(),
-    )
-    .execute();
 }
 
 export async function lastAccepted(db: Db, keys: readonly string[]): Promise<Map<string, number>> {
@@ -130,7 +82,6 @@ export async function forgetAcceptedBefore(db: Db, beforeMs: number): Promise<vo
 interface AlertBatchRow {
   readonly alert_key: string;
   readonly type: string;
-  readonly level: string;
   readonly ts: Date;
   readonly params: string;
 }
@@ -156,10 +107,6 @@ export async function enqueue(
         'text',
         alerts.map((alert) => alert.type),
       ),
-      level: pgArray(
-        'text',
-        alerts.map((alert) => alert.level),
-      ),
       ts: pgArray(
         'timestamptz',
         alerts.map((alert) => new Date(alert.ts)),
@@ -180,7 +127,6 @@ export async function enqueue(
         .select([
           't.alert_key',
           't.type',
-          't.level',
           't.ts',
           't.params',
           sql<Date>`${new Date(atMs)}`.as('queued_at'),

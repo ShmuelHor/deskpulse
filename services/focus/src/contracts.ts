@@ -1,5 +1,5 @@
 import { Alert, QueuedAlert } from '@deskpulse/shared/alerts';
-import { ClockTime, EntityId, Timestamp } from '@deskpulse/shared/common';
+import { EntityId, Timestamp } from '@deskpulse/shared/common';
 import { FocusChange } from '@deskpulse/shared/focus';
 import { LIMITS } from '@deskpulse/shared/limits';
 import { z } from 'zod';
@@ -42,7 +42,7 @@ export type RouteRequest = z.infer<typeof RouteRequest>;
 
 /** `POST /route` reply (SPEC §3 ingest flow: deliver now or queue). */
 export const RouteResult = z.strictObject({
-  /** Alerts to notify now, each at its effective level. */
+  /** Alerts to notify now. */
   deliver: z.array(Alert).max(LIMITS.listSize),
   queued: z.int().min(0).max(LIMITS.listSize),
   /** Alerts dropped because their `alertKey` already went out in the last 10 min. */
@@ -51,32 +51,3 @@ export const RouteResult = z.strictObject({
   summary: FocusSummary.nullable(),
 });
 export type RouteResult = z.infer<typeof RouteResult>;
-
-const Weekday = z.int().min(0).max(LIMITS.lastWeekday);
-
-/** A weekly window in which the focus automation (T45) starts the profile. */
-export const ScheduleInput = z
-  .strictObject({
-    profileId: EntityId,
-    /** 0 is Sunday. */
-    days: z
-      .array(Weekday)
-      .min(1)
-      .max(LIMITS.daysPerWeek)
-      .refine((days) => new Set(days).size === days.length, { message: 'days must be unique' }),
-    start: ClockTime,
-    /** Earlier than `start` means the window runs past midnight. */
-    end: ClockTime,
-    enabled: z.boolean(),
-  })
-  .refine((schedule) => schedule.start !== schedule.end, {
-    message: 'start and end must differ',
-    path: ['end'],
-  });
-export type ScheduleInput = z.infer<typeof ScheduleInput>;
-
-export const Schedule = z.strictObject({ id: EntityId, ...ScheduleInput.shape });
-export type Schedule = z.infer<typeof Schedule>;
-
-export const ScheduleList = z.strictObject({ items: z.array(Schedule).max(LIMITS.listSize) });
-export type ScheduleList = z.infer<typeof ScheduleList>;

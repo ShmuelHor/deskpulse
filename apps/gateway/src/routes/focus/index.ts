@@ -5,7 +5,6 @@ import { withoutNeverMuted } from '../../core/never-muted.js';
 import { defineHandlers } from '../../core/route-handler.js';
 import { readSettingsOrDefaults } from '../../core/settings-store.js';
 import {
-  AlertPolicyReply,
   AlertQueueReply,
   FocusTransitionReply,
   KnownAppListReply,
@@ -19,8 +18,8 @@ const NoContent = z.undefined();
 
 /**
  * The focus domain, served by the focus service: sessions and their mute and
- * restore commands, profiles, the held-back queue, known apps and the alert
- * policy. IDs are UUIDs, already validated, so they are safe as a path segment.
+ * restore commands, profiles, the held-back queue and known apps. IDs are UUIDs, already
+ * validated, so they are safe as a path segment.
  *
  * The agent receives the commands in its next ingest reply, built from the
  * session this route started; the commands here go to the caller (web or CLI).
@@ -73,14 +72,5 @@ export const handlers = defineHandlers({
       path: '/known-apps',
       body,
       response: KnownAppsResultReply,
-    }),
-  getAlertPolicy: ({ services }) =>
-    services.call('focus', { method: 'GET', path: '/alert-policy', response: AlertPolicyReply }),
-  updateAlertPolicy: ({ services, body }) =>
-    services.call('focus', {
-      method: 'PUT',
-      path: '/alert-policy',
-      body,
-      response: AlertPolicyReply,
     }),
 });

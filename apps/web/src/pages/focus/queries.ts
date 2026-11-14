@@ -48,13 +48,3 @@ export function alertQueueQuery(
     queryFn: ({ signal }) => client.request('focusQueue', undefined, signal),
   });
 }
-
-/** The alert levels the user changed from the defaults. */
-export function alertPolicyQuery(
-  client: GatewayClient,
-): UseQueryOptions<Output<'getAlertPolicy'>, Error, Output<'getAlertPolicy'>, string[]> {
-  return queryOptions({
-    queryKey: ['getAlertPolicy'],
-    queryFn: ({ signal }) => client.request('getAlertPolicy', undefined, signal),
-  });
-}

@@ -7,7 +7,6 @@ function alert(alertKey: string): Alert {
   return {
     alertKey,
     type: 'battery-low',
-    level: 'important',
     ts: '2026-11-10T08:00:00.000Z',
     params: { percent: 15 },
   };

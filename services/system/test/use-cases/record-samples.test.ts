@@ -123,10 +123,7 @@ describe('recordSamples', () => {
 
     const result = await recordSamples(store, batch(samples), NOW_MS);
 
-    expect(result.alerts.map((alert) => [alert.type, alert.level])).toEqual([
-      ['memory-critical', 'critical'],
-      ['thermal', 'important'],
-    ]);
+    expect(result.alerts.map((alert) => alert.type)).toEqual(['memory-critical', 'thermal']);
   });
 
   it('opens a leak incident for a process growing over 1 GiB an hour', async () => {
@@ -146,8 +143,8 @@ describe('recordSamples', () => {
 
     const result = await recordSamples(store, batch(samples), NOW_MS);
 
-    expect(result.alerts.map((alert) => [alert.alertKey, alert.level])).toEqual([
-      [`system:memory-leak:${LEAK_PID}`, 'important'],
+    expect(result.alerts.map((alert) => alert.alertKey)).toEqual([
+      `system:memory-leak:${LEAK_PID}`,
     ]);
     expect(store.state().incidents).toMatchObject([
       {

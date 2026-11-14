@@ -5,7 +5,6 @@ import { LIMITS } from '../src/limits.js';
 const alert = {
   alertKey: 'battery:low',
   type: 'battery-low',
-  level: 'important',
   ts: '2026-11-08T10:00:00Z',
   params: { percent: 14 },
 } as const;
@@ -16,9 +15,9 @@ describe('Alert', () => {
     expect(QueuedAlert.safeParse({ alert, queuedAt: '2026-11-08T10:00:01Z' }).success).toBe(true);
   });
 
-  it('rejects unknown types, levels and extra keys', () => {
+  it('rejects unknown types and extra keys', () => {
     expect(Alert.safeParse({ ...alert, type: 'battery-empty' }).success).toBe(false);
-    expect(Alert.safeParse({ ...alert, level: 'urgent' }).success).toBe(false);
+    expect(Alert.safeParse({ ...alert, level: 'critical' }).success).toBe(false);
     expect(Alert.safeParse({ ...alert, title: 'x' }).success).toBe(false);
     expect(Alert.safeParse({ ...alert, alertKey: 'a b' }).success).toBe(false);
   });

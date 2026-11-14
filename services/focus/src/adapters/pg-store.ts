@@ -6,7 +6,6 @@ import * as alerts from './alerts-table.js';
 import type { FocusDatabase } from './database.js';
 import * as knownApps from './known-apps-table.js';
 import * as profiles from './profiles-table.js';
-import * as schedules from './schedules-table.js';
 import * as sessions from './sessions-table.js';
 
 function bind(db: Kysely<FocusDatabase>): FocusTransaction {
@@ -24,19 +23,12 @@ function bind(db: Kysely<FocusDatabase>): FocusTransaction {
     deleteProfile: (id) => profiles.deleteProfile(db, id),
     listKnownApps: (limit) => knownApps.listKnownApps(db, limit),
     saveKnownApps: (apps) => knownApps.saveKnownApps(db, apps),
-    alertPolicy: () => alerts.alertPolicy(db),
-    replaceAlertPolicy: (entries) => alerts.replaceAlertPolicy(db, entries),
     lastAccepted: (keys) => alerts.lastAccepted(db, keys),
     recordAccepted: (keys, atMs) => alerts.recordAccepted(db, keys, atMs),
     forgetAcceptedBefore: (beforeMs) => alerts.forgetAcceptedBefore(db, beforeMs),
     enqueue: (items, atMs, capacity) => alerts.enqueue(db, items, atMs, capacity),
     listQueue: (limit) => alerts.listQueue(db, limit),
     drainQueue: () => alerts.drainQueue(db),
-    listSchedules: (limit) => schedules.listSchedules(db, limit),
-    countSchedules: () => schedules.countSchedules(db),
-    createSchedule: (input) => schedules.createSchedule(db, input),
-    updateSchedule: (id, input) => schedules.updateSchedule(db, id, input),
-    deleteSchedule: (id) => schedules.deleteSchedule(db, id),
   };
 }
 

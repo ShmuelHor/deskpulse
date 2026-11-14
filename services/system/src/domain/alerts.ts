@@ -1,25 +1,15 @@
-import type { Alert, AlertLevel, AlertParams, AlertType } from '@deskpulse/shared/alerts';
+import type { Alert, AlertParams, AlertType } from '@deskpulse/shared/alerts';
 import type { IncidentType } from '@deskpulse/shared/system';
 
 import type { IncidentState } from './incident.js';
 
-interface AlertKind {
-  readonly type: AlertType;
-  /**
-   * SPEC §5 system sets near-OOM to critical and overheating to important. It
-   * gives no level for pressure or leaks: pressure passes on its own, so it
-   * waits for focus to end; a leak is heading for OOM, so it is important.
-   */
-  readonly level: AlertLevel;
-}
-
-const ALERT_KINDS: Readonly<Record<IncidentType, AlertKind>> = {
-  cpu: { type: 'pressure-incident', level: 'normal' },
-  memory: { type: 'pressure-incident', level: 'normal' },
-  io: { type: 'pressure-incident', level: 'normal' },
-  'memory-critical': { type: 'memory-critical', level: 'critical' },
-  thermal: { type: 'thermal', level: 'important' },
-  'memory-leak': { type: 'memory-leak', level: 'important' },
+const ALERT_TYPES: Readonly<Record<IncidentType, AlertType>> = {
+  cpu: 'pressure-incident',
+  memory: 'pressure-incident',
+  io: 'pressure-incident',
+  'memory-critical': 'memory-critical',
+  thermal: 'thermal',
+  'memory-leak': 'memory-leak',
 };
 
 /**
@@ -47,11 +37,9 @@ function alertParams(incident: IncidentState): AlertParams {
 
 /** The alert for an incident that just opened, at the moment it opened. */
 export function incidentAlert(incident: IncidentState, openedAtMs: number): Alert {
-  const kind = ALERT_KINDS[incident.type];
   return {
     alertKey: alertKey(incident),
-    type: kind.type,
-    level: kind.level,
+    type: ALERT_TYPES[incident.type],
     ts: new Date(openedAtMs).toISOString(),
     params: alertParams(incident),
   };

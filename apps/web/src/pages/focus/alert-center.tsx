@@ -6,8 +6,6 @@ import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 
-import { Tag } from '../../components/tag.js';
-
 interface AlertCenterProps {
   readonly items: readonly QueuedAlert[];
 }
@@ -25,14 +23,11 @@ export function AlertCenter({ items }: AlertCenterProps): React.JSX.Element {
       {newestFirst.map(({ alert }) => {
         const message = notificationMessages[alert.type];
         return (
-          <ListItem key={`${alert.alertKey}:${alert.ts}`} sx={{ gap: 2 }}>
+          <ListItem key={`${alert.alertKey}:${alert.ts}`}>
             <ListItemText
               primary={t(message.title)}
               secondary={`${time.format(new Date(alert.ts))} · ${t(message.body, alert.params)}`}
             />
-            <Tag variant={alert.level === 'critical' ? 'anomaly' : 'default'}>
-              {t(`levels.${alert.level}`)}
-            </Tag>
           </ListItem>
         );
       })}
