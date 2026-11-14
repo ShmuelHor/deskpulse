@@ -178,9 +178,20 @@ All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, pino log
 ### system
 - **Entities:** `pressure_samples` and `process_snapshots` (7 days), `incidents` (slowdowns: type, start, end, peak, culprit app), `machine_state` (the latest disk, network, uptime, updates, startup apps and Docker snapshot), `connectivity_events`
 - **Logic:**
-  - A slowdown opens when `some avg10` stays above the threshold for **more than 15 s** (memory 10%, cpu 40%, io 30%) and is described in plain words ("memory filled up", "processor was busy") with the heaviest app
+  - A slowdown opens when `some avg10` stays above the threshold for **more than 15 s** and is described in plain words ("memory filled up", "processor was busy") with the heaviest app
   - Memory leak suspicion: an app's RSS grows by more than 1 GiB per hour
-  - Temperature above 95°C or throttling, disk above 85% and above 95%
+  - Temperature above the threshold or throttling, disk above the warning and critical thresholds
+  - **Alert sensitivity (T85):** one setting per resource (memory, cpu, io, temperature, disk), each `low`, `normal` (default) or `high`. The thresholds per level:
+
+    | Resource | low | normal | high |
+    | --- | --- | --- | --- |
+    | memory (`some avg10`) | 20% | 10% | 5% |
+    | cpu (`some avg10`) | 60% | 40% | 25% |
+    | io (`some avg10`) | 45% | 30% | 20% |
+    | temperature | 100°C | 95°C | 85°C |
+    | disk (warning / critical) | 90% / 97% | 85% / 95% | 80% / 90% |
+
+    The gateway passes the levels with each `POST /samples`; the system service maps them to thresholds in `domain/`
   - "Needs attention" list: pending updates (security first), disk above 85%, a container down, a slowdown right now, a heavy app
 - **API:** `POST /samples`, `GET /incidents?from&to`, `GET /culprits?days`, `GET /timeline?date`
 - **Wave 4 API:** `GET /slowdowns?from&to` replaces `/incidents` (T58), and `GET /machine`, `GET /attention`, `GET /connectivity?days` are added (T75)
@@ -197,7 +208,7 @@ All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, pino log
 - **Wave 4 public API (v1):** `/v1/ingest`, `/v1/agent/commands`, `/v1/agent/commands/<id>/result`, `/v1/agent/capabilities`, `/v1/live`, `/v1/commands`, `/v1/dashboard/<page>`, `/v1/time/*`, `/v1/battery/*`, `/v1/system/*` (including `/v1/system/attention`, `/v1/system/machine`, `/v1/system/processes`, `/v1/system/docker`, `/v1/system/updates`, `/v1/system/startup`, `/v1/system/disk`), `/v1/focus/*`, `/v1/settings`, `/v1/layouts/<page>`
 - The "Public API" and each service's "API" line list what exists today, and `packages/shared/test/routes.test.ts` checks them against the route map. The "Wave 4" lines are the target: each task moves the endpoints it builds onto the current line and drops the ones it removes (`/v1/rules`, `/v1/export`, `/v1/apps`, `/v1/week`, `/v1/dashboard/today`).
 - **Timeouts** of 3 s per service, with a partial response `{data, degraded:["battery"]}` when one is down
-- **Settings** (`gateway.settings`): language, theme (system, light, dark), palette (one of ten), tracking paused, start at login, never-mute apps, capabilities, and the page layouts
+- **Settings** (`gateway.settings`): language, theme (system, light, dark), palette (one of ten), tracking paused, start at login, never-mute apps, alert sensitivity per resource (T85), capabilities, and the page layouts
 - **Layouts:** one key per page, `{version, widgets: [{id, w, h, view, options}]}`. Unknown widget IDs are dropped when read; deleting the key restores the default
 - **Retention (silent):** raw samples older than 90 days are deleted every night by each service's job; rollups and summaries are kept. No UI
 - **Security:** Host allowlist, Origin check, CSRF, rate limit and body limit. Details in [SECURITY.md](SECURITY.md)
@@ -223,7 +234,7 @@ All of them: Fastify + TypeScript, Kysely over Postgres, `GET /health`, pino log
 | **Processes** (`/processes`) | What is running? | Task manager with All/Apps/Docker, search, sortable columns, End with confirmation, the user's containers |
 | **Maintenance** (`/maintenance`) | What to clean or update? | Disk space, cleanup, updates (opens Software Updates), startup apps |
 | **Focus** (`/focus`) | Give me quiet | Start focus (duration, profile), last focus, profiles, alerts that waited |
-| **Settings** (`/settings`) | | Language, theme, palette, pause tracking, start at login, never-mute apps |
+| **Settings** (`/settings`) | | Language, theme, palette, pause tracking, start at login, never-mute apps, alert sensitivity |
 
 - **Widget grid:** every page except Settings is a 4-column grid of widgets with a default layout. Edit mode: drag to move with live reorder, drag the corner to resize, a ⋯ menu (view: ring, bars, line, meter, number, or the widget's detail view; size presets; widget options; remove), add from the page's catalog (click or drag), undo after remove, reset to default, cancel, and full keyboard control. A widget never cuts its content: a resize that would cut it snaps back. The full catalog and its rules are in [DESIGN.md](DESIGN.md).
 - **Capabilities:** widgets the computer cannot support are hidden from the catalog and the defaults.
