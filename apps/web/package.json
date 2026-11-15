@@ -35,7 +35,7 @@
     "react-error-boundary": "6.1.6",
     "react-hook-form": "7.91.0",
     "react-i18next": "18.0.0",
-    "stylis": "4.2.0",
+    "stylis": "4.4.0",
     "zod": "4.6.7"
   },
   "devDependencies": {
@@ -47,7 +47,7 @@
     "@types/stylis": "4.2.7",
     "@vitejs/plugin-react": "6.2.1",
     "happy-dom": "21.0.4",
-    "msw": "3.0.3",
+    "msw": "3.0.4",
     "vite": "8.3.6"
   }
 }
