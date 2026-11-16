@@ -35,7 +35,8 @@ Called Yoman until wave 4: leftovers exist (`migrate:yoman`, old migrations), do
   no `as` except at a validated boundary. Explicit return types and TSDoc on exports. No magic numbers
 - Small single-purpose functions, early returns. Comments say why. No commented-out code; `TODO(T45): …` only
 - Errors: typed `AppError` subclasses with stable codes; never swallow; only routes map them to HTTP, no internals
-- Logs: pino only, no `console.*`, structured fields. Never log titles, cmdlines, tokens, cookies, cleanup paths
+- Logs: pino only, no `console.*`, structured fields. Never log titles, cmdlines, tokens, cookies, cleanup paths;
+  use the redaction in `packages/service-kit/src/redaction.ts` or `apps/agent/src/core/logger.ts`
 - Tests: `<pkg>/test/` mirrors `src/` (never next to code; `scripts/lib` → `scripts/test`), AAA, descriptive
   names, fake timers, no sleeps, no network, behavior not implementation. Coverage 60%; 80% for
   `services/*/src/domain`, `apps/agent/src/core`, `scripts/lib`
@@ -46,8 +47,9 @@ Called Yoman until wave 4: leftovers exist (`migrate:yoman`, old migrations), do
 - Parse at every boundary: env, HTTP in and out, service replies, D-Bus, `/proc` and `/sys`, `JSON.parse`,
   child output, caught `unknown`. Never `as` on untrusted data
 - Shared contracts in `packages/shared`, named like the type, `type X = z.infer<typeof X>`; never hand-write a duplicate type
-- `.parse` where invalid data is a bug, `.safeParse` for user input → 400 with field paths. `.strict()` objects and
-  bounded strings, numbers and arrays at the public API
+- `.parse` where invalid data is a bug, `.safeParse` for user input → 400 with field paths and no internal details
+- At the public API: `.strict()` objects, bounded strings, numbers and arrays, and enums or regexes where the
+  value has a known shape (app IDs, for example). Nothing unbounded
 
 ## Security (blocking)
 - Never commit `.env`, tokens or real data; placeholders only in `.env.example`. Never weaken gitleaks, CI
@@ -78,7 +80,7 @@ Called Yoman until wave 4: leftovers exist (`migrate:yoman`, old migrations), do
 - Never commit to `main`; every change goes branch → PR → review → merge. Branches `t<id>-<kebab>`, `fix/…`, `chore/…`
 - Conventional Commits in English, header ≤ 72, subject not capitalized, `!` for breaking. Types: feat fix test
   refactor perf docs chore ci build security revert. Small commits that each build and pass tests
-- Never force push, never `--no-verify`, never rewrite pushed history. Never commit generated output or data
+- Never force push, never `--no-verify`, never rewrite pushed history. Never commit generated output, data, backups or anything from `.env`
 
 ## Do not touch without explicit instruction
 - Generated: dist/, coverage/, *.tsbuildinfo, node_modules/. Secrets: .env, *.pem, *.key (env names: read config.ts)
