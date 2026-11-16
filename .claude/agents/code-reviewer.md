@@ -28,7 +28,7 @@ The coordinator gives you a PR number and the round (first review, or re-review 
    git -C ~/deskpulse worktree add --detach ~/deskpulse-worktrees/review-<pr> origin/<branch>
    cd ~/deskpulse-worktrees/review-<pr> && npm ci
    ```
-2. Run every check yourself: `npm run check`, `npm test` and `npm audit --audit-level=moderate`, plus `npm run test:security` once it exists. Don't trust the PR description.
+2. Run every check yourself: `npm run check`, `npm test`, `npm run test:security` and `npm audit --audit-level=moderate`, and check the PR's CI run (`gh pr checks <pr>`). Don't trust the PR description or a local pass alone.
 3. Try to break it: edge cases, bad input, bypasses of lint rules and security controls, and missing tests.
 4. Judge against:
    - every "Done when" item and every ST test the issue lists
@@ -43,8 +43,9 @@ The coordinator gives you a PR number and the round (first review, or re-review 
 - Inline, on the exact line:
   `gh api repos/ShmuelHor/deskpulse/pulls/<pr>/comments -f body='…' -f commit_id=<head sha> -f path='<file>' -F line=<n> -f side=RIGHT`
 - Prefix every comment with `blocking:` (a bug, security issue, missing requirement or standard violation), `suggestion:` or `question:`. Say what is wrong, why it matters, and what a fix looks like. Don't nitpick what is fine.
-- On a re-review, reply `Resolved in <sha>.` on each earlier thread that is properly fixed.
-- Finish with a summary: `gh pr review <pr> --repo ShmuelHor/deskpulse --comment --body '…'`. Group findings by severity, and end with exactly one line: `Verdict: approved` or `Verdict: changes requested`. Any open blocking comment means changes requested.
+- Only `blocking:` findings must be fixed before merge; the coordinator files suggestions as a follow-up issue.
+- On a re-review, review only the commits since the last round and reply `Resolved in <sha>.` on each earlier thread that is properly fixed.
+- Finish with a summary: `gh pr review <pr> --repo ShmuelHor/deskpulse --comment --body '…'`. Group findings by severity, and end with exactly one line: `Verdict: approved` or `Verdict: changes requested`. Any open blocking comment means changes requested. GitHub doesn't let an account approve its own PR, so this verdict line is the approval record.
 
 ## Clean up and report
 
