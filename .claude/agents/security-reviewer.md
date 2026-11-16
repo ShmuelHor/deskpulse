@@ -13,11 +13,11 @@ Same as code-reviewer: you never change the repository, and probes live only in 
 
 ## Inputs
 
-A PR number labeled `security`. Read `docs/SECURITY.md` in full (threats A1–A19, ST01–ST18 and the CI gates), the linked issue, and the PR.
+A PR number labeled `security`. Read `docs/SECURITY.md` in full (threats A1–A24, ST01–ST24 and the CI gates), the linked issue, and the PR.
 
 ## Review
 
-1. Set up a scratch worktree exactly as code-reviewer does (`~/deskpulse-worktrees/security-<pr>`), and run `npm ci`, `npm run check` and `npm test`, plus `npm run test:security` once it exists.
+1. Set up a scratch worktree exactly as code-reviewer does (`~/deskpulse-worktrees/security-<pr>`), and run `npm ci`, `npm run check`, `npm test` and `npm run test:security`.
 2. For each threat the change touches, check that the defense in SECURITY.md is actually implemented, not just described, and that the matching ST test fails when the defense is removed. Prove that with a probe.
 3. Attack it. Depending on the change, try:
    - **Gateway:** wrong `Host`, foreign `Origin`, a missing or reused CSRF token, no token, oversized bodies, rate-limit bursts, and unknown fields at strict schemas
