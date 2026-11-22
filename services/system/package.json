@@ -15,7 +15,7 @@
     "@deskpulse/service-kit": "0.0.0",
     "@deskpulse/shared": "0.0.0",
     "date-fns": "4.4.0",
-    "kysely": "0.29.8",
+    "kysely": "0.29.9",
     "zod": "4.6.7"
   }
 }
